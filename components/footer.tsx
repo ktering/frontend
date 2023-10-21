@@ -85,9 +85,9 @@ export default function Footer() {
 
                             <ul className="mt-6 space-y-4 text-sm">
                                 <li>
-                                    <a href="#" className="text-gray-700 transition hover:opacity-75">
+                                    <Link href="/kterer" className="text-gray-700 transition hover:opacity-75">
                                         Become a Kterer
-                                    </a>
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
@@ -115,27 +115,29 @@ export default function Footer() {
 
                             <ul className="mt-6 space-y-4 text-sm">
                                 <li>
-                                    <Link href="/terms-and-conditions"
+                                    <Link href="/legal/terms-and-conditions"
                                           className="text-gray-700 transition hover:opacity-75">
                                         Terms and Conditions
                                     </Link>
                                 </li>
 
                                 <li>
-                                    <Link href="/vendor-terms-and-conditions"
+                                    <Link href="/legal/vendor-terms-and-conditions"
                                           className="text-gray-700 transition hover:opacity-75">
                                         Vendor Terms and Conditions
                                     </Link>
                                 </li>
 
                                 <li>
-                                    <Link href="privacy-policy" className="text-gray-700 transition hover:opacity-75">
+                                    <Link href="/legal/privacy-policy"
+                                          className="text-gray-700 transition hover:opacity-75">
                                         Privacy Policy
                                     </Link>
                                 </li>
 
                                 <li>
-                                    <Link href="/delivery-policy" className="text-gray-700 transition hover:opacity-75">
+                                    <Link href="/legal/delivery-policy"
+                                          className="text-gray-700 transition hover:opacity-75">
                                         Delivery Policy
                                     </Link>
                                 </li>

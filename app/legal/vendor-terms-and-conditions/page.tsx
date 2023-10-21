@@ -1,9 +1,9 @@
 export default function VendorTermsAndConditionsPage() {
     return (
         <>
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="max-w-7xl mx-auto px-4 py-12">
                 <p className="font-normal">&nbsp;</p>
-                <p className="font-bold text-xl mb-4 text-center">
+                <p className="font-bold text-xl mb-12 text-center">
                     VENDOR TERMS AND CONDITIONS
                 </p>
                 <p className="font-normal mb-4">These Vendor Terms of Use ("Terms") outline the terms and conditions for

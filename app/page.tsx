@@ -1,37 +1,38 @@
-import Biryani from "@/static/biryani.png";
-import Knafeh from "@/static/knafeh.png";
-import Rendang from "@/static/rendang.png";
-import Ramen from "@/static/ramen.png";
-import Lasagna from "@/static/lasagna.png";
-import PadThai from "@/static/pad-thai.png";
-import Kterer from "@/static/1.svg";
-import Eater from "@/static/2.svg";
-import Disgusted from "@/static/disgusted.png";
-import Family from "@/static/family.png";
 import Image from "next/image";
-import Number1 from "@/static/6.svg";
-import Number2 from "@/static/7.svg";
-import Number3 from "@/static/8.svg";
-import HeroImage from "@/static/hero.png";
-import WhiteLogo from "@/static/white-logo.svg";
+import Link from "next/link";
 import {SignInButton, SignUpButton} from "@clerk/nextjs";
+import Biryani from "@/static/landing-page/biryani.png";
+import Knafeh from "@/static/landing-page/knafeh.png";
+import Rendang from "@/static/landing-page/rendang.png";
+import Ramen from "@/static/landing-page/ramen.png";
+import Lasagna from "@/static/landing-page/lasagna.png";
+import PadThai from "@/static/landing-page/pad-thai.png";
+import BecomeKtererIcon from "@/static/landing-page/become-a-kterer-icon.svg";
+import BecomeCustomerIcon from "@/static/landing-page/enjoy-homemade-food-icon.svg";
+import Disgusted from "@/static/landing-page/disgusted.png";
+import Family from "@/static/landing-page/family.png";
+import Number1Icon from "@/static/shared/number-1-icon.svg";
+import Number2Icon from "@/static/shared/number-2-icon.svg";
+import Number3Icon from "@/static/shared/number-3-icon.svg";
+import HeroImage from "@/static/landing-page/hero.png";
+import WhiteLogo from "@/static/white-logo.svg";
 
-const features = [
+const steps = [
     {
         name: 'Click Order Now',
-        imgSrc: Number1,
+        imgSrc: Number1Icon,
     },
     {
         name: 'Checkout With the Food of Your Choice',
-        imgSrc: Number2,
+        imgSrc: Number2Icon,
     },
     {
         name: 'Enjoy a Delicious Homemade Meal',
-        imgSrc: Number3
+        imgSrc: Number3Icon
     },
 ]
 
-const products = [
+const PopularFoods = [
     {
         id: 1,
         name: 'Chicken Biryani',
@@ -70,32 +71,31 @@ const products = [
     },
 ]
 
-const items = [
+const BecomeTypes = [
     {
-        imageSrc: Kterer,
         title: "Become A Kterer",
         description: "Make money online making the things you love",
+        imageSrc: BecomeKtererIcon,
         buttonText: "Start Earning",
+        href: "/kterer",
     },
     {
-        imageSrc: Eater,
         title: "Enjoy Homemade Food",
         description: "Eat homemade food wherever and whenever you want",
+        imageSrc: BecomeCustomerIcon,
         buttonText: "Enjoy Now",
+        href: "/",
     }
 ];
 
 export default function Home() {
     return (
         <>
-            {/*    Seciton 1 */}
-            <main className="w-full relative overflow-x-hidden">
-
+            {/* Section 1 */}
+            <section className="w-full relative overflow-x-hidden">
                 <Image src={HeroImage} className="w-full h-[50vh] md:h-[60vh] object-cover"
                        alt="hero section food image"/>
-
-                <div
-                    className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2">
+                <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2">
                     <div className="hidden md:flex"></div>
                     <div className="flex justify-center md:justify-start">
                         <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24"/>
@@ -120,7 +120,6 @@ export default function Home() {
                         </SignUpButton>
                     </div>
                 </div>
-
                 {/* Center Content */}
                 <div
                     className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
@@ -135,22 +134,20 @@ export default function Home() {
                         </button>
                     </SignUpButton>
                 </div>
-            </main>
+            </section>
 
-
-            {/* Seciton 2 */}
+            {/* Section 2 */}
             <div className="bg-white max-w-7xl mx-auto">
                 <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900">Popular Homemade Food</h2>
-
                     <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-3 xl:gap-x-8">
-                        {products.map((product) => (
-                            <div key={product.id} className="group relative">
+                        {PopularFoods.map((food) => (
+                            <div key={food.id} className="group relative">
                                 <div
                                     className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none lg:h-80">
                                     <Image
-                                        src={product.imageSrc}
-                                        alt={product.imageAlt}
+                                        src={food.imageSrc}
+                                        alt={food.imageAlt}
                                         className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                                     />
                                 </div>
@@ -158,7 +155,7 @@ export default function Home() {
                                     <div>
                                         <h3 className="text-lg">
                                             <span aria-hidden="true" className="absolute inset-0"/>
-                                            {product.name}
+                                            {food.name}
                                         </h3>
                                     </div>
                                 </div>
@@ -168,35 +165,36 @@ export default function Home() {
                 </div>
             </div>
 
-            {/*    Seciton 3*/}
+            {/* Section 3 */}
             <section className="bg-white dark:bg-gray-900 max-w-7xl mx-auto">
                 <div className="container px-6 py-24 mx-auto flex justify-center">
-                    <div
-                        className="grid gap-8 mt-8 sm:grid-cols-1 md:grid-cols-2 sm:gap-32">
-                        {items.map((item, index) => (
+                    <div className="grid gap-8 mt-8 sm:grid-cols-1 md:grid-cols-2 sm:gap-32">
+                        {BecomeTypes.map((type, index) => (
                             <div key={index} className="w-full max-w-xs text-center">
                                 <Image className="object-cover object-center w-full h-48 mx-auto rounded-lg"
-                                       src={item.imageSrc}
+                                       src={type.imageSrc}
                                        alt="avatar"/>
 
                                 <div className="mt-2">
-                                    <h3 className="text-2xl font-bold">{item.title}</h3>
-                                    <p className="mt-2">{item.description}</p>
+                                    <h3 className="text-2xl font-bold">{type.title}</h3>
+                                    <p className="mt-2">{type.description}</p>
                                 </div>
 
-                                <button
-                                    type="button"
-                                    className="mt-4 rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                >
-                                    {item.buttonText}
-                                </button>
+                                <Link href={type.href}>
+                                    <button
+                                        type="button"
+                                        className="mt-4 rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    >
+                                        {type.buttonText}
+                                    </button>
+                                </Link>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/*    Section 4*/}
+            {/* Section 4 */}
             <section className="max-w-7xl mx-auto">
                 <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
@@ -205,9 +203,8 @@ export default function Home() {
                             <Image
                                 alt="Person eating a burger and being disgusted"
                                 src={Disgusted}
-                                layout="fill"
-                                objectFit="cover"
-                                objectPosition="center"
+                                style={{objectFit: 'cover', objectPosition: 'center'}}
+                                fill
                                 className="rounded-lg"
                             />
                         </div>
@@ -237,11 +234,11 @@ export default function Home() {
                         </div>
                         <div className="mx-auto mt-16 max-w-xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
                             <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
-                                {features.map((feature) => (
-                                    <div key={feature.name} className="relative flex flex-col items-center">
-                                        <Image src={feature.imgSrc} alt="" className="mb-4 w-40 h-40 sm:w-40 sm:h-40"/>
+                                {steps.map((step) => (
+                                    <div key={step.name} className="relative flex flex-col items-center">
+                                        <Image src={step.imgSrc} alt="" className="mb-4 w-40 h-40 sm:w-40 sm:h-40"/>
                                         <dt className="text-2xl leading-7 text-center">
-                                            {feature.name}
+                                            {step.name}
                                         </dt>
                                     </div>
                                 ))}
@@ -262,7 +259,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/*    Section 6*/}
+            {/* Section 6 */}
             <section className="max-w-7xl mx-auto">
                 <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
@@ -276,9 +273,8 @@ export default function Home() {
                             <Image
                                 alt="Party"
                                 src={Family}
-                                layout="fill"
-                                objectFit="cover"
-                                objectPosition="center"
+                                style={{objectFit: 'cover', objectPosition: 'center'}}
+                                fill
                                 className="rounded-lg"
                             />
                         </div>

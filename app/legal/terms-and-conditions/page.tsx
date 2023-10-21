@@ -1,9 +1,9 @@
 export default function TermsAndConditionsPage() {
     return (
         <>
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="max-w-7xl mx-auto px-4 py-12">
                 <div className="font-normal">
-                    <div className="font-bold text-xl mb-4 text-center">TERMS AND CONDITIONS</div>
+                    <div className="font-bold text-xl mb-12 text-center">TERMS AND CONDITIONS</div>
                     <div className="font-bold text-xl mb-4">TERMS OF USE</div>
                     <div className="mb-4">Effective date: ______day of _____ 2023</div>
                     <div className="mb-4">

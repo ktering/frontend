@@ -1,8 +1,8 @@
 export default function DeliveryPolicy() {
     return (
         <>
-            <div className="max-w-7xl mx-auto px-4">
-                <p className="font-bold text-xl mb-4 text-center">DELIVERY POLICY</p>
+            <div className="max-w-7xl mx-auto px-4 py-12">
+                <p className="font-bold text-xl mb-12 text-center">DELIVERY POLICY</p>
                 <p className="font-normal mb-4">At KTERIINGS INC (hereinafter referred to as KTERINGS), we are committed
                     to
                     providing a reliable and secure delivery service for our valued customers. This Delivery Policy

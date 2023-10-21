@@ -1,9 +1,9 @@
 export default function PrivacyPolicy() {
     return (
         <>
-            <div className="max-w-7xl mx-auto px-4">
+            <div className="max-w-7xl mx-auto px-4 py-12">
                 <div className="font-normal">
-                    <h1 className="font-bold text-xl mb-4 text-center">PRIVACY POLICY</h1>
+                    <h1 className="font-bold text-xl mb-12 text-center">PRIVACY POLICY</h1>
                     <p className="mb-4">Effective Date: ____ day of ____ 2023</p>
                     <p className="font-bold mb-4">PLEASE READ THE FOLLOWING CAREFULLY</p>
                     <p className="font-bold mb-4">THIS STATEMENT PROVIDES GENERAL INFORMATION ABOUT THE PRIVACY
