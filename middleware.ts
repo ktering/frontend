@@ -1,7 +1,45 @@
 import {authMiddleware} from "@clerk/nextjs";
+import {NextResponse} from "next/server";
 
 export default authMiddleware({
-    publicRoutes: ['/', '/legal/:path*', '/kterer'],
+    publicRoutes: ['/', '/legal/:path*', '/become-a-kterer', '/about-us', '/api/:path*'],
+    afterAuth(auth, req, evt) {
+        // @ts-ignore
+        const checkUser = auth.sessionClaims?.ktererSignUpCompleted.ktererSignUpCompleted;
+
+        // let checkUser: boolean | undefined = undefined;
+        // if (auth.sessionClaims && 'ktererSignUpCompleted' in auth.sessionClaims) {
+        //     const sessionClaims = (auth.sessionClaims as unknown) as {
+        //         ktererSignUpCompleted: { ktererSignUpCompleted: boolean }
+        //     };
+        //     checkUser = sessionClaims.ktererSignUpCompleted.ktererSignUpCompleted;
+        // }
+
+        // TODO: Add check for non-kterer users so they can't access the kterer pages
+        if (auth.userId) {
+            console.log('');
+            if (req.nextUrl.pathname === '/') {
+                if (checkUser === true) {
+                    const dashboardPage = new URL('/kterer/dashboard', req.url);
+                    return NextResponse.redirect(dashboardPage);
+                } else {
+                    const signedInUserPage = new URL('/ktering', req.url);
+                    return NextResponse.redirect(signedInUserPage);
+                }
+            }
+            if (checkUser === false &&
+                req.nextUrl.pathname === '/kterer/kycVerified' &&
+                // @ts-ignore
+                req.nextUrl.pathname === '/kterer/dashboard'
+            ) {
+                const setupPage = new URL('/kterer/kterer-setup', req.url);
+                return NextResponse.redirect(setupPage);
+            } else if (checkUser === true && req.nextUrl.pathname === '/kterer/kterer-setup') {
+                const dashboardPage = new URL('/kterer/dashboard', req.url);
+                return NextResponse.redirect(dashboardPage);
+            }
+        }
+    }
 });
 
 export const config = {
