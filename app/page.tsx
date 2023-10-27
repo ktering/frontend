@@ -77,7 +77,7 @@ const BecomeTypes = [
         description: "Make money online making the things you love",
         imageSrc: BecomeKtererIcon,
         buttonText: "Start Earning",
-        href: "/kterer",
+        href: "/become-a-kterer",
     },
     {
         title: "Enjoy Homemade Food",

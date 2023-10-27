@@ -85,7 +85,7 @@ export default function Footer() {
 
                             <ul className="mt-6 space-y-4 text-sm">
                                 <li>
-                                    <Link href="/kterer" className="text-gray-700 transition hover:opacity-75">
+                                    <Link href="/become-a-kterer" className="text-gray-700 transition hover:opacity-75">
                                         Become a Kterer
                                     </Link>
                                 </li>

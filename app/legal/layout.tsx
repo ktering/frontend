@@ -1,5 +1,5 @@
 import type {Metadata} from 'next'
-import UserNavbar from "@/components/userNavbar";
+import KtererNavbar from "@/components/ktererNavbar";
 
 export const metadata: Metadata = {
     title: 'Create Next App',
@@ -11,7 +11,7 @@ export default function KtererLayout({children}: {
 }) {
     return (
         <section>
-            <UserNavbar/>
+            <KtererNavbar/>
             {children}
         </section>
     )

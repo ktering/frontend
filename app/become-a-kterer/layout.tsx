@@ -2,11 +2,11 @@ import type {Metadata} from 'next'
 import KtererNavbar from "@/components/ktererNavbar";
 
 export const metadata: Metadata = {
-    title: 'Kterings - About Us',
-    description: 'About Kterings - Our Mission, Story and Community',
+    title: 'Kterings - Become a Kterer',
+    description: 'Become a Kterer, Make what you want, Reach more people, Sell More',
 }
 
-export default function AboutUsLayout({children}: {
+export default function BecomeKterer({children}: {
     children: React.ReactNode
 }) {
     return (
