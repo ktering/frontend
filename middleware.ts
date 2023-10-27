@@ -4,6 +4,11 @@ import {NextResponse} from "next/server";
 export default authMiddleware({
     publicRoutes: ['/', '/legal/:path*', '/become-a-kterer', '/about-us', '/api/:path*'],
     afterAuth(auth, req, evt) {
+        // handle users who aren't authenticated
+        if (!auth.userId && !auth.isPublicRoute) {
+            const homePage = new URL('/', req.url);
+            return NextResponse.redirect(homePage);
+        }
         // @ts-ignore
         const checkUser = auth.sessionClaims?.ktererSignUpCompleted.ktererSignUpCompleted;
 

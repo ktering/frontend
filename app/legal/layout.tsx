@@ -16,6 +16,3 @@ export default function KtererLayout({children}: {
         </section>
     )
 }
-
-
-
