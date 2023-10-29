@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import {SignUpButton} from "@clerk/nextjs";
 import MainChefImage from "@/static/kterer/main-chef.png";
 import ShouldntDealWithImage from "@/static/kterer/shouldnt-deal.png";
 import SetYourPricesIcon from "@/static/kterer/set-your-prices-icon.svg";
@@ -59,11 +58,11 @@ export default function BecomeKterer() {
                 <div className="max-w-7xl mx-auto">
                     <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:pt-12 lg:pb-24 lg:px-8">
                         <h1 className="text-3xl font-bold text-center pb-16">Become a Kterer</h1>
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-16">
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
 
                             <div
-                                className="lg:col-span-1 flex flex-col items-center justify-center text-center lg:text-left lg:items-start lg:justify-start">
-                                <h2 className="text-2xl font-bold leading-10">
+                                className="lg:col-span-2 flex flex-col items-center justify-center align-middle text-center lg:text-left lg:items-start lg:justify-center">
+                                <h2 className="text-3xl font-bold leading-10">
                                     Make What You Want<br/>Reach More People<br/>Sell More
                                 </h2>
 
@@ -103,7 +102,7 @@ export default function BecomeKterer() {
                                                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                                                 >
                                                     <Dialog.Panel
-                                                        className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6">
+                                                        className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                                                         <SignUpForm/>
                                                     </Dialog.Panel>
                                                 </Transition.Child>
@@ -113,7 +112,7 @@ export default function BecomeKterer() {
                                 </Transition.Root>
                             </div>
 
-                            <div className="lg:col-span-2 relative">
+                            <div className="lg:col-span-3 relative">
                                 <div className="overflow-hidden rounded-lg h-full">
                                     <Image
                                         alt="Chef standing in a kitchen"
@@ -207,14 +206,10 @@ export default function BecomeKterer() {
                     </div>
 
                     <div className="text-center mt-16">
-                        <SignUpButton mode="modal">
-                            <button
-                                type="button"
-                                className="rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                                Sign Up
-                            </button>
-                        </SignUpButton>
+                        <button
+                            className="rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            onClick={() => setOpen(true)}>Sign Up
+                        </button>
                     </div>
                 </div>
             </section>

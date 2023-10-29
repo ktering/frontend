@@ -17,7 +17,14 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <ClerkProvider>
+        <ClerkProvider
+            appearance={{
+                elements: {
+                    card: 'w-[512px]',
+                    formButtonPrimary: 'bg-primary-color hover:bg-primary-color-hover',
+                },
+            }}
+        >
             <html lang="en">
             <body className={inter.className}>
             {children}

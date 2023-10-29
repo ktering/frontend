@@ -8,8 +8,6 @@ export default function Ktering() {
     const {signOut} = useClerk();
     const router = useRouter();
 
-    // TODO: check bug where sign in with Google doesnt ask for phone number
-
     useEffect(() => {
         const fetchAndUpdateUserInfo = async () => {
             if (isSignedIn && user) {

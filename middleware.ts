@@ -28,7 +28,7 @@ export default authMiddleware({
                     const dashboardPage = new URL('/kterer/dashboard', req.url);
                     return NextResponse.redirect(dashboardPage);
                 } else {
-                    const signedInUserPage = new URL('/ktering', req.url);
+                    const signedInUserPage = new URL('/kterings', req.url);
                     return NextResponse.redirect(signedInUserPage);
                 }
             }

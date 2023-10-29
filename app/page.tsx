@@ -96,12 +96,12 @@ export default function Home() {
                 <Image src={HeroImage} className="w-full h-[50vh] md:h-[60vh] object-cover"
                        alt="hero section food image"/>
                 <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2">
-                    <div className="hidden md:flex"></div>
+                    <div className="hidden md:flex flex-1"></div>
                     <div className="flex justify-center md:justify-start">
                         <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24"/>
                     </div>
 
-                    <div className="flex space-x-2 md:space-x-4">
+                    <div className="flex space-x-2 md:space-x-4 flex-1 justify-end">
                         <SignInButton mode="modal">
                             <button
                                 type="button"

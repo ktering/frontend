@@ -5,7 +5,7 @@ export default function TermsAndConditionsPage() {
                 <div className="font-normal">
                     <div className="font-bold text-xl mb-12 text-center">TERMS AND CONDITIONS</div>
                     <div className="font-bold text-xl mb-4">TERMS OF USE</div>
-                    <div className="mb-4">Effective date: ______day of _____ 2023</div>
+                    <div className="mb-4">Effective date: 1st day of November 2023</div>
                     <div className="mb-4">
                         The <span className="font-bold">KTERINGS website/Application (‘the app or site’)</span>, is
                         owned
