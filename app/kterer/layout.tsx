@@ -1,5 +1,6 @@
 import type {Metadata} from 'next'
-import KtererNavbar from "@/components/ktererNavbar";
+import KtererDashboardNavbar from "@/components/ktererDashboardNavbar";
+import UserNavbar from "@/components/userNavbar";
 
 export const metadata: Metadata = {
     title: 'Kterer Dashboard',
@@ -11,7 +12,8 @@ export default function KtererLayout({children}: {
 }) {
     return (
         <section>
-            <KtererNavbar/>
+            <UserNavbar/>
+            <KtererDashboardNavbar/>
             {children}
         </section>
     )

@@ -17,6 +17,8 @@ import Number3Icon from "@/static/shared/number-3-icon.svg";
 import HeroImage from "@/static/landing-page/hero.png";
 import WhiteLogo from "@/static/white-logo.svg";
 
+import Test from "@/static/test.png";
+
 const steps = [
     {
         name: 'Click Order Now',
@@ -93,7 +95,7 @@ export default function Home() {
         <>
             {/* Section 1 */}
             <section className="w-full relative overflow-x-hidden">
-                <Image src={HeroImage} className="w-full h-[50vh] md:h-[60vh] object-cover"
+                <Image src={Test} className="w-full h-[50vh] md:h-[60vh] object-cover"
                        alt="hero section food image"/>
                 <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2">
                     <div className="hidden md:flex flex-1"></div>
@@ -105,7 +107,7 @@ export default function Home() {
                         <SignInButton mode="modal">
                             <button
                                 type="button"
-                                className="text-sm md:text-base rounded-full bg-primary-color px-3 md:px-4 py-2 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                className="text-sm md:text-base rounded-full bg-primary-color px-3 md:px-4 py-2 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                             >
                                 Sign In
                             </button>
@@ -113,7 +115,7 @@ export default function Home() {
                         <SignUpButton mode="modal">
                             <button
                                 type="button"
-                                className="text-sm md:text-base rounded-full bg-white px-3 md:px-4 py-2 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                className="text-sm md:text-base rounded-full bg-white px-3 md:px-4 py-2 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                             >
                                 Sign Up
                             </button>
@@ -183,7 +185,7 @@ export default function Home() {
                                 <Link href={type.href}>
                                     <button
                                         type="button"
-                                        className="mt-4 rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                        className="mt-4 rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                                     >
                                         {type.buttonText}
                                     </button>

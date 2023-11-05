@@ -33,13 +33,13 @@ export default authMiddleware({
                 }
             }
             if (checkUser === false &&
-                req.nextUrl.pathname === '/kterer/kycVerified' &&
+                req.nextUrl.pathname === '/kterer-onboarding/kyc-verified' &&
                 // @ts-ignore
                 req.nextUrl.pathname === '/kterer/dashboard'
             ) {
-                const setupPage = new URL('/kterer/kterer-setup', req.url);
+                const setupPage = new URL('/kterer-onboarding/kterer-setup', req.url);
                 return NextResponse.redirect(setupPage);
-            } else if (checkUser === true && req.nextUrl.pathname === '/kterer/kterer-setup') {
+            } else if (checkUser === true && req.nextUrl.pathname === '/kterer-onboarding/kterer-setup') {
                 const dashboardPage = new URL('/kterer/dashboard', req.url);
                 return NextResponse.redirect(dashboardPage);
             }

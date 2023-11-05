@@ -1,4 +1,5 @@
 import type {Metadata} from 'next'
+import UserNavbar from "@/components/userNavbar";
 
 export const metadata: Metadata = {
     title: 'Ktering',
@@ -11,6 +12,7 @@ export default function KteringLayout({children}: {
     return (
         <section>
             <div>
+                <UserNavbar/>
                 {children}
             </div>
         </section>
