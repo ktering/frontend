@@ -1,5 +1,5 @@
 "use client";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
     ArrowLeftOnRectangleIcon,
     BellIcon,
@@ -22,8 +22,9 @@ import {Button} from "@/components/ui/button";
 export default function UserNavbar() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
     const {signOut, user} = useClerk();
-    const router = useRouter()
+    const router = useRouter();
     const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
 
     const toggleSideBar = () => {
@@ -33,6 +34,13 @@ export default function UserNavbar() {
     const toggleCart = () => {
         setIsCartOpen(!isCartOpen);
     }
+
+    useEffect(() => {
+        const storedCart = localStorage.getItem("cart");
+        if (storedCart) {
+            setCartItems(JSON.parse(storedCart));
+        }
+    }, []);
 
     const USER_SIDEBAR_ITEMS = [
         {name: "Home", icon: <HomeIcon className="h-6 w-6"/>, href: "/kterings"},
@@ -190,10 +198,11 @@ export default function UserNavbar() {
                     </div>
 
                     <ul role="list" className="divide-y divide-gray-200">
-                        {items.map((item) => (
-                            <li key={item.id} className="py-4">
+                        {cartItems.map((item) => (
+                            <li key={item.id} className="py-4 space-y-2 border-b">
                                 <div>{item.name}</div>
-                                <div>{item.des}</div>
+                                <div className="text-sm">{item.size}</div>
+                                <div className="font-bold">${item.price}</div>
                             </li>
                         ))}
                     </ul>
