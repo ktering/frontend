@@ -55,19 +55,6 @@ export default function UserNavbar() {
         {name: "Sign Out", icon: <ArrowLeftOnRectangleIcon className="h-6 w-6"/>, href: "/kterings"},
     ];
 
-    const items = [
-        {
-            name: "Food 1",
-            des: "Food 1 Description",
-            id: "1",
-        },
-        {
-            name: "Food 2",
-            des: "Food 2 Description",
-            id: "2",
-        },
-    ]
-
     const signOutF = () => {
         signOut()
             .then(() => {

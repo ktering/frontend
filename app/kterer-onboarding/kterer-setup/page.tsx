@@ -33,7 +33,7 @@ const formSchema = z.object({
             (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
             "Only .jpg, .jpeg, .png and .webp formats are supported."
         ),
-    bio: z.string().max(500),
+    bio: z.string().max(500, "Bio can't be longer than 500 characters"),
     ethnicity: z.string(),
     experienceUnit: z.coerce.number(),
     experienceValue: z.enum(['Days', 'Months', 'Years']),
