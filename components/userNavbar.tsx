@@ -1,5 +1,5 @@
 "use client";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {
     ArrowLeftOnRectangleIcon,
     BellIcon,
@@ -33,7 +33,7 @@ export default function UserNavbar() {
     const {signOut, user} = useClerk();
     const router = useRouter();
     const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
-    const {cartItems, updateItemQuantity, removeItemFromCart} = useCart();
+    let {cartItems, updateItemQuantity, removeItemFromCart} = useCart();
 
     const toggleSideBar = () => {
         setIsSideBarOpen(!isSideBarOpen);
@@ -42,6 +42,14 @@ export default function UserNavbar() {
     const toggleCart = () => {
         setIsCartOpen(!isCartOpen);
     }
+
+    useEffect(() => {
+        // update cartItems, if cart is open
+        if (isCartOpen) {
+            cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+        }
+        console.log(cartItems)
+    }, [isCartOpen]);
 
     const incrementQuantity = (item) => {
         const maxQuantity = parseInt(item.maxQuantity, 10);

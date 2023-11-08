@@ -183,6 +183,7 @@ export default function ConsumerAccount() {
         formData.append('experienceValue', values.experienceValue);
 
         if (values.profile_image_url instanceof File) {
+            formData.append('profile_image_url', values.profile_image_url, values.profile_image_url.name);
         }
         formData.append('_method', 'PUT');
 
