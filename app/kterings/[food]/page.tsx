@@ -63,7 +63,6 @@ export default function Food() {
     }, [foodIdMainPage]);
 
     const handleThumbnailClick = (imageSrc: string) => {
-        console.log('foodDetails: ', foodDetails);
         setMainImage(imageSrc);
     };
 

@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import * as z from 'zod'
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
@@ -10,7 +10,7 @@ import {Textarea} from "@/components/ui/textarea";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast"
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -48,17 +48,15 @@ const formSchema = z.object({
     message: "At least one price and amount must be provided",
 });
 
-export default function PostFood() {
+export default function EditFood() {
+    const searchParams = useSearchParams();
+    const foodId = searchParams.get('food_id');
+    const [foodDetails, setFoodDetails] = useState(null);
     const {toast} = useToast();
     const router = useRouter();
     const [ingredientsList, setIngredientsList] = useState<string[]>([]);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-
-    function handleTextareaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
-        const ingredients = event.currentTarget.value.split('\n').filter(i => i.trim() !== '');
-        setIngredientsList(ingredients);
-    }
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -81,6 +79,98 @@ export default function PostFood() {
             ethnic_type: "",
         },
     })
+
+    useEffect(() => {
+        if (!foodId || foodId === '' || foodId === 'undefined' || foodId === 'null') {
+            router.push('/kterings');
+            return
+        }
+
+        const getFoodInfo = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiURL}/api/food/${foodId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            });
+
+            if (!response.ok) {
+                console.error(`Error: ${response.statusText}`);
+                return;
+            }
+
+            const data = await response.json();
+            setFoodDetails(data.data);
+        }
+
+        getFoodInfo();
+    }, [foodId]);
+
+
+    useEffect(() => {
+        if (!foodDetails) return;
+
+        console.log('foodDetails', foodDetails);
+
+        const {
+            images,
+            name,
+            description,
+            ingredients,
+            halal,
+            kosher,
+            vegetarian,
+            contains_nuts,
+            meat_type,
+            ethnic_type,
+            quantities,
+        } = foodDetails;
+
+        const priceAmountMap = quantities.reduce((acc, quantity) => {
+            acc[`${quantity.size}_price`] = parseFloat(quantity.price) || 0;
+            acc[`${quantity.size}_amount`] = parseInt(quantity.quantity) || 0;
+            return acc;
+        }, {});
+
+        const newImages = images.map(image => ({
+            path: image.image_url,
+            size: undefined, // 'size' field is not provided in the foodDetails, so you need to handle it accordingly
+            type: undefined, // 'type' field is not provided in the foodDetails, so you need to handle it accordingly
+        }));
+
+        // Prepare a new object that matches the structure of your form's 'defaultValues'
+        const formValues = {
+            images: newImages,
+            name,
+            small_price: priceAmountMap.small_price,
+            small_amount: priceAmountMap.small_amount,
+            medium_price: priceAmountMap.medium_price,
+            medium_amount: priceAmountMap.medium_amount,
+            large_price: priceAmountMap.large_price,
+            large_amount: priceAmountMap.large_amount,
+            description,
+            ingredients,
+            halal: halal || "",
+            kosher,
+            vegetarian,
+            contains_nuts,
+            meat_type,
+            ethnic_type,
+        };
+
+        // Set each form value with validation
+        Object.keys(formValues).forEach(key => {
+            form.setValue(key as keyof typeof formValues, formValues[key as keyof typeof formValues], {shouldValidate: true});
+        });
+    }, [foodDetails, form]);
+
+    function handleTextareaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+        const ingredients = event.currentTarget.value.split('\n').filter(i => i.trim() !== '');
+        setIngredientsList(ingredients);
+    }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newFiles = Array.from(event.target.files || []);
@@ -117,63 +207,54 @@ export default function PostFood() {
     };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const formData = new FormData();
+        const {
+            small_price,
+            small_amount,
+            medium_price,
+            medium_amount,
+            large_price,
+            large_amount,
+            ...restOfValues
+        } = values;
 
-        selectedFiles.forEach((file) => {
-            formData.append('images', file);
+        const transformed_values = [
+            {size: "small", price: small_price, quantity: small_amount},
+            {size: "medium", price: medium_price, quantity: medium_amount},
+            {size: "large", price: large_price, quantity: large_amount},
+        ];
+
+        // filter out sizes with 0 price and 0 amount
+        const filtered_values = transformed_values.filter((size) => {
+            return size.price > 0 && size.quantity > 0;
         });
 
-        for (const key in values) {
-            if (key !== 'images') {
-                const value = values[key];
-                if (Array.isArray(value) || (typeof value === 'object' && value !== null)) {
-                    formData.append(key, JSON.stringify(value));
-                } else {
-                    formData.append(key, value);
-                }
-            }
+        const food_post = {
+            ...restOfValues,
+            quantities: filtered_values
         }
-
-        // Add the transformed sizes, ensuring that the 'quantities' key is associated with a stringified array
-        formData.append('quantities', JSON.stringify([
-            {size: 'small', price: values.small_price, quantity: values.small_amount},
-            {size: 'medium', price: values.medium_price, quantity: values.medium_amount},
-            {size: 'large', price: values.large_price, quantity: values.large_amount},
-        ].filter(size => size.price > 0 && size.quantity > 0)));
 
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        const addFoodPostResponse = await fetch(`${apiURL}/api/food`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(food_post),
+        });
 
-        try {
-            const addFoodPostResponse = await fetch(`${apiURL}/api/food`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                },
-                body: formData,
-            });
-
-            if (addFoodPostResponse.ok) {
-                router.push('/kterer/dashboard');
-            } else {
-                // Handle the error accordingly
-                toast({
-                    variant: "destructive",
-                    title: "Error",
-                    description: "There was a problem submitting your post.",
-                });
-            }
-        } catch (error) {
-            // Handle the error accordingly
-            console.error('Error submitting form', error);
+        if (addFoodPostResponse.ok) {
+            router.push('/kterer/dashboard');
+        } else {
+            console.log(addFoodPostResponse.statusText);
         }
     }
-
 
     return (
         <>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <p className="font-bold text-xl mb-12">Post Food</p>
+                <p className="font-bold text-xl mb-12">Edit Food</p>
                 <div className="max-w-2xl mx-auto">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

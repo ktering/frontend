@@ -15,6 +15,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import {useRouter} from "next/navigation";
 
 
 export default function Dashboard() {
@@ -22,6 +23,7 @@ export default function Dashboard() {
     if (!user) {
         return null;
     }
+    const router = useRouter();
     const [ktererFood, setKtererFood] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [postToDelete, setPostToDelete] = useState(null);
@@ -50,6 +52,13 @@ export default function Dashboard() {
 
         getKtererFood();
     }, []);
+
+    const handleEditPost = (foodId: string) => {
+        const food_id = new URLSearchParams({
+            food_id: foodId,
+        }).toString();
+        router.push(`/kterer/edit-food?${food_id}`);
+    };
 
     const handleDeletePost = async (foodId: string) => {
         const accessToken = localStorage.getItem('accessToken');
@@ -96,7 +105,8 @@ export default function Dashboard() {
                                     </svg>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuItem>Edit Post</DropdownMenuItem>
+                                    <DropdownMenuItem onSelect={() => handleEditPost(item.id)}>Edit
+                                        Post</DropdownMenuItem>
                                     <DropdownMenuItem onSelect={() => openDeleteDialog(item.id)}>Delete
                                         Post</DropdownMenuItem>
                                 </DropdownMenuContent>

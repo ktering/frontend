@@ -176,7 +176,7 @@ export default function ConsumerAccount() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
-        const response = await fetch(`${apiURL}/api/user`, {
+        const response = await fetch(`${apiURL}/api/kterer`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
