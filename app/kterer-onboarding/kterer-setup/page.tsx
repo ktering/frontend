@@ -83,6 +83,7 @@ export default function KtererSetup() {
         formData.append('ethnicity', values.ethnicity);
         formData.append('experienceUnit', values.experienceUnit.toString());
         formData.append('experienceValue', values.experienceValue);
+        formData.append('_method', 'PUT');
 
         if (values.profile_image_url instanceof File) {
             formData.append('profile_image_url', values.profile_image_url, values.profile_image_url.name);
@@ -91,7 +92,7 @@ export default function KtererSetup() {
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
         const addKtererInfoResponse = await fetch(`${apiURL}/api/kterer`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`
             },

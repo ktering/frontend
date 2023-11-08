@@ -174,15 +174,26 @@ export default function ConsumerAccount() {
     };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+
+        const formData = new FormData();
+
+        formData.append('bio', values.bio);
+        formData.append('ethnicity', values.ethnicity);
+        formData.append('experienceUnit', values.experienceUnit.toString());
+        formData.append('experienceValue', values.experienceValue);
+
+        if (values.profile_image_url instanceof File) {
+        }
+        formData.append('_method', 'PUT');
+
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
         const response = await fetch(`${apiURL}/api/kterer`, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify(values),
+            body: formData
         });
         if (response.ok) {
             toast({
