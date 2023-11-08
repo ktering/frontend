@@ -87,7 +87,8 @@ export default function Dashboard() {
                 {ktererFood.map((item, index) => (
                     <div key={index} className="relative">
                         {/* TODO: update the image from the endpoint */}
-                        <Image src={Biryani} alt={item.name} width={300} height={300}
+                        <Image src={item.images[0].image_url || Biryani} alt="Biryani"
+                                 width={300} height={300}
                                className="mx-auto rounded-lg w-full"/>
                         <div className="flex justify-between items-center mt-2">
                             <div className="text-left">
