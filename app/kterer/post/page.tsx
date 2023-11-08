@@ -119,8 +119,9 @@ export default function PostFood() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const formData = new FormData();
 
-        selectedFiles.forEach((file) => {
-            formData.append('images', file);
+        selectedFiles.forEach((file, index) => {
+            const fieldName = `image_${index + 1}`;
+            formData.append(fieldName, file);
         });
 
         for (const key in values) {
@@ -145,6 +146,7 @@ export default function PostFood() {
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
         try {
+            console.log('Submitting form data', formData.get('images'))
             const addFoodPostResponse = await fetch(`${apiURL}/api/food`, {
                 method: 'POST',
                 headers: {
