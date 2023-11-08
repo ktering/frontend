@@ -61,8 +61,9 @@ export default function Dashboard() {
     };
 
     const handleDeletePost = async (foodId: string) => {
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
         const accessToken = localStorage.getItem('accessToken');
-        await fetch(`http://localhost:8000/api/food/${foodId}`, {
+        await fetch(`${apiURL}/api/food/${foodId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -75,6 +76,7 @@ export default function Dashboard() {
     };
 
     const openDeleteDialog = (foodId: string) => {
+        console.log('ktererFood', ktererFood);
         setPostToDelete(foodId);
         setIsDialogOpen(true);
     };
@@ -86,10 +88,11 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
                 {ktererFood.map((item, index) => (
                     <div key={index} className="relative">
-                        {/* TODO: update the image from the endpoint */}
-                        <Image src={item.images[0].image_url || Biryani} alt="Biryani"
-                                 width={300} height={300}
-                               className="mx-auto rounded-lg w-full"/>
+                        <div className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
+                            <Image src={item.images[0].image_url || Biryani} alt="Food Image" fill
+                                   className="object-cover object-center"/>
+                        </div>
+
                         <div className="flex justify-between items-center mt-2">
                             <div className="text-left">
                                 <p className="text-lg">{item.name}</p>

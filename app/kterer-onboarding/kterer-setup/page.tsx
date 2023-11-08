@@ -69,15 +69,33 @@ export default function KtererSetup() {
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        const formData = new FormData();
+
+        formData.append('street_address', values.street_address);
+        formData.append('city', values.city);
+        if(values.apartment) {
+            formData.append('apartment', values.apartment);
+        }
+        formData.append('province', values.province);
+        formData.append('country', values.country);
+        formData.append('postal_code', values.postal_code);
+        formData.append('bio', values.bio);
+        formData.append('ethnicity', values.ethnicity);
+        formData.append('experienceUnit', values.experienceUnit.toString());
+        formData.append('experienceValue', values.experienceValue);
+
+        if (values.profile_image_url instanceof File) {
+            formData.append('profile_image_url', values.profile_image_url, values.profile_image_url.name);
+        }
+
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
         const addKtererInfoResponse = await fetch(`${apiURL}/api/kterer`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`
             },
-            body: JSON.stringify(values),
+            body: formData,
         });
 
         if (addKtererInfoResponse.ok) {

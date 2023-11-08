@@ -123,6 +123,7 @@ export default function ConsumerAccount() {
                 try {
                     await signOut();
                     localStorage.removeItem('accessToken');
+                    localStorage.removeItem('cart');
                     router.push('/');
                 } catch (error) {
                     console.error('Failed to sign out');
