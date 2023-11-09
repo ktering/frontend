@@ -101,7 +101,7 @@ export default function SignUpForm() {
                     const responseJson = await response.json();
                     const user = responseJson.user;
                     if (user.publicMetadata.ktererSignUpCompleted === false) {
-                        router.push("/kterer/kterer-setup");
+                        router.push("/kterer-onboarding/kterer-setup");
                     } else {
                         console.log('Metadata updated not updated to false');
                     }

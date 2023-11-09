@@ -4,7 +4,7 @@ export default function PrivacyPolicy() {
             <div className="max-w-7xl mx-auto px-4 py-12">
                 <div className="font-normal">
                     <h1 className="font-bold text-xl mb-12 text-center">PRIVACY POLICY</h1>
-                    <p className="mb-4">Effective Date: ____ day of ____ 2023</p>
+                    <p className="mb-4">Effective Date: 1st day of November 2023</p>
                     <p className="font-bold mb-4">PLEASE READ THE FOLLOWING CAREFULLY</p>
                     <p className="font-bold mb-4">THIS STATEMENT PROVIDES GENERAL INFORMATION ABOUT THE PRIVACY
                         STATEMENT OF
@@ -47,7 +47,7 @@ export default function PrivacyPolicy() {
                         the data
                         controller, collected on behalf of;</p>
                     <p className="font-bold mb-4">KTERINGS INC.</p>
-                    <p className="font-bold mb-4">[Insert Address]</p>
+                    <p className="font-bold mb-4">2252 Mark Ave Windsor Ontario N9B 3W8</p>
                     <p className="font-bold mb-4">| Canada</p>
                     <p className="font-bold mb-4">Telephone:</p>
                     <p className="font-bold mb-4">EMAIL: <a href="mailto:info@kterings.com">info@kterings.com</a></p>

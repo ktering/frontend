@@ -1,0 +1,279 @@
+"use client";
+import React, {useEffect, useState} from "react";
+import * as z from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Button} from "@/components/ui/button"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
+import {Input} from "@/components/ui/input"
+import {useRouter} from "next/navigation";
+import Link from "next/link";
+import {useToast} from "@/components/ui/use-toast"
+import {useClerk} from "@clerk/nextjs";
+
+const formSchema = z.object({
+    first_name: z.string().min(2, "First name must be at least 2 characters").max(20, "First name can't be longer than 20 characters"),
+    last_name: z.string().min(2, "Last name must be at least 2 characters").max(20, "Last name can't be longer than 20 characters"),
+    email: z.string().email(),
+    phone: z.string()
+        .refine(
+            value => /^\+1\d{10}$/.test(value),
+            {
+                message: "Phone number must start with +1 and be followed by exactly 10 digits",
+                path: []
+            }
+        ),
+    country: z.string(),
+})
+
+export default function ConsumerAccount() {
+    const [userInfo, setUserInfo] = useState(null);
+    const router = useRouter();
+    const {toast} = useToast();
+    const {signOut} = useClerk();
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            first_name: "",
+            last_name: "",
+            email: "",
+            phone: "",
+            country: "",
+        }
+    });
+
+    useEffect(() => {
+        const getConsumerAccountInfo = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiURL}/api/user`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            });
+
+            if (!response.ok) {
+                console.error(`Error: ${response.statusText}`);
+                return;
+            }
+
+
+            const data = await response.json();
+            setUserInfo(data.user);
+        }
+
+        getConsumerAccountInfo();
+    }, []);
+
+    useEffect(() => {
+        if (userInfo) {
+            const {first_name, last_name, email, phone, country} = userInfo;
+            form.setValue("first_name", first_name || "");
+            form.setValue("last_name", last_name || "");
+            form.setValue("email", email || "");
+            form.setValue("phone", phone || "");
+            form.setValue("country", country || "");
+        }
+    }, [userInfo, form]);
+
+    const deleteAccount = async () => {
+        // TODO: We should use a transaction here to delete the user from the db and Clerk. Dont have time to implement this now.
+        if (!userInfo || !userInfo.client_id) {
+            console.error('User info or Client ID missing');
+            return;
+        }
+
+        try {
+            // First, delete the user from the database
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            const dbResponse = await fetch(`${apiURL}/api/user`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            });
+
+            if (!dbResponse.ok) {
+                console.error(`Error: ${dbResponse.statusText}`);
+                return;
+            }
+
+            // Now, if the db deletion was successful, delete the user from Clerk
+            const clerkResponse = await fetch(`/api/consumer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({userId: userInfo.client_id}),
+            });
+
+            if (!clerkResponse.ok) {
+                console.error(`Error: ${clerkResponse.statusText}`);
+                return;
+            }
+
+            const clerkData = await clerkResponse.json();
+
+            if (clerkData.success) {
+                try {
+                    await signOut();
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('cart');
+                    router.push('/');
+                } catch (error) {
+                    console.error('Failed to sign out');
+                }
+            } else {
+                console.error('Failed to delete account');
+            }
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
+    };
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const accessToken = localStorage.getItem('accessToken');
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${apiURL}/api/user`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(values),
+        });
+        if (response.ok) {
+            toast({
+                description: (
+                    <>
+                        <div className="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
+                                 stroke="currentColor"
+                                 className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400">
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Account Info Successfully Updated!
+                        </div>
+                    </>
+                )
+            });
+        } else {
+            console.error(`Error: ${response.statusText}`);
+        }
+    }
+
+    return (
+        <>
+            <div className="flex justify-between my-8">
+                <div className="text-2xl font-bold ">Account</div>
+                <button
+                    className="rounded-full px-4 py-2.5 font-semibold border text-primary-color hover:bg-gray-50 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">
+                    Reset Password
+                </button>
+            </div>
+            <div className="max-w-2xl mx-auto">
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <div className="my-10 grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-2">
+                            <div className="col-span-2 sm:col-span-1">
+                                <FormField
+                                    control={form.control}
+                                    name="first_name"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>First Name</FormLabel>
+                                            <FormControl>
+                                                <Input className="rounded-full" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="col-span-2 sm:col-span-1">
+                                <FormField
+                                    control={form.control}
+                                    name="last_name"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Last Name</FormLabel>
+                                            <FormControl>
+                                                <Input className="rounded-full" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="col-span-2">
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Email</FormLabel>
+                                            <FormControl>
+                                                <Input disabled className="rounded-full" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="col-span-2">
+                                <FormField
+                                    control={form.control}
+                                    name="phone"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Phone Number</FormLabel>
+                                            <FormControl>
+                                                <Input className="rounded-full" {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <div className="col-span-2">
+                                <FormField
+                                    control={form.control}
+                                    name="country"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Country</FormLabel>
+                                            <FormControl>
+                                                <Input className="rounded-full" disabled {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                            <Button type="submit"
+                                    className="col-span-2 bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full">Save</Button>
+                        </div>
+                    </form>
+                </Form>
+            </div>
+            <div className="flex flex-col my-16 max-w-xs w-full mx-auto items-center">
+                <Link
+                    href="/kterer-onboarding/kterer-setup"
+                    className="rounded-full px-4 py-2.5 font-semibold border bg-primary-color text-white hover:bg-primary-color-hover shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">
+                    Become a Kterer
+                </Link>
+                <button
+                    onClick={deleteAccount}
+                    className="border mt-4 rounded-full px-4 py-2.5 font-semibold text-primary-color hover:bg-gray-50 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">
+                    Delete Account
+                </button>
+            </div>
+        </>
+    );
+}
