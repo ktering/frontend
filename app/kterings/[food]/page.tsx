@@ -96,7 +96,7 @@ export default function Food() {
 
     const formatDate = (date: string) => {
         const dateObj = new Date(date);
-        return formatDistanceToNow(dateObj, { addSuffix: true });
+        return formatDistanceToNow(dateObj, {addSuffix: true});
     }
 
     const handleThumbnailClick = (imageSrc: string) => {
@@ -324,6 +324,9 @@ export default function Food() {
                                 </div>
                             </div>
                         ))}
+                        {reviews?.length === 0 &&
+                            <p className="text-gray-500">No reviews yet</p>
+                        }
                     </div>
                 </div>
             </div>
