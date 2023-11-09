@@ -1,14 +1,20 @@
 "use client";
+
 import {SetStateAction, useEffect, useState} from "react";
 import StarRating from "@/components/starRating";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
 import {useRouter, useSearchParams} from "next/navigation";
 import useCart from "@/app/hooks/useCart";
+import {toDate, format, fromUnixTime, formatDistanceToNow} from 'date-fns';
 
 export default function Food() {
+
+    const DEFAULT_IMAGE_SRC = "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg";
+
     const searchParams = useSearchParams();
     const foodIdMainPage = searchParams.get('food_id');
     const [foodDetails, setFoodDetails] = useState(null);
+    const [reviews, setReviews] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [selectedSize, setSelectedSize] = useState("small");
     // TODO: fix this main image
@@ -26,7 +32,7 @@ export default function Food() {
         const getFoodInfo = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/food/${foodIdMainPage}`, {
+            let response = await fetch(`${apiURL}/api/food/${foodIdMainPage}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -39,7 +45,9 @@ export default function Food() {
                 return;
             }
 
-            const data = await response.json();
+            let data = await response.json();
+
+            console.log(data.data)
 
             if (data.data && data.data.quantities) {
                 const smallSizeAvailable = data.data.quantities.some((q: {
@@ -51,11 +59,45 @@ export default function Food() {
             }
 
             setFoodDetails(data.data);
+
+
+            response = await fetch(`${apiURL}/api/food/reviews/${data.data.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            });
+
+            if (!response.ok) {
+                console.error(`Error: ${response.statusText}`);
+                return;
+            }
+
+            data = await response.json();
+
+            setReviews(data.data);
+
             setMainImage(data.data.images[0].image_url);
         }
 
+        const getReviews = async () => {
+
+            console.log(foodDetails)
+
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        }
+
         getFoodInfo();
+        getReviews();
     }, [foodIdMainPage]);
+
+    const formatDate = (date: string) => {
+        const dateObj = new Date(date);
+        return formatDistanceToNow(dateObj, { addSuffix: true });
+    }
 
     const handleThumbnailClick = (imageSrc: string) => {
         setMainImage(imageSrc);
@@ -117,6 +159,8 @@ export default function Food() {
         ) : null; // Return null to render nothing if the size is not available
     };
 
+    // @ts-ignore
+    // @ts-ignore
     return (
         <>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -142,8 +186,9 @@ export default function Food() {
 
                     <div>
                         <h1 className="text-3xl font-bold">{foodDetails?.name}</h1>
-                        {/* TODO: update rating from endpoint */}
-                        <StarRating rating={5}/>
+                        {foodDetails?.rating !== 0 &&
+                            <StarRating rating={foodDetails?.rating}/>
+                        }
                         <div className="mb-2 mt-2 space-x-2">
                             {foodDetails?.halal !== "No" ? (
                                 <span
@@ -258,6 +303,27 @@ export default function Food() {
                                 </AccordionItem>
                             </Accordion>
                         </div>
+                    </div>
+
+                    <div>
+                        <h3 className="text-2xl mb-3">Reviews</h3>
+                        {reviews?.map((review: any) => (
+                            <div key={review.id} className="my-2 flex items-start">
+                                <img src={DEFAULT_IMAGE_SRC} alt="User Image"
+                                     className="w-10 h-10 rounded-full mr-4"/>
+                                <div>
+                                    <div className="flex items-center my-2">
+                                        <p>{review.user.first_name} {review.user.last_name}</p>
+                                    </div>
+                                    <div className="flex items-center">
+                                        <StarRating rating={review.rating}/>
+                                        <span className={`mx-1 text-gray-500`}>|</span>
+                                        <p className="text-sm text-gray-500">{formatDate(review.created_at)}</p>
+                                    </div>
+                                    <p>{review.review}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
