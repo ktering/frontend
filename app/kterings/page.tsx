@@ -24,7 +24,7 @@ import Biryani from "@/static/landing-page/biryani.png";
 
 export default function Kterings() {
     const [nearYouFood, setNearYouFood] = useState([]);
-    const [position, setPosition] = useState("over4")
+    const [position, setPosition] = useState("over4");
 
     useEffect(() => {
         const getNearYouFood = async () => {
@@ -49,6 +49,23 @@ export default function Kterings() {
 
         getNearYouFood();
     }, []);
+
+    const toggleFavorite = async (foodId: string) => {
+        const accessToken = localStorage.getItem('accessToken');
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${apiURL}/api/favourite/food/${foodId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+        });
+
+        if (!response.ok) {
+            console.error(`Error: ${response.statusText}`);
+            return;
+        }
+    }
 
     const icons = [
         {src: TrendingIcon, iconName: "Trending", onClick: () => console.log('Trending Icon clicked')},
@@ -127,16 +144,18 @@ export default function Kterings() {
                                 <div className="flex justify-between items-center mt-2">
                                     <div className="text-left">
                                         <p className="text-lg">{item.name}</p>
-                                        {/* TODO: update the rating here from the endpoint */}
-                                        <StarRating rating={5}/>
+                                        {item.rating !== 0 &&
+                                            <StarRating rating={item.rating}/>
+                                        }
                                         {/* TODO: update the distance from the endpoint */}
                                         <p className="text-sm mt-1">00 min away</p>
                                     </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+
+                                    <span onClick={() => toggleFavorite(item.id)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 cursor-pointer">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                                     </svg>
+                                </span>
                                 </div>
                             </div>
                         );
