@@ -33,7 +33,8 @@ export default function UserNavbar() {
     const {signOut, user} = useClerk();
     const router = useRouter();
     const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
-    let {cartItems, updateItemQuantity, removeItemFromCart} = useCart();
+    let {cartItems, setCartItems, updateItemQuantity, removeItemFromCart, useLocalStorageCart} = useCart();
+    const cartLength = useLocalStorageCart();
 
     const toggleSideBar = () => {
         setIsSideBarOpen(!isSideBarOpen);
@@ -44,11 +45,9 @@ export default function UserNavbar() {
     }
 
     useEffect(() => {
-        // update cartItems, if cart is open
         if (isCartOpen) {
-            cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+            setCartItems(JSON.parse(localStorage.getItem('cart')) || []);
         }
-        console.log(cartItems)
     }, [isCartOpen]);
 
     const incrementQuantity = (item) => {
@@ -173,13 +172,28 @@ export default function UserNavbar() {
                                 </div>
                                 {/* Cart Button */}
                                 <Sheet>
+                                    {/*<SheetTrigger onClick={toggleCart}>*/}
+                                    {/*    <div*/}
+                                    {/*        className="relative rounded-full bg-white p-1 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2"*/}
+                                    {/*    >*/}
+                                    {/*        <span className="absolute -inset-1.5"/>*/}
+                                    {/*        <span className="sr-only">Check Shopping Cart</span>*/}
+                                    {/*        <ShoppingCartIcon className="h-6 w-6" aria-hidden="true"/>*/}
+                                    {/*    </div>*/}
+                                    {/*</SheetTrigger>*/}
                                     <SheetTrigger onClick={toggleCart}>
                                         <div
-                                            className="relative rounded-full bg-white p-1 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2"
-                                        >
+                                            className="relative rounded-full bg-white p-1 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">
                                             <span className="absolute -inset-1.5"/>
                                             <span className="sr-only">Check Shopping Cart</span>
-                                            <ShoppingCartIcon className="h-6 w-6" aria-hidden="true"/>
+                                            <ShoppingCartIcon className="h-6 w-6 z-100" aria-hidden="true"/>
+                                            {/* Badge showing the number of items in the cart */}
+                                            {cartLength > 0 && (
+                                                <span
+                                                    className="flex items-center justify-center absolute -top-2 -right-2 h-6 w-6 text-xs font-semibold rounded-full bg-primary-color text-white">
+                                                    {cartItems.length}
+                                                </span>
+                                            )}
                                         </div>
                                     </SheetTrigger>
                                 </Sheet>

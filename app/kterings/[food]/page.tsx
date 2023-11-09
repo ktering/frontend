@@ -83,12 +83,6 @@ export default function Food() {
         }
     };
 
-    const isSizeAvailable = (size: string) => {
-        return foodDetails && foodDetails?.quantities.some((q: {
-            size: string;
-        }) => q.size === size);
-    };
-
     const addToCart = () => {
         const cartItem = {
             id: `${foodDetails?.id}-${Date.now()}`,
@@ -109,16 +103,18 @@ export default function Food() {
 
     const renderSizeButton = (size: string) => {
         const isSelected = selectedSize === size;
+        const isAvailable = foodDetails?.quantities.some((q) => q.size === size);
         const capitalizedSize = size.charAt(0).toUpperCase() + size.slice(1);
-        return (
+
+        // Only render the button if the size is available
+        return isAvailable ? (
             <button
                 onClick={() => selectSize(size)}
-                disabled={!isSizeAvailable(size)}
                 className={`border rounded-full px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color ${isSelected ? 'bg-primary-color text-white hover:bg-primary-color-hover' : 'bg-white hover:bg-gray-50'}`}
             >
                 {capitalizedSize}
             </button>
-        );
+        ) : null; // Return null to render nothing if the size is not available
     };
 
     return (
@@ -178,6 +174,20 @@ export default function Food() {
                                     Vegetarian
                                 </span>
                             )}
+                            {foodDetails?.meat_type && foodDetails?.meat_type !== "None" && foodDetails?.meat_type !== "Other" && (
+                                <span
+                                    className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">
+                                    {foodDetails.meat_type}
+                                </span>
+                            )}
+
+                            {/* Conditionally render the ethnic type badge */}
+                            {foodDetails?.ethnic_type && foodDetails?.ethnic_type !== "None" && foodDetails?.ethnic_type !== "Other" && (
+                                <span
+                                    className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium text-gray-800 border-gray-300">
+                                  {foodDetails.ethnic_type}
+                                </span>
+                            )}
                         </div>
                         <p className="text-lg mb-6 mt-4 font-bold">
                             ${selectedSize && foodDetails ? foodDetails.quantities.find((q: {
@@ -187,9 +197,7 @@ export default function Food() {
                         <div className="flex flex-col space-y-2">
                             <p>Size</p>
                             <div className="my-2 space-x-2">
-                                {renderSizeButton('small')}
-                                {renderSizeButton('medium')}
-                                {renderSizeButton('large')}
+                                {['small', 'medium', 'large'].map((size) => renderSizeButton(size))}
                             </div>
                         </div>
                         <div className="flex flex-col items-start space-y-2 mt-6 mb-8">
@@ -235,9 +243,7 @@ export default function Food() {
                             <Accordion type="single" collapsible defaultValue="item-1">
                                 <AccordionItem value="item-1">
                                     <AccordionTrigger>Description</AccordionTrigger>
-                                    <AccordionContent>
-                                        <p><u>Ethnic Type:</u>{" "}{foodDetails?.ethnic_type}</p>
-                                        <p className="my-2"><u>Meat Type:</u>{" "} {foodDetails?.meat_type}</p>
+                                    <AccordionContent className="text-base">
                                         {foodDetails?.description}
                                     </AccordionContent>
                                 </AccordionItem>
@@ -246,7 +252,7 @@ export default function Food() {
                             <Accordion type="single" collapsible>
                                 <AccordionItem value="item-1">
                                     <AccordionTrigger>Ingredients</AccordionTrigger>
-                                    <AccordionContent>
+                                    <AccordionContent className="text-base">
                                         {foodDetails?.ingredients.split(/\s+/).join(", ")}
                                     </AccordionContent>
                                 </AccordionItem>

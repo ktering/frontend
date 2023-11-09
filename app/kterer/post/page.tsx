@@ -146,7 +146,6 @@ export default function PostFood() {
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
         try {
-            console.log('Submitting form data', formData.get('images'))
             const addFoodPostResponse = await fetch(`${apiURL}/api/food`, {
                 method: 'POST',
                 headers: {
