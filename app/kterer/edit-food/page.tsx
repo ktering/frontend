@@ -19,12 +19,18 @@ const formSchema = z.object({
         type: z.string(),
     })),
     name: z.string().min(2, "Food name must be at least 2 characters").max(50, "Food name can't be longer than 50 characters"),
-    small_price: z.coerce.number(),
-    small_amount: z.coerce.number(),
-    medium_price: z.coerce.number(),
-    medium_amount: z.coerce.number(),
-    large_price: z.coerce.number(),
-    large_amount: z.coerce.number(),
+    // small_price: z.coerce.number(),
+    // small_amount: z.coerce.number(),
+    // medium_price: z.coerce.number(),
+    // medium_amount: z.coerce.number(),
+    // large_price: z.coerce.number(),
+    // large_amount: z.coerce.number(),
+    small_price: z.union([z.number(), z.string()]).transform((val) => val === "" ? 0 : parseFloat(val)),
+    small_amount: z.union([z.number(), z.string()]).transform((val) => val === "" ? 0 : parseFloat(val)),
+    medium_price: z.union([z.number(), z.string()]).transform((val) => val === "" ? 0 : parseFloat(val)),
+    medium_amount: z.union([z.number(), z.string()]).transform((val) => val === "" ? 0 : parseFloat(val)),
+    large_price: z.union([z.number(), z.string()]).transform((val) => val === "" ? 0 : parseFloat(val)),
+    large_amount: z.union([z.number(), z.string()]).transform((val) => val === "" ? 0 : parseFloat(val)),
     description: z.string().min(2, "Description must be at least 2 characters").max(1000, "Description can't be longer than 1000 characters"),
     ingredients: z.string().min(1, "Ingredients list cannot be empty"),
     halal: z.string().refine(value => value !== "", {
@@ -115,56 +121,90 @@ export default function EditFood() {
 
         console.log('foodDetails', foodDetails);
 
-        const {
-            images,
-            name,
-            description,
-            ingredients,
-            halal,
-            kosher,
-            vegetarian,
-            contains_nuts,
-            meat_type,
-            ethnic_type,
-            quantities,
-        } = foodDetails;
+        // const {
+        //     images,
+        //     name,
+        //     description,
+        //     ingredients,
+        //     halal,
+        //     kosher,
+        //     vegetarian,
+        //     contains_nuts,
+        //     meat_type,
+        //     ethnic_type,
+        //     quantities,
+        // } = foodDetails;
+        //
+        // const priceAmountMap = quantities.reduce((acc, quantity) => {
+        //     acc[`${quantity.size}_price`] = parseFloat(quantity.price) || 0;
+        //     acc[`${quantity.size}_amount`] = parseInt(quantity.quantity) || 0;
+        //     return acc;
+        // }, {});
+        //
+        // const newImages = images.map(image => ({
+        //     path: image.image_url,
+        //     size: undefined, // 'size' field is not provided in the foodDetails, so you need to handle it accordingly
+        //     type: undefined, // 'type' field is not provided in the foodDetails, so you need to handle it accordingly
+        // }));
+        //
+        // // Prepare a new object that matches the structure of your form's 'defaultValues'
+        // const formValues = {
+        //     images: newImages,
+        //     name,
+        //     small_price: priceAmountMap.small_price,
+        //     small_amount: priceAmountMap.small_amount,
+        //     medium_price: priceAmountMap.medium_price,
+        //     medium_amount: priceAmountMap.medium_amount,
+        //     large_price: priceAmountMap.large_price,
+        //     large_amount: priceAmountMap.large_amount,
+        //     description,
+        //     ingredients,
+        //     halal: halal || "",
+        //     kosher,
+        //     vegetarian,
+        //     contains_nuts,
+        //     meat_type,
+        //     ethnic_type,
+        // };
+        //
+        // // Set each form value with validation
+        // Object.keys(formValues).forEach(key => {
+        //     form.setValue(key as keyof typeof formValues, formValues[key as keyof typeof formValues], {shouldValidate: true});
+        // });
 
-        const priceAmountMap = quantities.reduce((acc, quantity) => {
-            acc[`${quantity.size}_price`] = parseFloat(quantity.price) || 0;
-            acc[`${quantity.size}_amount`] = parseInt(quantity.quantity) || 0;
-            return acc;
+        // Destructure quantities directly if they're always expected to have three entries for small, medium, large
+        const {small, medium, large} = foodDetails.quantities.reduce((sizes, {size, price, quantity}) => {
+            sizes[size] = {price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0};
+            return sizes;
         }, {});
 
-        const newImages = images.map(image => ({
-            path: image.image_url,
-            size: undefined, // 'size' field is not provided in the foodDetails, so you need to handle it accordingly
-            type: undefined, // 'type' field is not provided in the foodDetails, so you need to handle it accordingly
-        }));
-
-        // Prepare a new object that matches the structure of your form's 'defaultValues'
-        const formValues = {
-            images: newImages,
-            name,
-            small_price: priceAmountMap.small_price,
-            small_amount: priceAmountMap.small_amount,
-            medium_price: priceAmountMap.medium_price,
-            medium_amount: priceAmountMap.medium_amount,
-            large_price: priceAmountMap.large_price,
-            large_amount: priceAmountMap.large_amount,
-            description,
-            ingredients,
-            halal: halal || "",
-            kosher,
-            vegetarian,
-            contains_nuts,
-            meat_type,
-            ethnic_type,
+        // Prepare the default values, considering the cases where some sizes may not be present
+        const defaultValues = {
+            small_price: small?.price || 0,
+            small_amount: small?.quantity || 0,
+            medium_price: medium?.price || 0,
+            medium_amount: medium?.quantity || 0,
+            large_price: large?.price || 0,
+            large_amount: large?.quantity || 0,
+            // Set other values as required...
         };
 
-        // Set each form value with validation
-        Object.keys(formValues).forEach(key => {
-            form.setValue(key as keyof typeof formValues, formValues[key as keyof typeof formValues], {shouldValidate: true});
+        // Set the form values for all fields
+        form.reset({
+            ...defaultValues,
+            images: foodDetails.images.map(image => ({path: image.image_url, size: image.size || 0, type: image.type || 'image/png'})),
+            name: foodDetails.name,
+            description: foodDetails.description,
+            ingredients: foodDetails.ingredients,
+            halal: foodDetails.halal,
+            kosher: foodDetails.kosher,
+            vegetarian: foodDetails.vegetarian,
+            contains_nuts: foodDetails.contains_nuts,
+            meat_type: foodDetails.meat_type,
+            ethnic_type: foodDetails.ethnic_type,
         });
+
+
     }, [foodDetails, form]);
 
     function handleTextareaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
@@ -206,50 +246,135 @@ export default function EditFood() {
         })));
     };
 
+    // async function onSubmit(values: z.infer<typeof formSchema>) {
+    //     const {
+    //         small_price,
+    //         small_amount,
+    //         medium_price,
+    //         medium_amount,
+    //         large_price,
+    //         large_amount,
+    //         ...restOfValues
+    //     } = values;
+    //
+    //     const transformed_values = [
+    //         {size: "small", price: small_price, quantity: small_amount},
+    //         {size: "medium", price: medium_price, quantity: medium_amount},
+    //         {size: "large", price: large_price, quantity: large_amount},
+    //     ];
+    //
+    //     // filter out sizes with 0 price and 0 amount
+    //     const filtered_values = transformed_values.filter((size) => {
+    //         return size.price > 0 && size.quantity > 0;
+    //     });
+    //
+    //     const food_post = {
+    //         ...restOfValues,
+    //         quantities: filtered_values
+    //     }
+    //
+    //     const accessToken = localStorage.getItem('accessToken');
+    //     const apiURL = process.env.NEXT_PUBLIC_API_URL;
+    //     const addFoodPostResponse = await fetch(`${apiURL}/api/food/${foodDetails?.id}`, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${accessToken}`
+    //         },
+    //         body: JSON.stringify(food_post),
+    //     });
+    //
+    //     if (addFoodPostResponse.ok) {
+    //         router.push('/kterer/dashboard');
+    //     } else {
+    //         console.log(addFoodPostResponse.statusText);
+    //     }
+    // }
+
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const {
-            small_price,
-            small_amount,
-            medium_price,
-            medium_amount,
-            large_price,
-            large_amount,
-            ...restOfValues
-        } = values;
+        console.log('values', values);
+        // Create an instance of FormData
+        const formData = new FormData();
 
-        const transformed_values = [
-            {size: "small", price: small_price, quantity: small_amount},
-            {size: "medium", price: medium_price, quantity: medium_amount},
-            {size: "large", price: large_price, quantity: large_amount},
-        ];
-
-        // filter out sizes with 0 price and 0 amount
-        const filtered_values = transformed_values.filter((size) => {
-            return size.price > 0 && size.quantity > 0;
+        selectedFiles.forEach((file, index) => {
+            const fieldName = `image_${index + 1}`;
+            formData.append(fieldName, file);
         });
 
-        const food_post = {
-            ...restOfValues,
-            quantities: filtered_values
-        }
 
-        const accessToken = localStorage.getItem('accessToken');
-        const apiURL = process.env.NEXT_PUBLIC_API_URL;
-        const addFoodPostResponse = await fetch(`${apiURL}/api/food`, {
-            method: 'POST',
+        // Append other values to formData
+        Object.keys(values).forEach(key => {
+            if (key !== 'images') { // Assuming 'images' should be handled separately from the `selectedFiles`
+                const value = values[key];
+                if (Array.isArray(value) || typeof value === 'object') {
+                    formData.append(key, JSON.stringify(value)); // Stringify if it's an array or object
+                } else {
+                    formData.append(key, value.toString()); // Convert to string if it's not an array or object
+                }
+            }
+        });
+
+        // Append the 'quantities' array to formData
+        const quantities = [
+            {size: 'small', price: values.small_price, quantity: values.small_amount},
+            {size: 'medium', price: values.medium_price, quantity: values.medium_amount},
+            {size: 'large', price: values.large_price, quantity: values.large_amount},
+        ].filter(size => size.price > 0 && size.quantity > 0);
+
+        formData.append('quantities', JSON.stringify(quantities));
+
+        console.log('formData', formData.get("name"));
+
+        // Fetch options without 'Content-Type' header. It's set automatically when using FormData
+        const fetchOptions = {
+            method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
             },
-            body: JSON.stringify(food_post),
-        });
+            body: formData,
+        };
 
-        if (addFoodPostResponse.ok) {
-            router.push('/kterer/dashboard');
-        } else {
-            console.log(addFoodPostResponse.statusText);
+        // Make the PUT request to the server
+        try {
+
+            for (let [key, value] of formData.entries()) {
+                console.log(key, value);
+            }
+
+
+            // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/food/${foodDetails?.id}`, fetchOptions);
+
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            const response = await fetch(`${apiURL}/api/food/${foodDetails.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                router.push('/kterer/dashboard');
+            } else {
+                const errorResponse = await response.json();
+                console.error('Failed to update food:', errorResponse);
+                toast({
+                    variant: "destructive",
+                    title: "Error Updating Food",
+                    description: errorResponse.message || "An error occurred during the update.",
+                });
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            toast({
+                variant: "destructive",
+                title: "Network Error",
+                description: "There was a problem connecting to the server.",
+            });
         }
     }
+
 
     return (
         <>
@@ -489,7 +614,7 @@ export default function EditFood() {
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Halal?</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue/>
@@ -523,7 +648,7 @@ export default function EditFood() {
                                         <FormLabel>Kosher?</FormLabel>
                                         <Select
                                             onValueChange={(value) => field.onChange(value === '1')}
-                                            defaultValue={field.value ? '1' : '0'}
+                                            value={field.value ? '1' : '0'}
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
@@ -546,7 +671,7 @@ export default function EditFood() {
                                     <FormItem>
                                         <FormLabel>Vegetarian?</FormLabel>
                                         <Select onValueChange={(value) => field.onChange(value === '1')}
-                                                defaultValue={field.value ? '1' : '0'}>
+                                                value={field.value ? '1' : '0'}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue/>
@@ -568,7 +693,7 @@ export default function EditFood() {
                                     <FormItem>
                                         <FormLabel>May Contain Nuts?</FormLabel>
                                         <Select onValueChange={(value) => field.onChange(value === '1')}
-                                                defaultValue={field.value ? '1' : '0'}>
+                                                value={field.value ? '1' : '0'}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue/>
@@ -589,7 +714,7 @@ export default function EditFood() {
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Meat Type</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue placeholder="Chicken/Beef..."/>
@@ -616,7 +741,7 @@ export default function EditFood() {
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Ethnic Type</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue placeholder="Pakistani/Indian/Chinese..."/>

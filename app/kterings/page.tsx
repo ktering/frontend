@@ -137,8 +137,13 @@ export default function Kterings() {
                                 <Link href={`/kterings/${item.name}?${food_id}`}>
                                     <div
                                         className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
-                                        <Image src={item.images[0].image_url || Biryani} alt={item.name} layout="fill"
-                                               className="mx-auto rounded-lg w-full"/>
+
+                                        <Image
+                                            // src={item.images[0].image_url || Biryani} alt={item.name}
+                                            src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
+                                            layout="fill"
+                                            className="mx-auto rounded-lg w-full"/>
+
                                     </div>
                                 </Link>
                                 <div className="flex justify-between items-center mt-2">
@@ -177,8 +182,12 @@ export default function Kterings() {
                                 <Link href={`/kterings/${item.name}?${food_id}`}>
                                     <div
                                         className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
-                                        <Image src={item.images[0].image_url || Biryani} alt={item.name} layout="fill"
-                                               className="mx-auto rounded-lg w-full"/>
+                                        <Image
+                                            // src={item.images[0].image_url || Biryani}
+                                            src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
+                                            alt={item.name}
+                                            layout="fill"
+                                            className="mx-auto rounded-lg w-full"/>
                                     </div>
                                 </Link>
                                 <div className="flex justify-between items-center mt-2">

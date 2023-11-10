@@ -172,15 +172,6 @@ export default function UserNavbar() {
                                 </div>
                                 {/* Cart Button */}
                                 <Sheet>
-                                    {/*<SheetTrigger onClick={toggleCart}>*/}
-                                    {/*    <div*/}
-                                    {/*        className="relative rounded-full bg-white p-1 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2"*/}
-                                    {/*    >*/}
-                                    {/*        <span className="absolute -inset-1.5"/>*/}
-                                    {/*        <span className="sr-only">Check Shopping Cart</span>*/}
-                                    {/*        <ShoppingCartIcon className="h-6 w-6" aria-hidden="true"/>*/}
-                                    {/*    </div>*/}
-                                    {/*</SheetTrigger>*/}
                                     <SheetTrigger onClick={toggleCart}>
                                         <div
                                             className="relative rounded-full bg-white p-1 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">

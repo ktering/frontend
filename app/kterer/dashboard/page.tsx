@@ -89,7 +89,10 @@ export default function Dashboard() {
                 {ktererFood.map((item, index) => (
                     <div key={index} className="relative">
                         <div className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
-                            <Image src={item.images[0].image_url || Biryani} alt="Food Image" fill
+                            <Image
+                                // src={item?.images[0].image_url || Biryani}
+                                src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
+                                   alt="Food Image" fill
                                    className="object-cover object-center"/>
                         </div>
 
