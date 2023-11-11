@@ -1,16 +1,29 @@
 "use client";
 
-import {SetStateAction, useEffect, useState} from "react";
+import React, {SetStateAction, useEffect, useState} from "react";
 import StarRating from "@/components/starRating";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
 import {useRouter, useSearchParams} from "next/navigation";
 import useCart from "@/app/hooks/useCart";
-import {toDate, format, fromUnixTime, formatDistanceToNow} from 'date-fns';
+import {formatDistanceToNow} from 'date-fns';
+import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog"
+import * as z from "zod";
+import {zodResolver} from "@hookform/resolvers/zod"
+import {Controller, useForm} from "react-hook-form"
+import {Button} from "@/components/ui/button"
+import {Form, FormControl, FormDescription, FormField, FormItem, FormMessage,} from "@/components/ui/form"
+import {Textarea} from "@/components/ui/textarea";
+import {CheckCircleIcon, StarIcon} from "@heroicons/react/24/outline";
+import {toast} from "@/components/ui/use-toast";
+
+const formSchema = z.object({
+    rating: z.number().min(1).max(5),
+    review: z.string().min(10).max(300),
+});
 
 export default function Food() {
-
+    // TODO: fix this default image
     const DEFAULT_IMAGE_SRC = "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg";
-
     const searchParams = useSearchParams();
     const foodIdMainPage = searchParams.get('food_id');
     const [foodDetails, setFoodDetails] = useState(null);
@@ -20,7 +33,8 @@ export default function Food() {
     // TODO: fix this main image
     const [mainImage, setMainImage] = useState();
     const {addItemToCart, updateItemQuantity, removeItemFromCart} = useCart();
-
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const hasReviews = reviews && reviews.length > 0;
     const router = useRouter();
 
     useEffect(() => {
@@ -47,8 +61,6 @@ export default function Food() {
 
             let data = await response.json();
 
-            console.log(data.data)
-
             if (data.data && data.data.quantities) {
                 const smallSizeAvailable = data.data.quantities.some((q: {
                     size: string;
@@ -59,7 +71,9 @@ export default function Food() {
             }
 
             setFoodDetails(data.data);
-
+            if (data.data && data.data.images && data.data.images.length > 0) {
+                setMainImage(data.data.images[0].image_url);
+            }
 
             response = await fetch(`${apiURL}/api/food/reviews/${data.data.id}`, {
                 method: 'GET',
@@ -75,29 +89,22 @@ export default function Food() {
             }
 
             data = await response.json();
-
             setReviews(data.data);
-
-            setMainImage(data.data.images[0].image_url);
-        }
-
-        const getReviews = async () => {
-
-            console.log(foodDetails)
-
-            const accessToken = localStorage.getItem('accessToken');
-            const apiURL = process.env.NEXT_PUBLIC_API_URL;
-
         }
 
         getFoodInfo();
-        getReviews();
     }, [foodIdMainPage]);
 
-    const formatDate = (date: string) => {
-        const dateObj = new Date(date);
-        return formatDistanceToNow(dateObj, {addSuffix: true});
-    }
+    const formatDate = (date) => {
+        if (typeof date === 'string' && date.trim() !== '') {
+            const dateObj = new Date(date);
+            if (!isNaN(dateObj)) { // Check if 'dateObj' is a valid date
+                return formatDistanceToNow(dateObj, {addSuffix: true});
+            }
+        }
+        return 'Invalid date';
+    };
+
 
     const handleThumbnailClick = (imageSrc: string) => {
         setMainImage(imageSrc);
@@ -148,7 +155,6 @@ export default function Food() {
         const isAvailable = foodDetails?.quantities.some((q) => q.size === size);
         const capitalizedSize = size.charAt(0).toUpperCase() + size.slice(1);
 
-        // Only render the button if the size is available
         return isAvailable ? (
             <button
                 onClick={() => selectSize(size)}
@@ -156,11 +162,66 @@ export default function Food() {
             >
                 {capitalizedSize}
             </button>
-        ) : null; // Return null to render nothing if the size is not available
+        ) : null;
     };
 
-    // @ts-ignore
-    // @ts-ignore
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            rating: 3,
+            review: "",
+        },
+    })
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const accessToken = localStorage.getItem('accessToken');
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        const response = await fetch(`${apiURL}/api/review/food/${foodDetails?.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(values)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error(`Error ${response.status}: ${errorData.message}`);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: errorData.message,
+            });
+            return;
+        }
+
+        if (response.ok) {
+            const newReview = {
+                ...values,
+                user: {
+                    first_name: reviews[0].user.first_name,
+                    last_name: reviews[0].user.last_name,
+                },
+                created_at: new Date().toISOString(),
+            }
+            setReviews((currentReviews) => [...(currentReviews || []), newReview]);
+            setIsReviewModalOpen(false);
+            form.reset();
+            toast({
+                description: (
+                    <>
+                        <div className="flex items-center">
+                            <CheckCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                            Review Successfully Added!
+                        </div>
+                    </>
+                )
+            });
+        }
+    }
+
     return (
         <>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -189,7 +250,7 @@ export default function Food() {
                         {foodDetails?.rating !== 0 &&
                             <StarRating rating={foodDetails?.rating}/>
                         }
-                        <div className="mb-2 mt-2 space-x-2">
+                        <div className="mb-2 mt-2 space-x-2 space-y-2">
                             {foodDetails?.halal !== "No" ? (
                                 <span
                                     className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
@@ -304,33 +365,104 @@ export default function Food() {
                             </Accordion>
                         </div>
                     </div>
+                </div>
 
-                    <div>
-                        <h3 className="text-2xl mb-3">Reviews</h3>
-                        {reviews?.map((review: any) => (
-                            <div key={review.id} className="my-2 flex items-start">
-                                <img src={DEFAULT_IMAGE_SRC} alt="User Image"
-                                     className="w-10 h-10 rounded-full mr-4"/>
+                <div className="pt-12">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-bold text-xl my-12">Recent Reviews</h3>
+                        <Button
+                            className="rounded-full border bg-white hover:bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                            onClick={() => setIsReviewModalOpen(true)}
+                        >
+                            Write a review
+                        </Button>
+                    </div>
+                    {hasReviews ? (
+                        reviews?.map((review: any) => (
+                            <div key={review.id} className="my-2 flex items-start border-b pb-4">
                                 <div>
-                                    <div className="flex items-center my-2">
-                                        <p>{review.user.first_name} {review.user.last_name}</p>
+                                    <div className="flex items-center my-2 font-bold">
+                                        <p>{review?.user?.first_name} {review?.user?.last_name}</p>
                                     </div>
-                                    <div className="flex items-center">
-                                        <StarRating rating={review.rating}/>
-                                        <span className={`mx-1 text-gray-500`}>|</span>
-                                        <p className="text-sm text-gray-500">{formatDate(review.created_at)}</p>
+                                    <div className="flex items-center my-3">
+                                        <StarRating rating={review?.rating}/>
+                                        <span className={`mx-2 text-gray-300`}>|</span>
+                                        <p className="text-sm text-gray-500">{formatDate(review?.created_at)}</p>
                                     </div>
                                     <p>{review.review}</p>
                                 </div>
                             </div>
-                        ))}
-                        {reviews?.length === 0 &&
+                        ))
+                    ) : (
+                        <div className="my-2 flex items-start border-b pb-4">
                             <p className="text-gray-500">No reviews yet</p>
-                        }
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
+            <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{foodDetails?.name} Food Review</DialogTitle>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                                <Controller
+                                    name="rating"
+                                    control={form.control}
+                                    render={({field: {onChange, value}}) => (
+                                        <>
+
+                                            <div className="flex flex-col space-y-1 mt-8">
+                                                <div className="font-semibold mb-2">Rating</div>
+                                                <div className="space-x-2">
+                                                    {[1, 2, 3, 4, 5].map((starValue) => (
+                                                        <button
+                                                            key={starValue}
+                                                            type="button"
+                                                            onClick={() => onChange(starValue)}
+                                                            className={`rounded-lg border px-4 py-2.5 font-semibold ${value === starValue ? 'bg-primary-color text-white' : 'bg-white text-primary-color'} shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
+                                                        >
+                                                            <div className="flex items-center justify-center">
+                                                                {starValue}
+                                                                <StarIcon className="w-4 h-4 ml-2"/>
+                                                            </div>
+
+
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="review"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Write a review..."
+                                                    className="resize-none"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>
+                                                This review will be public and will be shown to other users.
+                                            </FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button
+                                    className="rounded-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                                    type="submit">Submit</Button>
+                            </form>
+                        </Form>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

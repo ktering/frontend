@@ -10,14 +10,10 @@ export default function FetchUser() {
     useEffect(() => {
         const fetchUserInfo = async () => {
             if (isSignedIn && user) {
-                const ktererSignUpCompleted = (user.publicMetadata?.ktererSignUpCompleted);
-                // Check if the user has been redirected in this session and if not redirect them.
+                const ktererSignUpCompleted = (user.publicMetadata?.ktererSignUpCompleted === true);
 
                 // TODO: add accessToken localStorage for kterer - call the endpoint below
 
-                // const hasBeenRedirected = sessionStorage.getItem('hasBeenRedirected');
-
-                // if (ktererSignUpCompleted && !hasBeenRedirected) {
                 if (ktererSignUpCompleted) {
                     let userInfo = {
                         client_id: user.id,
