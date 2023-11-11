@@ -2,13 +2,17 @@
 import {useEffect, useState} from "react";
 import {
     ArrowLeftOnRectangleIcon,
+    Bars3Icon,
     BellIcon,
     HeartIcon,
     HomeIcon,
     QuestionMarkCircleIcon,
     ShoppingBagIcon,
     ShoppingCartIcon,
-    UserCircleIcon
+    UserCircleIcon,
+    MapPinIcon,
+    ChevronDownIcon,
+    MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import Logo from "@/static/red-logo.svg"
 import Image from "next/image";
@@ -25,16 +29,18 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import useCart from "@/app/hooks/useCart";
-
+import AddressPopup from "@/components/addressPopup";
 
 export default function UserNavbar() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isAddressPopupOpen, setIsAddressPopupOpen] = useState(false);
     const {signOut, user} = useClerk();
     const router = useRouter();
     const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
     let {cartItems, setCartItems, updateItemQuantity, removeItemFromCart, useLocalStorageCart} = useCart();
     const cartLength = useLocalStorageCart();
+
 
     const toggleSideBar = () => {
         setIsSideBarOpen(!isSideBarOpen);
@@ -43,6 +49,12 @@ export default function UserNavbar() {
     const toggleCart = () => {
         setIsCartOpen(!isCartOpen);
     }
+
+    // const toggleAddressPopup = () => {
+    //     setIsAddressPopupOpen(!isAddressPopupOpen);
+    // }
+
+    const toggleAddressPopup = () => setIsAddressPopupOpen(!isAddressPopupOpen);
 
     useEffect(() => {
         if (isCartOpen) {
@@ -101,14 +113,7 @@ export default function UserNavbar() {
                                 <SheetTrigger onClick={toggleSideBar}>
                                     <div
                                         className="relative inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-color md:mr-4">
-                                        <span className="absolute -inset-0.5"/>
-                                        <span className="sr-only">Open menu</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                             className="w-6 h-6">
-                                            <path fillRule="evenodd"
-                                                  d="M3 6.75A.75.75 0 013.75 6h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 6.75zM3 12a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75A.75.75 0 013 12zm0 5.25a.75.75 0 01.75-.75h16.5a.75.75 0 010 1.5H3.75a.75.75 0 01-.75-.75z"
-                                                  clipRule="evenodd"/>
-                                        </svg>
+                                        <Bars3Icon className="w-6 h-6"/>
                                     </div>
                                 </SheetTrigger>
                             </Sheet>
@@ -123,6 +128,19 @@ export default function UserNavbar() {
                                     />
                                 </Link>
                             </div>
+
+                            <button onClick={toggleAddressPopup}>
+                                <div className="flex space-x-2 ml-8">
+                                    <MapPinIcon className="w-6 h-6 text-primary-color"/>
+                                    <div>Saved Address</div>
+                                    <ChevronDownIcon className="w-6 h-6 text-primary-color"/>
+                                </div>
+                            </button>
+
+                            <AddressPopup
+                                isAddressPopupOpen={isAddressPopupOpen}
+                                setIsAddressPopupOpen={setIsAddressPopupOpen}
+                            />
 
                             {/* Buttons */}
                             {/*<div className="flex ml-8">*/}
@@ -139,11 +157,7 @@ export default function UserNavbar() {
                             <div className="relative w:40 sm:w-80 mr-4">
                                 {/* Icon */}
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
-                                    </svg>
+                                    <MagnifyingGlassIcon className="w-5 h-5"/>
                                 </div>
                                 {/* Input */}
                                 <Input type="text" className="rounded-full pl-10 pr-3 py-2"

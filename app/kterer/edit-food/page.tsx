@@ -296,9 +296,13 @@ export default function EditFood() {
         // Create an instance of FormData
         const formData = new FormData();
 
+        // selectedFiles.forEach((file, index) => {
+        //     const fieldName = `image_${index + 1}`;
+        //     formData.append(fieldName, file);
+        // });
+
         selectedFiles.forEach((file, index) => {
-            const fieldName = `image_${index + 1}`;
-            formData.append(fieldName, file);
+            formData.append(`images[${index}]`, file, file.name);
         });
 
 
@@ -335,35 +339,83 @@ export default function EditFood() {
         };
 
         // Make the PUT request to the server
+        // try {
+        //
+        //     for (let [key, value] of formData.entries()) {
+        //         console.log(key, value);
+        //     }
+        //
+        //
+        //     // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/food/${foodDetails?.id}`, fetchOptions);
+        //
+        //     const accessToken = localStorage.getItem('accessToken');
+        //     const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        //     const response = await fetch(`${apiURL}/api/food/${foodDetails.id}`, {
+        //         method: 'PUT',
+        //         headers: {
+        //             'Authorization': `Bearer ${accessToken}`
+        //         },
+        //         body: formData
+        //     });
+        //
+        //     if (response.ok) {
+        //         router.push('/kterer/dashboard');
+        //     } else {
+        //         const errorResponse = await response.json();
+        //         console.error('Failed to update food:', errorResponse);
+        //         toast({
+        //             variant: "destructive",
+        //             title: "Error Updating Food",
+        //             description: errorResponse.message || "An error occurred during the update.",
+        //         });
+        //     }
+        // } catch (error) {
+        //     console.error('Error submitting form:', error);
+        //     toast({
+        //         variant: "destructive",
+        //         title: "Network Error",
+        //         description: "There was a problem connecting to the server.",
+        //     });
+        // }
+
         try {
-
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
-
-
-            // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/food/${foodDetails?.id}`, fetchOptions);
-
-            const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/food/${foodDetails.id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`
-                },
-                body: formData
-            });
+            const accessToken = localStorage.getItem('accessToken');
+            const response = await fetch(`${apiURL}/api/food/${foodDetails.id}`, fetchOptions);
 
+            // Check the response header to confirm the content type is JSON before parsing
             if (response.ok) {
-                router.push('/kterer/dashboard');
+                // Assuming the success response is also JSON
+                if (response.headers.get("content-type")?.includes("application/json")) {
+                    const responseData = await response.json();
+                    console.log('Success:', responseData);
+                    router.push('/kterer/dashboard');
+                } else {
+                    // If response is not JSON, handle it differently, e.g., as text
+                    const responseText = await response.text();
+                    console.log('Non-JSON response:', responseText);
+                    router.push('/kterer/dashboard'); // Navigate based on the successful PUT request
+                }
             } else {
-                const errorResponse = await response.json();
-                console.error('Failed to update food:', errorResponse);
-                toast({
-                    variant: "destructive",
-                    title: "Error Updating Food",
-                    description: errorResponse.message || "An error occurred during the update.",
-                });
+                // Check if the error response is JSON before attempting to parse it
+                if (response.headers.get("content-type")?.includes("application/json")) {
+                    const errorResponse = await response.json();
+                    console.error('Failed to update food:', errorResponse);
+                    toast({
+                        variant: "destructive",
+                        title: "Error Updating Food",
+                        description: errorResponse.message || "An error occurred during the update.",
+                    });
+                } else {
+                    // If the error response is not JSON, log it as text
+                    const errorText = await response.text();
+                    console.error('Failed to update food (non-JSON response):', errorText);
+                    toast({
+                        variant: "destructive",
+                        title: "Error Updating Food",
+                        description: "An error occurred during the update. The server response is not JSON.",
+                    });
+                }
             }
         } catch (error) {
             console.error('Error submitting form:', error);
