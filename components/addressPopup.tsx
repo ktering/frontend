@@ -4,11 +4,12 @@ import {Dialog, DialogContent, DialogTitle,} from "@/components/ui/dialog"
 import {Input} from "@/components/ui/input";
 import {BriefcaseIcon, HomeIcon, PencilSquareIcon} from "@heroicons/react/24/solid";
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
+import {useUser} from "@clerk/nextjs";
 
 const AddressSection = ({label, address, onEdit, isEditing}) => (
     <div className={`flex justify-between items-center ${isEditing ? 'bg-red-100' : ''} p-4 rounded-md`}>
         {label === 'home' ? <HomeIcon className="h-6 w-6"/> : <BriefcaseIcon className="h-6 w-6"/>}
-        <p className="justify-between">{address || 'Add address'}</p>
+        <p className="justify-between mx-4">{address || 'Add address'}</p>
         <button onClick={onEdit} className="h-6 w-6">
             <PencilSquareIcon/>
         </button>
@@ -21,6 +22,11 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
     const [homeAddress, setHomeAddress] = useState('');
     const [officeAddress, setOfficeAddress] = useState('');
     const [editing, setEditing] = useState('');
+    const user = useUser();
+
+    if (!user) {
+        return null;
+    }
 
     const fetchSuggestions = (value) => {
         setInput(value);
@@ -41,19 +47,10 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
         }
     };
 
-    // const saveAddress = (type) => {
-    //     if (type === 'home') {
-    //         setHomeAddress(input);
-    //     } else if (type === 'office') {
-    //         setOfficeAddress(input);
-    //     }
-    //     setInput(''); // Clear the input field after saving
-    //     setSuggestions([]); // Clear suggestions as well
-    // };
-
     const fetchAddresses = () => {
-        const accessToken = localStorage.getItem('accessToken'); // Replace with your access token retrieval logic
-        fetch(`/api/users//addresses`, {
+        const accessToken = localStorage.getItem('accessToken');
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        fetch(`${apiURL}/api/address`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`, // Include the Authorization header with your access token
@@ -66,9 +63,12 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
                 return response.json();
             })
             .then(data => {
-                // Assuming your data returns an object with home and office properties
-                setHomeAddress(data.home || '');
-                setOfficeAddress(data.office || '');
+                console.log('Addresses fetched successfully:', data);
+                const home = data.address.find((a) => a.type === 'home');
+                const office = data.address.find((a) => a.type === 'office');
+
+                setHomeAddress(home ? home.address : '');
+                setOfficeAddress(office ? office.address : '');
             })
             .catch(error => {
                 console.error('Error fetching addresses:', error);
@@ -81,16 +81,19 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
 
         // Assuming 'type' is either 'home' or 'office' and corresponds to your backend logic
         if (addressValue.trim()) {
-            const url = `/api/users/addresses`;
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            // const url = `${apiURL}/api/address/${user.id}}`;
+            const url = `${apiURL}/api/address`;
 
             const payload = {
-                [type]: addressValue, // The payload includes only the address being saved
+                address: addressValue,
+                type: type,
             };
 
             const accessToken = localStorage.getItem('accessToken');
 
             fetch(url, {
-                method: 'PUT', // Use PUT for updating existing data
+                method: 'POST', // Use PUT for updating existing data
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}`
@@ -123,7 +126,6 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
             // Optionally, provide user feedback about the input being empty
         }
     };
-
 
     useEffect(() => {
         if (!isAddressPopupOpen) {
@@ -172,7 +174,6 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
                             onChange={(e) => fetchSuggestions(e.target.value)}
                             value={input}
                         />
-
                         {suggestions.length > 0 && (
                             <div
                                 className="absolute z-10 bg-white shadow-lg max-h-60 overflow-auto w-full mt-1 rounded-md">

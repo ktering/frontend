@@ -1,5 +1,6 @@
 "use client";
 import {useEffect, useState} from "react";
+import Biryani from "@/static/landing-page/biryani.png";
 import AsianIcon from "@/static/home/asian-icon.svg";
 import ChickenIcon from "@/static/home/chicken-icon.svg";
 import DessertsIcon from "@/static/home/desserts-icon.svg";
@@ -20,7 +21,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
-import Biryani from "@/static/landing-page/biryani.png";
+import {HeartIcon as HeartIconOutline} from "@heroicons/react/24/outline";
 
 export default function Kterings() {
     const [nearYouFood, setNearYouFood] = useState([]);
@@ -44,6 +45,7 @@ export default function Kterings() {
             }
 
             const data = await response.json();
+            console.log('data: ', data.data);
             setNearYouFood(data.data);
         }
 
@@ -139,8 +141,8 @@ export default function Kterings() {
                                         className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
 
                                         <Image
-                                            // src={item.images[0].image_url || Biryani} alt={item.name}
                                             src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
+                                            alt={item.name}
                                             layout="fill"
                                             className="mx-auto rounded-lg w-full"/>
 
@@ -156,11 +158,10 @@ export default function Kterings() {
                                         <p className="text-sm mt-1">00 min away</p>
                                     </div>
 
+
                                     <span onClick={() => toggleFavorite(item.id)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 cursor-pointer">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                                    </svg>
-                                </span>
+                                        <HeartIconOutline className="h-6 w-6 cursor-pointer"/>
+                                    </span>
                                 </div>
                             </div>
                         );
@@ -183,7 +184,6 @@ export default function Kterings() {
                                     <div
                                         className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
                                         <Image
-                                            // src={item.images[0].image_url || Biryani}
                                             src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
                                             alt={item.name}
                                             layout="fill"
