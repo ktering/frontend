@@ -12,8 +12,6 @@ export default function FetchUser() {
             if (isSignedIn && user) {
                 const ktererSignUpCompleted = (user.publicMetadata?.ktererSignUpCompleted === true);
 
-                // TODO: add accessToken localStorage for kterer - call the endpoint below
-
                 if (ktererSignUpCompleted) {
                     let userInfo = {
                         client_id: user.id,
@@ -39,7 +37,6 @@ export default function FetchUser() {
 
                     const registerData = await response.json();
                     localStorage.setItem('accessToken', registerData.token);
-                    // sessionStorage.setItem('hasBeenRedirected', 'true');
                     router.push("/kterer/dashboard");
                 } else {
                     let userInfo = {
@@ -62,7 +59,7 @@ export default function FetchUser() {
                         });
 
                         if (!response.ok) {
-                            throw new Error('Network response was not ok ' + response.statusText);
+                            console.error('Network response was not ok ' + response.statusText);
                         }
 
                         const registerData = await response.json();
@@ -75,7 +72,9 @@ export default function FetchUser() {
             }
         };
 
-        fetchUserInfo();
+        fetchUserInfo().catch((error) => {
+            console.error('Error fetching user info', error);
+        });
     }, [isSignedIn]);
 }
 

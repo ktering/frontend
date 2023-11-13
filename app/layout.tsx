@@ -1,3 +1,4 @@
+import React from "react";
 import type {Metadata} from 'next'
 import Footer from '@/components/footer'
 import {Inter} from 'next/font/google'

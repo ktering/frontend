@@ -4,15 +4,15 @@ import {
     ArrowLeftOnRectangleIcon,
     Bars3Icon,
     BellIcon,
+    ChevronDownIcon,
     HeartIcon,
     HomeIcon,
+    MagnifyingGlassIcon,
+    MapPinIcon,
     QuestionMarkCircleIcon,
     ShoppingBagIcon,
     ShoppingCartIcon,
     UserCircleIcon,
-    MapPinIcon,
-    ChevronDownIcon,
-    MagnifyingGlassIcon,
 } from '@heroicons/react/24/outline'
 import Logo from "@/static/red-logo.svg"
 import Image from "next/image";
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import useCart from "@/app/hooks/useCart";
 import AddressPopup from "@/components/addressPopup";
+import {CartItem} from "@/types/hooks/useCart";
 
 export default function UserNavbar() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -50,26 +51,23 @@ export default function UserNavbar() {
         setIsCartOpen(!isCartOpen);
     }
 
-    // const toggleAddressPopup = () => {
-    //     setIsAddressPopupOpen(!isAddressPopupOpen);
-    // }
-
     const toggleAddressPopup = () => setIsAddressPopupOpen(!isAddressPopupOpen);
 
     useEffect(() => {
         if (isCartOpen) {
-            setCartItems(JSON.parse(localStorage.getItem('cart')) || []);
+            const storedCart = localStorage.getItem('cart');
+            setCartItems(storedCart ? JSON.parse(storedCart) : []);
         }
     }, [isCartOpen]);
 
-    const incrementQuantity = (item) => {
+    const incrementQuantity = (item: CartItem) => {
         const maxQuantity = parseInt(item.maxQuantity, 10);
         if (item.quantity < maxQuantity) {
             updateItemQuantity(item.id, item.size, item.quantity + 1);
         }
     };
 
-    const decrementQuantity = (item) => {
+    const decrementQuantity = (item: CartItem) => {
         if (item.quantity > 1) {
             updateItemQuantity(item.id, item.size, item.quantity - 1);
         } else {

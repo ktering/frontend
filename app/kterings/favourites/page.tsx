@@ -12,39 +12,44 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import {Favourites} from "@/types/shared/favourites";
 
 export default function Favourites() {
-    const [favourites, setFavourites] = useState([]);
+    const [favourites, setFavourites] = useState<Favourites[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [postToDelete, setPostToDelete] = useState(null);
+    const [postToDelete, setPostToDelete] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchFavorites = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            let response = await fetch(`${apiURL}/api/favourites`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            try {
+                const response = await fetch(`${apiURL}/api/favourites`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
 
-            if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setFavourites(data.kterers);
+            } catch (error) {
+                console.error(`Error: ${error}`);
             }
-
-            let data = await response.json();
-
-            setFavourites(data.kterers);
         }
 
-        fetchFavorites();
-
+        fetchFavorites().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
     }, []);
 
-    const deleteFavourite = async (id: string) => {
+    const deleteFavourite = async (id: number) => {
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
         let response = await fetch(`${apiURL}/api/favourite/kterer/${id}`, {
@@ -82,7 +87,7 @@ export default function Favourites() {
                         </AlertDialogCancel>
                         <AlertDialogAction asChild>
                             <button className="bg-red-600 hover:bg-red-700"
-                                    onClick={() => deleteFavourite(postToDelete)}>Delete
+                                    onClick={() => postToDelete && deleteFavourite(postToDelete)}>Delete
                             </button>
                         </AlertDialogAction>
                     </AlertDialogFooter>

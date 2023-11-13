@@ -10,6 +10,7 @@ import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast"
 import {useClerk} from "@clerk/nextjs";
+import {UserInfo} from "@/types/shared/user";
 
 const formSchema = z.object({
     first_name: z.string().min(2, "First name must be at least 2 characters").max(20, "First name can't be longer than 20 characters"),
@@ -27,7 +28,7 @@ const formSchema = z.object({
 })
 
 export default function ConsumerAccount() {
-    const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const router = useRouter();
     const {toast} = useToast();
     const {signOut} = useClerk();
@@ -47,25 +48,29 @@ export default function ConsumerAccount() {
         const getConsumerAccountInfo = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/user`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
 
-            if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+            try {
+                const response = await fetch(`${apiURL}/api/user`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setUserInfo(data.user);
+            } catch (error) {
+                console.error(error);
             }
-
-
-            const data = await response.json();
-            setUserInfo(data.user);
         }
 
-        getConsumerAccountInfo();
+        getConsumerAccountInfo().catch(error => console.error(error));
     }, []);
 
     useEffect(() => {

@@ -1,7 +1,8 @@
 import {useEffect, useState} from 'react';
+import {CartItem} from "@/types/hooks/useCart";
 
 function useCart() {
-    const [cartItems, setCartItems] = useState([]);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
     useEffect(() => {
         const cart = localStorage.getItem('cart');
@@ -27,41 +28,31 @@ function useCart() {
         const [cartLength, setCartLength] = useState(0);
 
         useEffect(() => {
-            // Update cart count upon mounting and when localStorage changes
             const updateCartCount = () => {
                 const cart = localStorage.getItem('cart');
                 const cartItems = cart ? JSON.parse(cart) : [];
                 setCartLength(cartItems.length);
             };
-
-            // Call it now to set the initial value
             updateCartCount();
-
-            // Set up event listener for future updates
             window.addEventListener('storage', updateCartCount);
-
-            // Clean up event listener
             return () => {
                 window.removeEventListener('storage', updateCartCount);
             };
         }, []);
-
         return cartLength;
     }
 
-    const saveCartItems = (items) => {
+    const saveCartItems = (items: CartItem[]) => {
         localStorage.setItem('cart', JSON.stringify(items));
         setCartItems(items);
     };
 
-    const addItemToCart = (newItem) => {
+    const addItemToCart = (newItem: CartItem) => {
         setCartItems((currentItems) => {
-            // Find if the item already exists in the cart
             const existingItemIndex = currentItems.findIndex(
                 (item) => item.id === newItem.id && item.size === newItem.size
             );
 
-            // Update the item if it exists, otherwise add as a new item
             let updatedItems;
             if (existingItemIndex >= 0) {
                 updatedItems = currentItems.map((item, index) =>
@@ -72,14 +63,12 @@ function useCart() {
             } else {
                 updatedItems = [...currentItems, newItem];
             }
-
-            // Save updated items to localStorage
             saveCartItems(updatedItems);
             return updatedItems;
         });
     };
 
-    const removeItemFromCart = (id, size) => {
+    const removeItemFromCart = (id: string, size: string) => {
         setCartItems((currentItems) => {
             const updatedItems = currentItems.filter(
                 (item) => !(item.id === id && item.size === size)
@@ -89,7 +78,7 @@ function useCart() {
         });
     };
 
-    const updateItemQuantity = (id, size, newQuantity) => {
+    const updateItemQuantity = (id: string, size: string, newQuantity: number) => {
         setCartItems((currentItems) => {
             const updatedItems = currentItems.map((item) => {
                 if (item.id === id && item.size === size) {

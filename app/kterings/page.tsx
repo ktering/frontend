@@ -22,34 +22,42 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
 import {HeartIcon as HeartIconOutline} from "@heroicons/react/24/outline";
+import {FoodItem} from "@/types/shared/food";
 
 export default function Kterings() {
-    const [nearYouFood, setNearYouFood] = useState([]);
+    const [nearYouFood, setNearYouFood] = useState<FoodItem[]>([]);
     const [position, setPosition] = useState("over4");
 
     useEffect(() => {
         const getNearYouFood = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/food`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
 
-            if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+            try {
+                const response = await fetch(`${apiURL}/api/food`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setNearYouFood(data.data);
+
+            } catch (error) {
+                console.error(`Error: ${error}`);
             }
-
-            const data = await response.json();
-            console.log('data: ', data.data);
-            setNearYouFood(data.data);
         }
 
-        getNearYouFood();
+        getNearYouFood().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
     }, []);
 
     const toggleFavorite = async (foodId: string) => {

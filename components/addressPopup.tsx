@@ -5,8 +5,9 @@ import {Input} from "@/components/ui/input";
 import {BriefcaseIcon, HomeIcon, PencilSquareIcon} from "@heroicons/react/24/solid";
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
 import {useUser} from "@clerk/nextjs";
+import {Address, AddressPopupProps, AddressSectionProps, AddressType} from "@/types/components/addressPopup";
 
-const AddressSection = ({label, address, onEdit, isEditing}) => (
+const AddressSection = ({label, address, onEdit, isEditing}: AddressSectionProps) => (
     <div className={`flex justify-between items-center ${isEditing ? 'bg-red-100' : ''} p-4 rounded-md`}>
         {label === 'home' ? <HomeIcon className="h-6 w-6"/> : <BriefcaseIcon className="h-6 w-6"/>}
         <p className="justify-between mx-4">{address || 'Add address'}</p>
@@ -16,9 +17,9 @@ const AddressSection = ({label, address, onEdit, isEditing}) => (
     </div>
 );
 
-const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
+const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}: AddressPopupProps) => {
     const [input, setInput] = useState('');
-    const [suggestions, setSuggestions] = useState([]);
+    const [suggestions, setSuggestions] = useState<google.maps.places.AutocompletePrediction[]>([]);
     const [homeAddress, setHomeAddress] = useState('');
     const [officeAddress, setOfficeAddress] = useState('');
     const [editing, setEditing] = useState('');
@@ -28,7 +29,7 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
         return null;
     }
 
-    const fetchSuggestions = (value) => {
+    const fetchSuggestions = (value: string) => {
         setInput(value);
         if (value.length > 2) {
             const autocompleteService = new google.maps.places.AutocompleteService();
@@ -36,7 +37,7 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
                 input: value,
                 componentRestrictions: {country: 'CA'}
             }, (predictions, status) => {
-                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
                     setSuggestions(predictions);
                 } else {
                     setSuggestions([]);
@@ -64,8 +65,8 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
             })
             .then(data => {
                 console.log('Addresses fetched successfully:', data);
-                const home = data.address.find((a) => a.type === 'home');
-                const office = data.address.find((a) => a.type === 'office');
+                const home = data.address.find((a: Address) => a.type === 'home');
+                const office = data.address.find((a: Address) => a.type === 'office');
 
                 setHomeAddress(home ? home.address : '');
                 setOfficeAddress(office ? office.address : '');
@@ -75,11 +76,9 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
             });
     };
 
-    const saveAddress = (type) => {
-        const addressValue = input; // Get the current value from the input state
-        const addressKey = type === 'home' ? 'homeAddress' : 'officeAddress';
+    const saveAddress = (type: AddressType) => {
+        const addressValue = input;
 
-        // Assuming 'type' is either 'home' or 'office' and corresponds to your backend logic
         if (addressValue.trim()) {
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
             // const url = `${apiURL}/api/address/${user.id}}`;
@@ -93,12 +92,12 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
             const accessToken = localStorage.getItem('accessToken');
 
             fetch(url, {
-                method: 'POST', // Use PUT for updating existing data
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${accessToken}`
                 },
-                body: JSON.stringify(payload), // Convert the JavaScript object to a JSON string
+                body: JSON.stringify(payload),
             })
                 .then(response => {
                     if (!response.ok) {
@@ -108,29 +107,26 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
                 })
                 .then(data => {
                     console.log('Address updated successfully:', data);
-                    // Perform any actions on success, such as updating state or UI
                     if (type === 'home') {
-                        setHomeAddress(addressValue); // Update the home address in the state
+                        setHomeAddress(addressValue);
                     } else {
-                        setOfficeAddress(addressValue); // Update the office address in the state
+                        setOfficeAddress(addressValue);
                     }
-                    setInput(''); // Clear the input field after saving
-                    setEditing(''); // Reset editing state
+                    setInput('');
+                    setEditing('');
                 })
                 .catch(error => {
                     console.error('Failed to update address:', error);
-                    // Perform any actions on failure, such as showing an error message
                 });
         } else {
             console.error('No address to save, input is empty.');
-            // Optionally, provide user feedback about the input being empty
         }
     };
 
     useEffect(() => {
         if (!isAddressPopupOpen) {
-            setInput(''); // Reset input when dialog is closed
-            setEditing(''); // Reset editing state
+            setInput('');
+            setEditing('');
         }
     }, [isAddressPopupOpen]);
 
@@ -140,7 +136,7 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
         }
     }, [isAddressPopupOpen]);
 
-    const editAddress = (type) => {
+    const editAddress = (type: string) => {
         if (type === 'home') {
             setInput(homeAddress);
             setEditing('home');
@@ -177,7 +173,7 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
                         {suggestions.length > 0 && (
                             <div
                                 className="absolute z-10 bg-white shadow-lg max-h-60 overflow-auto w-full mt-1 rounded-md">
-                                {suggestions.map((suggestion, index) => (
+                                {suggestions.map((suggestion) => (
                                     <div key={suggestion.place_id} className="p-4 hover:bg-gray-100 cursor-pointer"
                                          onClick={() => {
                                              setInput(suggestion.description);
@@ -213,7 +209,7 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}) => {
                         </span>
                     )}
                     <button
-                        onClick={() => saveAddress(editing || 'home')}
+                        onClick={() => saveAddress(editing === 'office' ? 'office' : 'home')}
                         className="rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                     >
                         Save Address

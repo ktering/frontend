@@ -16,7 +16,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import {useRouter} from "next/navigation";
-
+import {FoodItem} from "@/types/shared/food";
 
 export default function Dashboard() {
     const {user} = useUser();
@@ -24,33 +24,39 @@ export default function Dashboard() {
         return null;
     }
     const router = useRouter();
-    const [ktererFood, setKtererFood] = useState([]);
+    const [ktererFood, setKtererFood] = useState<FoodItem[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [postToDelete, setPostToDelete] = useState(null);
+    const [postToDelete, setPostToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         const getKtererFood = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const params = new URLSearchParams({kterer: user.id.toString()});
-            const response = await fetch(`${apiURL}/api/food?${params}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            try {
+                const params = new URLSearchParams({kterer: user.id.toString()});
+                const response = await fetch(`${apiURL}/api/food?${params}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
 
-            if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setKtererFood(data.data);
+            } catch (error) {
+                console.error(`Error: ${error}`);
             }
-
-            const data = await response.json();
-            setKtererFood(data.data);
         }
 
-        getKtererFood();
+        getKtererFood().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
     }, []);
 
     const handleEditPost = (foodId: string) => {
@@ -69,18 +75,14 @@ export default function Dashboard() {
                 'Authorization': `Bearer ${accessToken}`,
             },
         });
-        // Assuming you'll want to update your state after deletion:
         setKtererFood(currentFoods => currentFoods.filter(food => food.id !== foodId));
-        // Close the dialog
         setIsDialogOpen(false);
     };
 
     const openDeleteDialog = (foodId: string) => {
-        console.log('ktererFood', ktererFood);
         setPostToDelete(foodId);
         setIsDialogOpen(true);
     };
-
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -90,17 +92,17 @@ export default function Dashboard() {
                     <div key={index} className="relative">
                         <div className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
                             <Image
-                                // src={item?.images[0].image_url || Biryani}
                                 src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
-                                   alt="Food Image" fill
-                                   className="object-cover object-center"/>
+                                alt="Food Image" fill
+                                className="object-cover object-center"/>
                         </div>
 
                         <div className="flex justify-between items-center mt-2">
                             <div className="text-left">
                                 <p className="text-lg">{item.name}</p>
-                                {/* TODO: update the rating here from the endpoint */}
-                                <StarRating rating={5}/>
+                                {item.rating !== 0 &&
+                                    <StarRating rating={item.rating}/>
+                                }
                             </div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
@@ -121,7 +123,6 @@ export default function Dashboard() {
                         </div>
                     </div>
                 ))}
-
                 <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <AlertDialogContent>
                         <AlertDialogHeader>
@@ -136,7 +137,7 @@ export default function Dashboard() {
                             </AlertDialogCancel>
                             <AlertDialogAction asChild>
                                 <button className="bg-red-600 hover:bg-red-700"
-                                        onClick={() => handleDeletePost(postToDelete)}>Delete
+                                        onClick={() => postToDelete && handleDeletePost(postToDelete)}>Delete
                                 </button>
                             </AlertDialogAction>
                         </AlertDialogFooter>

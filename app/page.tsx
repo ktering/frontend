@@ -14,10 +14,8 @@ import Family from "@/static/landing-page/family.png";
 import Number1Icon from "@/static/shared/number-1-icon.svg";
 import Number2Icon from "@/static/shared/number-2-icon.svg";
 import Number3Icon from "@/static/shared/number-3-icon.svg";
-import HeroImage from "@/static/landing-page/hero.png";
 import WhiteLogo from "@/static/white-logo.svg";
-
-import Test from "@/static/test.png";
+import LandingPicture from "@/static/home/landing-picture.png";
 
 const steps = [
     {
@@ -95,7 +93,7 @@ export default function Home() {
         <>
             {/* Section 1 */}
             <section className="w-full relative overflow-x-hidden">
-                <Image src={Test} className="w-full h-[50vh] md:h-[60vh] object-cover"
+                <Image src={LandingPicture} className="w-full h-[50vh] md:h-[60vh] object-cover"
                        alt="hero section food image"/>
                 <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2">
                     <div className="hidden md:flex flex-1"></div>

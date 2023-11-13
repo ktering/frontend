@@ -1,5 +1,4 @@
 "use client";
-
 import React, {SetStateAction, useEffect, useState} from "react";
 import StarRating from "@/components/starRating";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
@@ -15,6 +14,9 @@ import {Form, FormControl, FormDescription, FormField, FormItem, FormMessage,} f
 import {Textarea} from "@/components/ui/textarea";
 import {CheckCircleIcon, StarIcon} from "@heroicons/react/24/outline";
 import {toast} from "@/components/ui/use-toast";
+import {FoodItem} from "@/types/shared/food";
+import {Reviews} from "@/types/shared/reviews";
+import {CartItem} from "@/types/hooks/useCart";
 
 const formSchema = z.object({
     rating: z.number().min(1).max(5),
@@ -23,16 +25,15 @@ const formSchema = z.object({
 
 export default function Food() {
     // TODO: fix this default image
-    const DEFAULT_IMAGE_SRC = "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg";
     const searchParams = useSearchParams();
     const foodIdMainPage = searchParams.get('food_id');
-    const [foodDetails, setFoodDetails] = useState(null);
-    const [reviews, setReviews] = useState(null);
+    const [foodDetails, setFoodDetails] = useState<FoodItem>();
+    const [reviews, setReviews] = useState<Reviews[]>();
     const [quantity, setQuantity] = useState(1);
     const [selectedSize, setSelectedSize] = useState("small");
     // TODO: fix this main image
-    const [mainImage, setMainImage] = useState();
-    const {addItemToCart, updateItemQuantity, removeItemFromCart} = useCart();
+    const [mainImage, setMainImage] = useState<string | undefined>(undefined);
+    const {addItemToCart} = useCart();
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const hasReviews = reviews && reviews.length > 0;
     const router = useRouter();
@@ -89,29 +90,33 @@ export default function Food() {
             }
 
             data = await response.json();
+            console.log('data', data.data);
             setReviews(data.data);
         }
 
-        getFoodInfo();
+        getFoodInfo().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
     }, [foodIdMainPage]);
 
-    const formatDate = (date) => {
-        if (typeof date === 'string' && date.trim() !== '') {
+    const formatDate = (date: string) => {
+        if (date.trim() !== '') {
             const dateObj = new Date(date);
-            if (!isNaN(dateObj)) { // Check if 'dateObj' is a valid date
+            if (!isNaN(dateObj.valueOf())) {
                 return formatDistanceToNow(dateObj, {addSuffix: true});
             }
         }
         return 'Invalid date';
     };
 
-
     const handleThumbnailClick = (imageSrc: string) => {
         setMainImage(imageSrc);
     };
 
     const incrementQuantity = () => {
-        const currentSizeDetails = foodDetails?.quantities.find((q: { size: string; }) => q.size === selectedSize);
+        const currentSizeDetails = foodDetails?.quantities.find((q: {
+            size: string;
+        }) => q.size === selectedSize);
         if (currentSizeDetails && quantity < parseInt(currentSizeDetails.quantity)) {
             setQuantity((prevQuantity) => prevQuantity + 1);
         }
@@ -133,18 +138,16 @@ export default function Food() {
     };
 
     const addToCart = () => {
-        const cartItem = {
+        const maxQuantityItem = foodDetails?.quantities.find((quantityItem) => quantityItem.size === selectedSize);
+        const priceItem = foodDetails?.quantities.find((quantityItem) => quantityItem.size === selectedSize);
+
+        const cartItem: CartItem = {
             id: `${foodDetails?.id}-${Date.now()}`,
-            name: foodDetails?.name,
+            name: foodDetails?.name || '',
             size: selectedSize,
             quantity: quantity,
-            maxQuantity: foodDetails?.quantities.find((quantityItem: {
-                size: string;
-            }) => quantityItem.size === selectedSize)?.quantity,
-            price: foodDetails
-                ?.quantities.find((quantityItem: {
-                    size: string;
-                }) => quantityItem.size === selectedSize)?.price,
+            maxQuantity: maxQuantityItem?.quantity || '0',
+            price: priceItem?.price || '0',
         };
 
         addItemToCart(cartItem);
@@ -198,27 +201,30 @@ export default function Food() {
         }
 
         if (response.ok) {
-            const newReview = {
-                ...values,
-                user: {
-                    first_name: reviews[0].user.first_name,
-                    last_name: reviews[0].user.last_name,
-                },
-                created_at: new Date().toISOString(),
+            if (reviews && reviews.length > 0) {
+                const newReview: Reviews = {
+                    ...values,
+                    user: {
+                        first_name: reviews[0].user.first_name,
+                        last_name: reviews[0].user.last_name,
+                    },
+                    created_at: new Date().toISOString(),
+                }
+                setReviews((currentReviews) => [...(currentReviews || []), newReview]);
+                setIsReviewModalOpen(false);
+                form.reset();
+                toast({
+                    description: (
+                        <>
+                            <div className="flex items-center">
+                                <CheckCircleIcon
+                                    className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                                Review Successfully Added!
+                            </div>
+                        </>
+                    )
+                });
             }
-            setReviews((currentReviews) => [...(currentReviews || []), newReview]);
-            setIsReviewModalOpen(false);
-            form.reset();
-            toast({
-                description: (
-                    <>
-                        <div className="flex items-center">
-                            <CheckCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
-                            Review Successfully Added!
-                        </div>
-                    </>
-                )
-            });
         }
     }
 
@@ -244,10 +250,9 @@ export default function Food() {
                         </div>
                     </div>
 
-
                     <div>
                         <h1 className="text-3xl font-bold">{foodDetails?.name}</h1>
-                        {foodDetails?.rating !== 0 &&
+                        {foodDetails?.rating !== 0 && foodDetails?.rating !== undefined &&
                             <StarRating rating={foodDetails?.rating}/>
                         }
                         <div className="mb-2 mt-2 space-x-2 space-y-2">
@@ -378,7 +383,7 @@ export default function Food() {
                         </Button>
                     </div>
                     {hasReviews ? (
-                        reviews?.map((review: any) => (
+                        reviews?.map((review) => (
                             <div key={review.id} className="my-2 flex items-start border-b pb-4">
                                 <div>
                                     <div className="flex items-center my-2 font-bold">
