@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {
     ArrowLeftOnRectangleIcon,
     Bars3Icon,
@@ -32,6 +32,7 @@ import useCart from "@/app/hooks/useCart";
 import AddressPopup from "@/components/addressPopup";
 import {CartItem} from "@/types/hooks/useCart";
 import {fetchHomeAddress} from "@/app/hooks/fetchAddress";
+import {SearchContext} from "@/app/context/searchContext";
 
 export default function UserNavbar() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -45,6 +46,15 @@ export default function UserNavbar() {
     const [savedAddress, setSavedAddress] = useState('');
     const [addressChanged, setAddressChanged] = useState(false);
 
+    const contextValue = useContext(SearchContext);
+    if (!contextValue) {
+        return null;
+    }
+    const {searchInput, setSearchInput} = contextValue;
+
+    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchInput(event.target.value);
+    };
 
     const toggleSideBar = () => {
         setIsSideBarOpen(!isSideBarOpen);
@@ -170,8 +180,13 @@ export default function UserNavbar() {
                                     <MagnifyingGlassIcon className="w-5 h-5"/>
                                 </div>
                                 {/* Input */}
-                                <Input type="text" className="rounded-full pl-10 pr-3 py-2"
-                                       placeholder="Search Kterers, Dishes"/>
+                                <Input
+                                    type="text"
+                                    className="rounded-full pl-10 pr-3 py-2"
+                                    placeholder="Search Kterers, Dishes"
+                                    value={searchInput}
+                                    onChange={handleSearchInputChange}
+                                />
                             </div>
 
                             {/* Notification Icon */}

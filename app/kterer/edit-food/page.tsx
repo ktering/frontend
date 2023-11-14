@@ -12,6 +12,7 @@ import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast"
 import {useRouter, useSearchParams} from "next/navigation";
 import {ArrowLeftIcon} from "@heroicons/react/20/solid";
+import {FoodItem} from "@/types/shared/food";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -58,7 +59,7 @@ const formSchema = z.object({
 export default function EditFood() {
     const searchParams = useSearchParams();
     const foodId = searchParams.get('food_id');
-    const [foodDetails, setFoodDetails] = useState(null);
+    const [foodDetails, setFoodDetails] = useState<FoodItem | null>(null);
     const {toast} = useToast();
     const router = useRouter();
     const [ingredientsList, setIngredientsList] = useState<string[]>([]);
@@ -122,13 +123,11 @@ export default function EditFood() {
 
         console.log('foodDetails', foodDetails);
 
-        // Destructure quantities directly if they're always expected to have three entries for small, medium, large
         const {small, medium, large} = foodDetails.quantities.reduce((sizes, {size, price, quantity}) => {
             sizes[size] = {price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0};
             return sizes;
         }, {});
 
-        // Prepare the default values, considering the cases where some sizes may not be present
         const defaultValues = {
             small_price: small?.price || 0,
             small_amount: small?.quantity || 0,
@@ -136,7 +135,6 @@ export default function EditFood() {
             medium_amount: medium?.quantity || 0,
             large_price: large?.price || 0,
             large_amount: large?.quantity || 0,
-            // Set other values as required...
         };
 
         // Set the form values for all fields
@@ -224,17 +222,23 @@ export default function EditFood() {
         formData.append('quantities', JSON.stringify(quantities));
 
         if (values.images && values.images.length > 0) {
+            console.log('values.images', values.images);
             values.images.forEach((image, index) => {
+                console.log('image', image);
                 formData.append(`image_${index + 1}`, image);
             });
         }
+
+        console.log('formData', formData.get('image'));
+
+        formData.append('_method', 'PUT');
 
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
         try {
             const addFoodPostResponse = await fetch(`${apiURL}/api/food/${foodDetails?.id}`, {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`
                 },

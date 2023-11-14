@@ -1,5 +1,5 @@
 "use client";
-import {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Biryani from "@/static/landing-page/biryani.png";
 import AsianIcon from "@/static/home/asian-icon.svg";
 import ChickenIcon from "@/static/home/chicken-icon.svg";
@@ -23,10 +23,16 @@ import {
 import Link from "next/link";
 import {HeartIcon as HeartIconOutline} from "@heroicons/react/24/outline";
 import {FoodItem} from "@/types/shared/food";
+import {SearchContext} from "@/app/context/searchContext";
 
 export default function Kterings() {
     const [nearYouFood, setNearYouFood] = useState<FoodItem[]>([]);
     const [position, setPosition] = useState("over4");
+    const contextValue = useContext(SearchContext);
+    if (!contextValue) {
+        return null;
+    }
+    const {searchInput} = contextValue;
 
     useEffect(() => {
         const getNearYouFood = async () => {
@@ -59,6 +65,10 @@ export default function Kterings() {
             console.error(`Error: ${error}`);
         });
     }, []);
+
+    const filteredFood = nearYouFood.filter(item =>
+        item.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
 
     const toggleFavorite = async (foodId: string) => {
         const accessToken = localStorage.getItem('accessToken');
@@ -135,9 +145,8 @@ export default function Kterings() {
                 {/* Near You */}
 
                 <p className="font-bold text-xl my-12">NEAR YOU</p>
-
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-                    {nearYouFood.map((item, index) => {
+                    {filteredFood.map((item, index) => {
                         const food_id = new URLSearchParams({
                             food_id: item.id,
                         }).toString();

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 export default function KtererLayout({children}: {
     children: React.ReactNode
 }) {
+
     return (
         <section>
             <UserNavbar/>
