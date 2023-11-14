@@ -11,6 +11,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast"
 import {useRouter, useSearchParams} from "next/navigation";
+import {ArrowLeftIcon} from "@heroicons/react/20/solid";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -121,57 +122,6 @@ export default function EditFood() {
 
         console.log('foodDetails', foodDetails);
 
-        // const {
-        //     images,
-        //     name,
-        //     description,
-        //     ingredients,
-        //     halal,
-        //     kosher,
-        //     vegetarian,
-        //     contains_nuts,
-        //     meat_type,
-        //     ethnic_type,
-        //     quantities,
-        // } = foodDetails;
-        //
-        // const priceAmountMap = quantities.reduce((acc, quantity) => {
-        //     acc[`${quantity.size}_price`] = parseFloat(quantity.price) || 0;
-        //     acc[`${quantity.size}_amount`] = parseInt(quantity.quantity) || 0;
-        //     return acc;
-        // }, {});
-        //
-        // const newImages = images.map(image => ({
-        //     path: image.image_url,
-        //     size: undefined, // 'size' field is not provided in the foodDetails, so you need to handle it accordingly
-        //     type: undefined, // 'type' field is not provided in the foodDetails, so you need to handle it accordingly
-        // }));
-        //
-        // // Prepare a new object that matches the structure of your form's 'defaultValues'
-        // const formValues = {
-        //     images: newImages,
-        //     name,
-        //     small_price: priceAmountMap.small_price,
-        //     small_amount: priceAmountMap.small_amount,
-        //     medium_price: priceAmountMap.medium_price,
-        //     medium_amount: priceAmountMap.medium_amount,
-        //     large_price: priceAmountMap.large_price,
-        //     large_amount: priceAmountMap.large_amount,
-        //     description,
-        //     ingredients,
-        //     halal: halal || "",
-        //     kosher,
-        //     vegetarian,
-        //     contains_nuts,
-        //     meat_type,
-        //     ethnic_type,
-        // };
-        //
-        // // Set each form value with validation
-        // Object.keys(formValues).forEach(key => {
-        //     form.setValue(key as keyof typeof formValues, formValues[key as keyof typeof formValues], {shouldValidate: true});
-        // });
-
         // Destructure quantities directly if they're always expected to have three entries for small, medium, large
         const {small, medium, large} = foodDetails.quantities.reduce((sizes, {size, price, quantity}) => {
             sizes[size] = {price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0};
@@ -192,7 +142,11 @@ export default function EditFood() {
         // Set the form values for all fields
         form.reset({
             ...defaultValues,
-            images: foodDetails.images.map(image => ({path: image.image_url, size: image.size || 0, type: image.type || 'image/png'})),
+            images: foodDetails.images.map(image => ({
+                path: image.image_url,
+                size: image.size || 0,
+                type: image.type || 'image/png'
+            })),
             name: foodDetails.name,
             description: foodDetails.description,
             ingredients: foodDetails.ingredients,
@@ -246,79 +200,21 @@ export default function EditFood() {
         })));
     };
 
-    // async function onSubmit(values: z.infer<typeof formSchema>) {
-    //     const {
-    //         small_price,
-    //         small_amount,
-    //         medium_price,
-    //         medium_amount,
-    //         large_price,
-    //         large_amount,
-    //         ...restOfValues
-    //     } = values;
-    //
-    //     const transformed_values = [
-    //         {size: "small", price: small_price, quantity: small_amount},
-    //         {size: "medium", price: medium_price, quantity: medium_amount},
-    //         {size: "large", price: large_price, quantity: large_amount},
-    //     ];
-    //
-    //     // filter out sizes with 0 price and 0 amount
-    //     const filtered_values = transformed_values.filter((size) => {
-    //         return size.price > 0 && size.quantity > 0;
-    //     });
-    //
-    //     const food_post = {
-    //         ...restOfValues,
-    //         quantities: filtered_values
-    //     }
-    //
-    //     const accessToken = localStorage.getItem('accessToken');
-    //     const apiURL = process.env.NEXT_PUBLIC_API_URL;
-    //     const addFoodPostResponse = await fetch(`${apiURL}/api/food/${foodDetails?.id}`, {
-    //         method: 'PUT',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${accessToken}`
-    //         },
-    //         body: JSON.stringify(food_post),
-    //     });
-    //
-    //     if (addFoodPostResponse.ok) {
-    //         router.push('/kterer/dashboard');
-    //     } else {
-    //         console.log(addFoodPostResponse.statusText);
-    //     }
-    // }
-
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log('values', values);
-        // Create an instance of FormData
         const formData = new FormData();
 
-        // selectedFiles.forEach((file, index) => {
-        //     const fieldName = `image_${index + 1}`;
-        //     formData.append(fieldName, file);
-        // });
-
-        selectedFiles.forEach((file, index) => {
-            formData.append(`images[${index}]`, file, file.name);
-        });
-
-
-        // Append other values to formData
-        Object.keys(values).forEach(key => {
-            if (key !== 'images') { // Assuming 'images' should be handled separately from the `selectedFiles`
-                const value = values[key];
-                if (Array.isArray(value) || typeof value === 'object') {
-                    formData.append(key, JSON.stringify(value)); // Stringify if it's an array or object
-                } else {
-                    formData.append(key, value.toString()); // Convert to string if it's not an array or object
+        // Append non-image values to formData
+        for (const key in values) {
+            if (key !== 'images') {
+                if (key === 'small_price' || key === 'small_amount' ||
+                    key === 'medium_price' || key === 'medium_amount' ||
+                    key === 'large_price' || key === 'large_amount') {
+                    continue;
                 }
+                formData.append(key, values[key]);
             }
-        });
+        }
 
-        // Append the 'quantities' array to formData
         const quantities = [
             {size: 'small', price: values.small_price, quantity: values.small_amount},
             {size: 'medium', price: values.medium_price, quantity: values.medium_amount},
@@ -327,111 +223,43 @@ export default function EditFood() {
 
         formData.append('quantities', JSON.stringify(quantities));
 
-        console.log('formData', formData.get("name"));
-
-        // Fetch options without 'Content-Type' header. It's set automatically when using FormData
-        const fetchOptions = {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
-            },
-            body: formData,
-        };
-
-        // Make the PUT request to the server
-        // try {
-        //
-        //     for (let [key, value] of formData.entries()) {
-        //         console.log(key, value);
-        //     }
-        //
-        //
-        //     // const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/food/${foodDetails?.id}`, fetchOptions);
-        //
-        //     const accessToken = localStorage.getItem('accessToken');
-        //     const apiURL = process.env.NEXT_PUBLIC_API_URL;
-        //     const response = await fetch(`${apiURL}/api/food/${foodDetails.id}`, {
-        //         method: 'PUT',
-        //         headers: {
-        //             'Authorization': `Bearer ${accessToken}`
-        //         },
-        //         body: formData
-        //     });
-        //
-        //     if (response.ok) {
-        //         router.push('/kterer/dashboard');
-        //     } else {
-        //         const errorResponse = await response.json();
-        //         console.error('Failed to update food:', errorResponse);
-        //         toast({
-        //             variant: "destructive",
-        //             title: "Error Updating Food",
-        //             description: errorResponse.message || "An error occurred during the update.",
-        //         });
-        //     }
-        // } catch (error) {
-        //     console.error('Error submitting form:', error);
-        //     toast({
-        //         variant: "destructive",
-        //         title: "Network Error",
-        //         description: "There was a problem connecting to the server.",
-        //     });
-        // }
-
-        try {
-            const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const accessToken = localStorage.getItem('accessToken');
-            const response = await fetch(`${apiURL}/api/food/${foodDetails.id}`, fetchOptions);
-
-            // Check the response header to confirm the content type is JSON before parsing
-            if (response.ok) {
-                // Assuming the success response is also JSON
-                if (response.headers.get("content-type")?.includes("application/json")) {
-                    const responseData = await response.json();
-                    console.log('Success:', responseData);
-                    router.push('/kterer/dashboard');
-                } else {
-                    // If response is not JSON, handle it differently, e.g., as text
-                    const responseText = await response.text();
-                    console.log('Non-JSON response:', responseText);
-                    router.push('/kterer/dashboard'); // Navigate based on the successful PUT request
-                }
-            } else {
-                // Check if the error response is JSON before attempting to parse it
-                if (response.headers.get("content-type")?.includes("application/json")) {
-                    const errorResponse = await response.json();
-                    console.error('Failed to update food:', errorResponse);
-                    toast({
-                        variant: "destructive",
-                        title: "Error Updating Food",
-                        description: errorResponse.message || "An error occurred during the update.",
-                    });
-                } else {
-                    // If the error response is not JSON, log it as text
-                    const errorText = await response.text();
-                    console.error('Failed to update food (non-JSON response):', errorText);
-                    toast({
-                        variant: "destructive",
-                        title: "Error Updating Food",
-                        description: "An error occurred during the update. The server response is not JSON.",
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            toast({
-                variant: "destructive",
-                title: "Network Error",
-                description: "There was a problem connecting to the server.",
+        if (values.images && values.images.length > 0) {
+            values.images.forEach((image, index) => {
+                formData.append(`image_${index + 1}`, image);
             });
         }
-    }
 
+        const accessToken = localStorage.getItem('accessToken');
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        try {
+            const addFoodPostResponse = await fetch(`${apiURL}/api/food/${foodDetails?.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: formData,
+            });
+
+            if (addFoodPostResponse.ok) {
+                router.push('/kterer/dashboard');
+            } else {
+                console.log(addFoodPostResponse.statusText);
+            }
+        } catch (error) {
+            console.error('Error submitting form', error);
+        }
+    }
 
     return (
         <>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <p className="font-bold text-xl mb-12">Edit Food</p>
+                <p className="font-bold text-xl mb-12 flex items-center">
+                    <Link href="/kterer/dashboard">
+                        <ArrowLeftIcon className="h-6 w-6 text-primary-color mr-2"/>
+                    </Link>
+                    Edit Food
+                </p>
                 <div className="max-w-2xl mx-auto">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
