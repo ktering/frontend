@@ -16,5 +16,6 @@ export interface AddressSectionProps {
 export interface AddressPopupProps {
     isAddressPopupOpen: boolean;
     setIsAddressPopupOpen: (isOpen: boolean) => void;
+    setAddressChanged: (addresses: boolean) => void;
 }
 

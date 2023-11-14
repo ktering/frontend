@@ -13,6 +13,7 @@ import {
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
 import {Favourites} from "@/types/shared/favourites";
+import Link from "next/link";
 
 export default function Favourites() {
     const [favourites, setFavourites] = useState<Favourites[]>([]);
@@ -96,10 +97,16 @@ export default function Favourites() {
 
             <div className="grid grid-cols-2 lg:grid-cols-4 place-items-center gap-8">
                 {favourites.map((favourite) => {
+                        const kterer_id = new URLSearchParams({
+                            kterer_id: favourite.id,
+                        }).toString();
+
                         return (
                             <div key={favourite.id} className="w-40 flex items-center flex-col my-3">
-                                <img src={favourite.profile_image_url} alt="Kterer Profile Picture"
-                                     className="rounded-full w-32 h-32 object-cover"/>
+                                <Link href={`/kterings/kterer-profile/${favourite.id}?${kterer_id}`}>
+                                    <img src={favourite.profile_image_url} alt="Kterer Profile Picture"
+                                         className="rounded-full w-32 h-32 object-cover"/>
+                                </Link>
                                 <div className="flex w-full justify-between items-center mt-3">
                                     <div>
                                         <p className="text-lg font-semibold">{favourite.first_name} {favourite.last_name}</p>

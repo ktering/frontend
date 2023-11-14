@@ -17,7 +17,7 @@ const AddressSection = ({label, address, onEdit, isEditing}: AddressSectionProps
     </div>
 );
 
-const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}: AddressPopupProps) => {
+const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen, setAddressChanged}: AddressPopupProps) => {
     const [input, setInput] = useState('');
     const [suggestions, setSuggestions] = useState<google.maps.places.AutocompletePrediction[]>([]);
     const [homeAddress, setHomeAddress] = useState('');
@@ -51,10 +51,14 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}: AddressPopupP
     const fetchAddresses = () => {
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
-        fetch(`${apiURL}/api/address`, {
+        const user_id = new URLSearchParams({
+            user_id: user?.id,
+        }).toString();
+
+        fetch(`${apiURL}/api/address?${user_id}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${accessToken}`, // Include the Authorization header with your access token
+                'Authorization': `Bearer ${accessToken}`,
             },
         })
             .then(response => {
@@ -64,12 +68,11 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}: AddressPopupP
                 return response.json();
             })
             .then(data => {
-                console.log('Addresses fetched successfully:', data);
-                const home = data.address.find((a: Address) => a.type === 'home');
-                const office = data.address.find((a: Address) => a.type === 'office');
+                const homeAddress = data.home ? data.home.address : '';
+                const officeAddress = data.work ? data.work.address : '';
 
-                setHomeAddress(home ? home.address : '');
-                setOfficeAddress(office ? office.address : '');
+                setHomeAddress(homeAddress);
+                setOfficeAddress(officeAddress);
             })
             .catch(error => {
                 console.error('Error fetching addresses:', error);
@@ -106,7 +109,7 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen}: AddressPopupP
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Address updated successfully:', data);
+                    setAddressChanged(true);
                     if (type === 'home') {
                         setHomeAddress(addressValue);
                     } else {

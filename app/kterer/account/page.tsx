@@ -118,11 +118,11 @@ export default function KtererAccount() {
             email,
             phone,
             country,
-            profile_image_url: kterer.profile_image_url || "",
-            bio: kterer.bio || "",
-            ethnicity: kterer.ethnicity || "",
-            experienceUnit: kterer.experienceUnit || 0,
-            experienceValue: kterer.experienceValue || "Days",
+            profile_image_url: kterer?.profile_image_url || "",
+            bio: kterer?.bio || "",
+            ethnicity: kterer?.ethnicity || "",
+            experienceUnit: kterer?.experienceUnit || 0,
+            experienceValue: kterer?.experienceValue || "Days",
         };
 
         (Object.keys(formValues) as Array<keyof typeof formValues>).forEach(key => {
@@ -231,7 +231,7 @@ export default function KtererAccount() {
 
     useEffect(() => {
         if (ktererInfo) {
-            setProfileImageSrc(ktererInfo.kterer.profile_image_url || DEFAULT_IMAGE_SRC);
+            setProfileImageSrc(ktererInfo?.kterer?.profile_image_url || DEFAULT_IMAGE_SRC);
         }
     }, [ktererInfo]);
 

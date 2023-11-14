@@ -1,20 +1,24 @@
 "use client";
 import React, {useEffect, useState} from "react";
-import {Card, CardContent, CardFooter,} from "@/components/ui/card"
 import {useUser} from "@clerk/nextjs";
-import Image from "next/image";
-import Biryani from "@/static/landing-page/biryani.png";
 import StarRating from "@/components/starRating";
-import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import * as z from "zod";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {toast} from "@/components/ui/use-toast";
 import {CheckCircleIcon, StarIcon} from "@heroicons/react/24/outline";
-import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogHeader} from "@/components/ui/dialog";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormMessage} from "@/components/ui/form";
 import {Textarea} from "@/components/ui/textarea";
+import {useSearchParams} from "next/navigation";
+import {KtererInfo} from "@/types/pages/kterings/kterer-profile";
+import {Reviews} from "@/types/shared/reviews";
+import {Card, CardContent, CardFooter} from "@/components/ui/card";
+import Link from "next/link";
+import Image from "next/image";
+import {FoodItem} from "@/types/shared/food";
+import Biryani from "@/static/landing-page/biryani.png";
 
 const formSchema = z.object({
     rating: z.number().min(1).max(5),
@@ -26,55 +30,49 @@ export default function KtererProfile() {
     if (!user) {
         return null;
     }
-    const [ktererInfo, setKtererInfo] = useState([]);
-    const [ktererFood, setKtererFood] = useState([]);
+    const searchParams = useSearchParams();
+    const ktererId = searchParams.get('kterer_id');
+
+    const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
+    const [ktererFood, setKtererFood] = useState<FoodItem[]>([]);
     const [favourites, setFavourites] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [postToDelete, setPostToDelete] = useState(null);
-    const [reviews, setReviews] = useState(null);
+    const [reviews, setReviews] = useState<Reviews[]>();
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const hasReviews = reviews && reviews.length > 0;
 
-
-    const favourite = {
-        id: '12312312',
-        first_name: "Johnny",
-        last_name: "Really",
-        rating: 1,
-        ethnicity: "American",
-        profile_image_url: "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg",
-        experienceUnit: 5,
-        experienceValue: "Years",
-        created_at: "Jan 2020",
-        bio: "My culinary journey has led me to master a wide range of cuisines from classic French haute cuisine t modern fusion creations that push  boundaries of flavor. I believe in"
-    }
-
     useEffect(() => {
-        // const fetchKtererInfo = async () => {
-        //     const accessToken = localStorage.getItem('accessToken');
-        //     const apiURL = process.env.NEXT_PUBLIC_API_URL;
-        //     let response = await fetch(`${apiURL}/api/kterer`, {
-        //         method: 'GET',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'Authorization': `Bearer ${accessToken}`
-        //         },
-        //     });
-        //
-        //     if (!response.ok) {
-        //         console.error(`Error: ${response.statusText}`);
-        //         return;
-        //     }
-        //
-        //     const data = await response.json();
-        //     console.log('data', data);
-        //     setKtererInfo(data);
-        // }
+        const fetchKtererInfo = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            try {
+                const response = await fetch(`${apiURL}/api/kterer/${ktererId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('data', data.kterer);
+                setKtererInfo(data.kterer);
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            }
+        }
 
         const getKtererFood = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const params = new URLSearchParams({kterer: user.id.toString()});
+            const params = new URLSearchParams({kterer: ktererInfo?.user?.client_id || ""});
             let response = await fetch(`${apiURL}/api/food?${params}`, {
                 method: 'GET',
                 headers: {
@@ -89,7 +87,7 @@ export default function KtererProfile() {
             }
 
             let data = await response.json();
-            console.log('data', data.data)
+            console.log('kterer food', data.data)
             setKtererFood(data.data);
 
             response = await fetch(`${apiURL}/api/kterer/reviews/${data.data[0].kterer_id}`, {
@@ -110,8 +108,12 @@ export default function KtererProfile() {
             setReviews(data.data);
         }
 
-        getKtererFood();
-        // fetchKtererInfo();
+        fetchKtererInfo().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
+        getKtererFood().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
     }, []);
 
     const deleteFavourite = async (id: string) => {
@@ -134,6 +136,16 @@ export default function KtererProfile() {
         setFavourites(data.kterers);
     }
 
+    const formatDate = (date: string | undefined) => {
+        if (date && date.trim() !== '') {
+            const dateObj = new Date(date);
+            if (!isNaN(dateObj.valueOf())) {
+                return dateObj.toLocaleDateString('en-US', {month: 'short', year: 'numeric'});
+            }
+        }
+        return 'Invalid date';
+    };
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -146,7 +158,7 @@ export default function KtererProfile() {
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
-        const response = await fetch(`${apiURL}/api/review/kterer/${ktererFood[0].kterer_id}`, {
+        const response = await fetch(`${apiURL}/api/review/kterer/${ktererInfo?.id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -167,27 +179,30 @@ export default function KtererProfile() {
         }
 
         if (response.ok) {
-            const newReview = {
-                ...values,
-                user: {
-                    first_name: reviews[0].user.first_name,
-                    last_name: reviews[0].user.last_name,
-                },
-                created_at: new Date().toISOString(),
+            if (reviews && reviews.length > 0) {
+                const newReview = {
+                    ...values,
+                    user: {
+                        first_name: reviews[0].user.first_name,
+                        last_name: reviews[0].user.last_name,
+                    },
+                    created_at: new Date().toISOString(),
+                }
+                setReviews((currentReviews) => [...(currentReviews || []), newReview]);
+                setIsReviewModalOpen(false);
+                form.reset();
+                toast({
+                    description: (
+                        <>
+                            <div className="flex items-center">
+                                <CheckCircleIcon
+                                    className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                                Review Successfully Added!
+                            </div>
+                        </>
+                    )
+                });
             }
-            setReviews((currentReviews) => [...(currentReviews || []), newReview]);
-            setIsReviewModalOpen(false);
-            form.reset();
-            toast({
-                description: (
-                    <>
-                        <div className="flex items-center">
-                            <CheckCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
-                            Review Successfully Added!
-                        </div>
-                    </>
-                )
-            });
         }
     }
 
@@ -199,20 +214,20 @@ export default function KtererProfile() {
                         <Card>
                             <CardContent>
                                 <div className="flex items-center flex-col my-3">
-                                    <img src={favourite.profile_image_url} alt="Kterer Profile Picture"
+                                    <img src={ktererInfo?.profile_image_url} alt="Kterer Profile Picture"
                                          className="rounded-full w-32 h-32 object-cover"/>
                                     <div className="flex flex-col w-full justify-between items-center mt-3">
-                                        <p className="text-lg font-semibold">{favourite.first_name} {favourite.last_name}</p>
-                                        <StarRating rating={favourite.rating}/>
+                                        <p className="text-lg font-semibold">{ktererInfo?.user?.first_name} {ktererInfo?.user?.last_name}</p>
+                                        <StarRating rating={ktererInfo?.rating || 0}/>
                                     </div>
                                 </div>
                             </CardContent>
                             <CardFooter>
                                 <div className="w-full space-y-2">
                                     {[
-                                        {label: 'Ethnicity', value: favourite.ethnicity},
-                                        {label: 'Experience', value: `${favourite.experienceUnit} ${favourite.experienceValue}`},
-                                        {label: 'Member Since', value: favourite.created_at},
+                                        {label: 'Ethnicity', value: ktererInfo?.ethnicity},
+                                        {label: 'Experience', value: `${ktererInfo?.experienceUnit} ${ktererInfo?.experienceValue}`},
+                                        {label: 'Member Since', value: formatDate(ktererInfo?.created_at)},
                                     ].map((item, index) => (
                                         <div key={index} className="flex justify-between">
                                             <p className="font-bold">{item.label}</p>
@@ -225,7 +240,7 @@ export default function KtererProfile() {
 
                         <div className="text-center mt-8">
                             <p className="font-bold">Bio</p>
-                            <p>{favourite.bio}</p>
+                            <p>{ktererInfo?.bio}</p>
                         </div>
                     </div>
                     <div className="col-span-1 lg:col-span-2">
@@ -240,10 +255,9 @@ export default function KtererProfile() {
                                         <Link href={`/kterings/${item.name}?${food_id}`}>
                                             <div
                                                 className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
-                                                <Image
-                                                    src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
-                                                    alt="Food Image" fill
-                                                    className="object-cover object-center"/>
+                                                <Image src={item?.images[0]?.image_url || Biryani}
+                                                       alt="Food Image" fill
+                                                       className="object-cover object-center"/>
                                             </div>
                                         </Link>
 
@@ -299,7 +313,7 @@ export default function KtererProfile() {
             <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>{favourite?.first_name}'s Kterer Review</DialogTitle>
+                        {/*<DialogTitle>{ktererInfo.user.first_name}'s Kterer Review</DialogTitle>*/}
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                 <Controller

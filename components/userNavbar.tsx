@@ -31,6 +31,7 @@ import {
 import useCart from "@/app/hooks/useCart";
 import AddressPopup from "@/components/addressPopup";
 import {CartItem} from "@/types/hooks/useCart";
+import {fetchHomeAddress} from "@/app/hooks/fetchAddress";
 
 export default function UserNavbar() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -41,6 +42,8 @@ export default function UserNavbar() {
     const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
     let {cartItems, setCartItems, updateItemQuantity, removeItemFromCart, useLocalStorageCart} = useCart();
     const cartLength = useLocalStorageCart();
+    const [savedAddress, setSavedAddress] = useState('');
+    const [addressChanged, setAddressChanged] = useState(false);
 
 
     const toggleSideBar = () => {
@@ -52,6 +55,14 @@ export default function UserNavbar() {
     }
 
     const toggleAddressPopup = () => setIsAddressPopupOpen(!isAddressPopupOpen);
+
+    useEffect(() => {
+        if (user) {
+            fetchHomeAddress(setSavedAddress, user);
+            setAddressChanged(false);
+        }
+    }, [addressChanged, user]);
+
 
     useEffect(() => {
         if (isCartOpen) {
@@ -130,7 +141,7 @@ export default function UserNavbar() {
                             <button onClick={toggleAddressPopup}>
                                 <div className="flex space-x-2 ml-8">
                                     <MapPinIcon className="w-6 h-6 text-primary-color"/>
-                                    <div>Saved Address</div>
+                                    <div>{savedAddress || "Saved Address"}</div>
                                     <ChevronDownIcon className="w-6 h-6 text-primary-color"/>
                                 </div>
                             </button>
@@ -138,6 +149,7 @@ export default function UserNavbar() {
                             <AddressPopup
                                 isAddressPopupOpen={isAddressPopupOpen}
                                 setIsAddressPopupOpen={setIsAddressPopupOpen}
+                                setAddressChanged={setAddressChanged}
                             />
 
                             {/* Buttons */}
