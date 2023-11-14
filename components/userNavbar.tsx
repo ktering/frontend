@@ -47,13 +47,19 @@ export default function UserNavbar() {
     const [addressChanged, setAddressChanged] = useState(false);
 
     const contextValue = useContext(SearchContext);
-    if (!contextValue) {
-        return null;
-    }
-    const {searchInput, setSearchInput} = contextValue;
+    const {searchInput, setSearchInput} = contextValue || {
+        searchInput: '', setSearchInput: () => {
+        }
+    };
+    // if (!contextValue) {
+    //     return null;
+    // }
+    // const {searchInput, setSearchInput} = contextValue;
 
     const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchInput(event.target.value);
+        if (setSearchInput) {
+            setSearchInput(event.target.value);
+        }
     };
 
     const toggleSideBar = () => {
@@ -108,6 +114,22 @@ export default function UserNavbar() {
         {name: "Help", icon: <QuestionMarkCircleIcon className="h-6 w-6"/>, href: "/kterings"},
         {name: "Sign Out", icon: <ArrowLeftOnRectangleIcon className="h-6 w-6"/>, href: "/kterings"},
     ];
+
+    // render search input if contextValue is not null
+    const renderSearchInput = () => {
+        if (contextValue) {
+            return (
+                <Input
+                    type="text"
+                    className="rounded-full pl-10 pr-3 py-2"
+                    placeholder="Search Kterers, Dishes"
+                    value={searchInput}
+                    onChange={handleSearchInputChange}
+                />
+            );
+        }
+        return null;
+    };
 
     const signOutF = () => {
         signOut()
@@ -187,6 +209,7 @@ export default function UserNavbar() {
                                     value={searchInput}
                                     onChange={handleSearchInputChange}
                                 />
+                                {/*{renderSearchInput()}*/}
                             </div>
 
                             {/* Notification Icon */}
@@ -305,13 +328,13 @@ export default function UserNavbar() {
                                                     </svg>
                                                 )}
                                             </button>
-                                            <input
-                                                type="number"
-                                                id={`quantity_${item.id}_${item.size}`}
-                                                value={item.quantity}
-                                                readOnly
-                                                className="h-10 w-16 text-center border-transparent appearance-none outline-none"
-                                            />
+                                            {/*<input*/}
+                                            {/*    type="number"*/}
+                                            {/*    id={`quantity_${item.id}_${item.size}`}*/}
+                                            {/*    value={item.quantity}*/}
+                                            {/*    readOnly*/}
+                                            {/*    className="h-10 w-16 text-center border-transparent appearance-none outline-none"*/}
+                                            {/*/>*/}
                                             <button
                                                 onClick={() => incrementQuantity(item)}
                                                 type="button"

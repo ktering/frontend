@@ -180,6 +180,7 @@ export default function KtererProfile() {
 
         if (response.ok) {
             if (reviews && reviews.length > 0) {
+                // TODO: when the inital review is made, the name doesnt show up correctly
                 const newReview = {
                     ...values,
                     user: {
