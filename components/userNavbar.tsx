@@ -170,13 +170,22 @@ export default function UserNavbar() {
                                 </Link>
                             </div>
 
+                            {/*<button onClick={toggleAddressPopup}>*/}
+                            {/*    <div className="flex space-x-2 ml-8">*/}
+                            {/*        <MapPinIcon className="w-6 h-6 text-primary-color"/>*/}
+                            {/*        <div>{savedAddress || "Saved Address"}</div>*/}
+                            {/*        <ChevronDownIcon className="w-6 h-6 text-primary-color"/>*/}
+                            {/*    </div>*/}
+                            {/*</button>*/}
+
                             <button onClick={toggleAddressPopup}>
-                                <div className="flex space-x-2 ml-8">
+                                <div className="flex sm:space-x-2 ml-8">
                                     <MapPinIcon className="w-6 h-6 text-primary-color"/>
-                                    <div>{savedAddress || "Saved Address"}</div>
-                                    <ChevronDownIcon className="w-6 h-6 text-primary-color"/>
+                                    <div className="hidden md:block">{savedAddress || "Saved Address"}</div>
+                                    <ChevronDownIcon className="w-6 h-6 text-primary-color hidden md:block"/>
                                 </div>
                             </button>
+
 
                             <AddressPopup
                                 isAddressPopupOpen={isAddressPopupOpen}
@@ -196,7 +205,7 @@ export default function UserNavbar() {
                         </div>
                         <div className="flex items-center">
                             {/* Search bar */}
-                            <div className="relative w:40 sm:w-80 mr-4">
+                            <div className="relative w:40 md:w:60 lg:w-80 mr-4">
                                 {/* Icon */}
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <MagnifyingGlassIcon className="w-5 h-5"/>
@@ -213,9 +222,8 @@ export default function UserNavbar() {
                             </div>
 
                             {/* Notification Icon */}
-                            {/* TODO: align the icons to the center in mobile view */}
-                            <div className="md:mr-4 md:flex md:flex-shrink-0 md:items-center space-x-2">
-                                <div className="sm:flex sm:flex-end">
+                            <div className="flex items-center md:mr-4 md:flex md:flex-shrink-0 md:items-center space-x-2">
+                                <div className="flex flex-end">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger> <BellIcon className="h-6 w-6"
                                                                         aria-hidden="true"/></DropdownMenuTrigger>
@@ -250,7 +258,6 @@ export default function UserNavbar() {
                                         </div>
                                     </SheetTrigger>
                                 </Sheet>
-
                             </div>
                         </div>
                     </div>
