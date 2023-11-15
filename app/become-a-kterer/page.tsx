@@ -69,7 +69,7 @@ export default function BecomeKterer() {
                                 <p className="pt-4 pb-6">Make more money doing what you like</p>
 
                                 <button
-                                    className="rounded-full w-1/3 lg:w-2/3 bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-colort"
+                                    className="rounded-full w-1/3 lg:w-2/3 bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                                     onClick={() => setOpen(true)}>Sign Up
                                 </button>
 

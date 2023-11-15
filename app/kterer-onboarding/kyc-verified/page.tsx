@@ -26,32 +26,38 @@ export default function Dashboard() {
 
                 const accessToken = localStorage.getItem('accessToken');
                 const apiURL = process.env.NEXT_PUBLIC_API_URL;
-                const localResponse = await fetch(`${apiURL}/api/kterer`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`
-                    },
-                    body: JSON.stringify({
-                        is_verified: true
-                    }),
-                });
-                if (!localResponse.ok) {
-                    console.log(localResponse.statusText);
-                }
-                if (response.ok && localResponse.ok) {
-                    const responseJson = await response.json();
-                    const userInfo = responseJson.user;
 
-                    if (userInfo.publicMetadata.ktererSignUpCompleted === true) {
-                        router.push("/kterer/dashboard");
-                    } else {
-                        console.log('Metadata updated not updated to false');
+                try {
+                    const localResponse = await fetch(`${apiURL}/api/kterer`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${accessToken}`
+                        },
+                        body: JSON.stringify({
+                            is_verified: true
+                        }),
+                    });
+                    if (!localResponse.ok) {
+                        console.log(localResponse.statusText);
                     }
+                    if (response.ok && localResponse.ok) {
+                        const responseJson = await response.json();
+                        const userInfo = responseJson.user;
+
+                        if (userInfo.publicMetadata.ktererSignUpCompleted === true) {
+                            router.push("/kterer/dashboard");
+                        } else {
+                            console.log('Metadata updated not updated to false');
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Error: ${error}`);
                 }
             }
-            ;
         }
-        updateMetadata();
+        updateMetadata().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
     }, [user]);
 }

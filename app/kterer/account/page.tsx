@@ -11,18 +11,24 @@ import {useToast} from "@/components/ui/use-toast"
 import {useClerk} from "@clerk/nextjs";
 import {Textarea} from "@/components/ui/textarea";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {KtererInfo} from "@/types/shared/user";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+const DEFAULT_IMAGE_SRC = "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg";
 
 const formSchema = z.object({
     profile_image_url: z
         .any()
-        .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
         .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-            "Only .jpg, .jpeg, .png and .webp formats are supported."
+            (file) => !(file instanceof File) || file.size <= MAX_FILE_SIZE, // Check if file and size are valid
+            {message: "Max image size is 5MB."}
+        )
+        .refine(
+            (file) => !(file instanceof File) || ACCEPTED_IMAGE_TYPES.includes(file.type), // Check if file and type are valid
+            {message: "Only .jpg, .jpeg, .png, and .webp formats are supported."}
         ),
+
     first_name: z.string().min(2, "First name must be at least 2 characters").max(20, "First name can't be longer than 20 characters"),
     last_name: z.string().min(2, "Last name must be at least 2 characters").max(20, "Last name can't be longer than 20 characters"),
     email: z.string().email(),
@@ -41,11 +47,12 @@ const formSchema = z.object({
     experienceValue: z.enum(['Days', 'Months', 'Years']),
 })
 
-export default function ConsumerAccount() {
-    const [ktererInfo, setKtererInfo] = useState(null);
+export default function KtererAccount() {
+    const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
     const router = useRouter();
     const {toast} = useToast();
     const {signOut} = useClerk();
+    const [profileImageSrc, setProfileImageSrc] = useState(DEFAULT_IMAGE_SRC);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -67,24 +74,30 @@ export default function ConsumerAccount() {
         const getKtererAccountInfo = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/user`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            try {
+                const response = await fetch(`${apiURL}/api/user`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
 
-            if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setKtererInfo(data.user);
+            } catch (error) {
+                console.error('An error occurred:', error);
             }
-
-            const data = await response.json();
-            setKtererInfo(data.user);
         }
 
-        getKtererAccountInfo();
+        getKtererAccountInfo().catch(error => {
+            console.error('An error occurred:', error);
+        });
     }, []);
 
     useEffect(() => {
@@ -105,14 +118,14 @@ export default function ConsumerAccount() {
             email,
             phone,
             country,
-            // Assuming that "kterer" may not exist, and providing default values
-            bio: kterer.bio || "",
-            ethnicity: kterer.ethnicity || "",
-            experienceUnit: kterer.experienceUnit || 0,
-            experienceValue: kterer.experienceValue || "Days",
+            profile_image_url: kterer?.profile_image_url || "",
+            bio: kterer?.bio || "",
+            ethnicity: kterer?.ethnicity || "",
+            experienceUnit: kterer?.experienceUnit || 0,
+            experienceValue: kterer?.experienceValue || "Days",
         };
 
-        Object.keys(formValues).forEach(key => {
+        (Object.keys(formValues) as Array<keyof typeof formValues>).forEach(key => {
             form.setValue(key, formValues[key], {shouldValidate: true});
         });
     }, [ktererInfo, form]);
@@ -174,7 +187,6 @@ export default function ConsumerAccount() {
     };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-
         const formData = new FormData();
 
         formData.append('bio', values.bio);
@@ -217,7 +229,11 @@ export default function ConsumerAccount() {
         }
     }
 
-    const [profileImageSrc, setProfileImageSrc] = useState<string>("https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
+    useEffect(() => {
+        if (ktererInfo) {
+            setProfileImageSrc(ktererInfo?.kterer?.profile_image_url || DEFAULT_IMAGE_SRC);
+        }
+    }, [ktererInfo]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -233,6 +249,11 @@ export default function ConsumerAccount() {
             reader.readAsDataURL(file);
             form.setValue("profile_image_url", file);
         }
+    };
+
+    const handleRemovePicture = () => {
+        setProfileImageSrc(DEFAULT_IMAGE_SRC); // Reset to default image
+        form.setValue("profile_image_url", ""); // Update form state
     };
 
     return (
@@ -253,7 +274,7 @@ export default function ConsumerAccount() {
                                 <div className="col-span-2 text-center">
                                     <h1 className="text-xl font-bold mb-2">Profile Picture</h1>
                                     <img
-                                        className="inline-block h-28 w-28 rounded-full mb-8"
+                                        className="inline-block h-28 w-28 rounded-full mb-4"
                                         src={profileImageSrc}
                                         alt=""
                                     />
@@ -271,10 +292,20 @@ export default function ConsumerAccount() {
                                                             className="hidden"
                                                             onChange={handleImageChange}
                                                         />
-                                                        <label htmlFor="profilePictureInput"
-                                                               className="cursor-pointer text-sm md:text-base rounded-full bg-primary-color px-3 md:px-4 py-2 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                                            Choose File
-                                                        </label>
+                                                        <div className="space-x-2">
+                                                            <label htmlFor="profilePictureInput"
+                                                                   className="cursor-pointer text-sm md:text-base rounded-full bg-primary-color px-3 md:px-4 py-2 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                                                Choose File
+                                                            </label>
+                                                            {/* TODO: default pic doesnt save to db */}
+                                                            <button
+                                                                type="button"
+                                                                onClick={handleRemovePicture}
+                                                                className="mt-4 text-sm md:text-base border rounded-full px-3 md:px-4 py-2 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                            >
+                                                                Remove
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </FormControl>
                                                 <FormMessage/>

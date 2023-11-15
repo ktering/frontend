@@ -1,20 +1,41 @@
 "use client";
-import {SetStateAction, useEffect, useState} from "react";
+import React, {SetStateAction, useEffect, useState} from "react";
 import StarRating from "@/components/starRating";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "@/components/ui/accordion"
 import {useRouter, useSearchParams} from "next/navigation";
 import useCart from "@/app/hooks/useCart";
+import {formatDistanceToNow} from 'date-fns';
+import {Dialog, DialogContent, DialogHeader, DialogTitle,} from "@/components/ui/dialog"
+import * as z from "zod";
+import {zodResolver} from "@hookform/resolvers/zod"
+import {Controller, useForm} from "react-hook-form"
+import {Button} from "@/components/ui/button"
+import {Form, FormControl, FormDescription, FormField, FormItem, FormMessage,} from "@/components/ui/form"
+import {Textarea} from "@/components/ui/textarea";
+import {CheckCircleIcon, StarIcon} from "@heroicons/react/24/outline";
+import {toast} from "@/components/ui/use-toast";
+import {FoodItem} from "@/types/shared/food";
+import {Reviews} from "@/types/shared/reviews";
+import {CartItem} from "@/types/hooks/useCart";
+
+const formSchema = z.object({
+    rating: z.number().min(1).max(5),
+    review: z.string().min(10).max(300),
+});
 
 export default function Food() {
+    // TODO: fix this default image
     const searchParams = useSearchParams();
     const foodIdMainPage = searchParams.get('food_id');
-    const [foodDetails, setFoodDetails] = useState(null);
+    const [foodDetails, setFoodDetails] = useState<FoodItem>();
+    const [reviews, setReviews] = useState<Reviews[]>();
     const [quantity, setQuantity] = useState(1);
     const [selectedSize, setSelectedSize] = useState("small");
     // TODO: fix this main image
-    const [mainImage, setMainImage] = useState();
-    const {addItemToCart, updateItemQuantity, removeItemFromCart} = useCart();
-
+    const [mainImage, setMainImage] = useState<string | undefined>(undefined);
+    const {addItemToCart} = useCart();
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const hasReviews = reviews && reviews.length > 0;
     const router = useRouter();
 
     useEffect(() => {
@@ -26,7 +47,7 @@ export default function Food() {
         const getFoodInfo = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/food/${foodIdMainPage}`, {
+            let response = await fetch(`${apiURL}/api/food/${foodIdMainPage}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -39,7 +60,7 @@ export default function Food() {
                 return;
             }
 
-            const data = await response.json();
+            let data = await response.json();
 
             if (data.data && data.data.quantities) {
                 const smallSizeAvailable = data.data.quantities.some((q: {
@@ -51,18 +72,51 @@ export default function Food() {
             }
 
             setFoodDetails(data.data);
-            setMainImage(data.data.images[0].image_url);
+            if (data.data && data.data.images && data.data.images.length > 0) {
+                setMainImage(data.data.images[0].image_url);
+            }
+
+            response = await fetch(`${apiURL}/api/food/reviews/${data.data.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            });
+
+            if (!response.ok) {
+                console.error(`Error: ${response.statusText}`);
+                return;
+            }
+
+            data = await response.json();
+            console.log('data', data.data);
+            setReviews(data.data);
         }
 
-        getFoodInfo();
+        getFoodInfo().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
     }, [foodIdMainPage]);
+
+    const formatDate = (date: string) => {
+        if (date.trim() !== '') {
+            const dateObj = new Date(date);
+            if (!isNaN(dateObj.valueOf())) {
+                return formatDistanceToNow(dateObj, {addSuffix: true});
+            }
+        }
+        return 'Invalid date';
+    };
 
     const handleThumbnailClick = (imageSrc: string) => {
         setMainImage(imageSrc);
     };
 
     const incrementQuantity = () => {
-        const currentSizeDetails = foodDetails?.quantities.find((q: { size: string; }) => q.size === selectedSize);
+        const currentSizeDetails = foodDetails?.quantities.find((q: {
+            size: string;
+        }) => q.size === selectedSize);
         if (currentSizeDetails && quantity < parseInt(currentSizeDetails.quantity)) {
             setQuantity((prevQuantity) => prevQuantity + 1);
         }
@@ -83,25 +137,17 @@ export default function Food() {
         }
     };
 
-    const isSizeAvailable = (size: string) => {
-        return foodDetails && foodDetails?.quantities.some((q: {
-            size: string;
-        }) => q.size === size);
-    };
-
     const addToCart = () => {
-        const cartItem = {
+        const maxQuantityItem = foodDetails?.quantities.find((quantityItem) => quantityItem.size === selectedSize);
+        const priceItem = foodDetails?.quantities.find((quantityItem) => quantityItem.size === selectedSize);
+
+        const cartItem: CartItem = {
             id: `${foodDetails?.id}-${Date.now()}`,
-            name: foodDetails?.name,
+            name: foodDetails?.name || '',
             size: selectedSize,
             quantity: quantity,
-            maxQuantity: foodDetails?.quantities.find((quantityItem: {
-                size: string;
-            }) => quantityItem.size === selectedSize)?.quantity,
-            price: foodDetails
-                ?.quantities.find((quantityItem: {
-                    size: string;
-                }) => quantityItem.size === selectedSize)?.price,
+            maxQuantity: maxQuantityItem?.quantity || '0',
+            price: priceItem?.price || '0',
         };
 
         addItemToCart(cartItem);
@@ -109,17 +155,78 @@ export default function Food() {
 
     const renderSizeButton = (size: string) => {
         const isSelected = selectedSize === size;
+        const isAvailable = foodDetails?.quantities.some((q) => q.size === size);
         const capitalizedSize = size.charAt(0).toUpperCase() + size.slice(1);
-        return (
+
+        return isAvailable ? (
             <button
                 onClick={() => selectSize(size)}
-                disabled={!isSizeAvailable(size)}
                 className={`border rounded-full px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color ${isSelected ? 'bg-primary-color text-white hover:bg-primary-color-hover' : 'bg-white hover:bg-gray-50'}`}
             >
                 {capitalizedSize}
             </button>
-        );
+        ) : null;
     };
+
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            rating: 3,
+            review: "",
+        },
+    })
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const accessToken = localStorage.getItem('accessToken');
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        const response = await fetch(`${apiURL}/api/review/food/${foodDetails?.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(values)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error(`Error ${response.status}: ${errorData.message}`);
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: errorData.message,
+            });
+            return;
+        }
+
+        if (response.ok) {
+            if (reviews && reviews.length > 0) {
+                const newReview: Reviews = {
+                    ...values,
+                    user: {
+                        first_name: reviews[0].user.first_name,
+                        last_name: reviews[0].user.last_name,
+                    },
+                    created_at: new Date().toISOString(),
+                }
+                setReviews((currentReviews) => [...(currentReviews || []), newReview]);
+                setIsReviewModalOpen(false);
+                form.reset();
+                toast({
+                    description: (
+                        <>
+                            <div className="flex items-center">
+                                <CheckCircleIcon
+                                    className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                                Review Successfully Added!
+                            </div>
+                        </>
+                    )
+                });
+            }
+        }
+    }
 
     return (
         <>
@@ -143,12 +250,12 @@ export default function Food() {
                         </div>
                     </div>
 
-
                     <div>
                         <h1 className="text-3xl font-bold">{foodDetails?.name}</h1>
-                        {/* TODO: update rating from endpoint */}
-                        <StarRating rating={5}/>
-                        <div className="mb-2 mt-2 space-x-2">
+                        {foodDetails?.rating !== 0 && foodDetails?.rating !== undefined &&
+                            <StarRating rating={foodDetails?.rating}/>
+                        }
+                        <div className="mb-2 mt-2 space-x-2 space-y-2">
                             {foodDetails?.halal !== "No" ? (
                                 <span
                                     className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
@@ -178,6 +285,20 @@ export default function Food() {
                                     Vegetarian
                                 </span>
                             )}
+                            {foodDetails?.meat_type && foodDetails?.meat_type !== "None" && foodDetails?.meat_type !== "Other" && (
+                                <span
+                                    className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">
+                                    {foodDetails.meat_type}
+                                </span>
+                            )}
+
+                            {/* Conditionally render the ethnic type badge */}
+                            {foodDetails?.ethnic_type && foodDetails?.ethnic_type !== "None" && foodDetails?.ethnic_type !== "Other" && (
+                                <span
+                                    className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium text-gray-800 border-gray-300">
+                                  {foodDetails.ethnic_type}
+                                </span>
+                            )}
                         </div>
                         <p className="text-lg mb-6 mt-4 font-bold">
                             ${selectedSize && foodDetails ? foodDetails.quantities.find((q: {
@@ -187,9 +308,7 @@ export default function Food() {
                         <div className="flex flex-col space-y-2">
                             <p>Size</p>
                             <div className="my-2 space-x-2">
-                                {renderSizeButton('small')}
-                                {renderSizeButton('medium')}
-                                {renderSizeButton('large')}
+                                {['small', 'medium', 'large'].map((size) => renderSizeButton(size))}
                             </div>
                         </div>
                         <div className="flex flex-col items-start space-y-2 mt-6 mb-8">
@@ -235,9 +354,7 @@ export default function Food() {
                             <Accordion type="single" collapsible defaultValue="item-1">
                                 <AccordionItem value="item-1">
                                     <AccordionTrigger>Description</AccordionTrigger>
-                                    <AccordionContent>
-                                        <p><u>Ethnic Type:</u>{" "}{foodDetails?.ethnic_type}</p>
-                                        <p className="my-2"><u>Meat Type:</u>{" "} {foodDetails?.meat_type}</p>
+                                    <AccordionContent className="text-base">
                                         {foodDetails?.description}
                                     </AccordionContent>
                                 </AccordionItem>
@@ -246,7 +363,7 @@ export default function Food() {
                             <Accordion type="single" collapsible>
                                 <AccordionItem value="item-1">
                                     <AccordionTrigger>Ingredients</AccordionTrigger>
-                                    <AccordionContent>
+                                    <AccordionContent className="text-base">
                                         {foodDetails?.ingredients.split(/\s+/).join(", ")}
                                     </AccordionContent>
                                 </AccordionItem>
@@ -254,8 +371,103 @@ export default function Food() {
                         </div>
                     </div>
                 </div>
+
+                <div className="pt-12">
+                    <div className="flex justify-between items-center">
+                        <h3 className="font-bold text-xl my-12">Recent Reviews</h3>
+                        <Button
+                            className="rounded-full border bg-white hover:bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                            onClick={() => setIsReviewModalOpen(true)}
+                        >
+                            Write a review
+                        </Button>
+                    </div>
+                    {hasReviews ? (
+                        reviews?.map((review) => (
+                            <div key={review.id} className="my-2 flex items-start border-b pb-4">
+                                <div>
+                                    <div className="flex items-center my-2 font-bold">
+                                        <p>{review?.user?.first_name} {review?.user?.last_name}</p>
+                                    </div>
+                                    <div className="flex items-center my-3">
+                                        <StarRating rating={review?.rating}/>
+                                        <span className={`mx-2 text-gray-300`}>|</span>
+                                        <p className="text-sm text-gray-500">{formatDate(review?.created_at)}</p>
+                                    </div>
+                                    <p>{review.review}</p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="my-2 flex items-start border-b pb-4">
+                            <p className="text-gray-500">No reviews yet</p>
+                        </div>
+                    )}
+                </div>
             </div>
 
+            <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{foodDetails?.name} Food Review</DialogTitle>
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                                <Controller
+                                    name="rating"
+                                    control={form.control}
+                                    render={({field: {onChange, value}}) => (
+                                        <>
+
+                                            <div className="flex flex-col space-y-1 mt-8">
+                                                <div className="font-semibold mb-2">Rating</div>
+                                                <div className="space-x-2">
+                                                    {[1, 2, 3, 4, 5].map((starValue) => (
+                                                        <button
+                                                            key={starValue}
+                                                            type="button"
+                                                            onClick={() => onChange(starValue)}
+                                                            className={`rounded-lg border px-4 py-2.5 font-semibold ${value === starValue ? 'bg-primary-color text-white' : 'bg-white text-primary-color'} shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
+                                                        >
+                                                            <div className="flex items-center justify-center">
+                                                                {starValue}
+                                                                <StarIcon className="w-4 h-4 ml-2"/>
+                                                            </div>
+
+
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="review"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Write a review..."
+                                                    className="resize-none"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>
+                                                This review will be public and will be shown to other users.
+                                            </FormDescription>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button
+                                    className="rounded-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                                    type="submit">Submit</Button>
+                            </form>
+                        </Form>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

@@ -1,3 +1,4 @@
+import React from "react";
 import type {Metadata} from 'next'
 import KtererDashboardNavbar from "@/components/ktererDashboardNavbar";
 import UserNavbar from "@/components/userNavbar";
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function KtererLayout({children}: {
     children: React.ReactNode
 }) {
+
     return (
         <section>
             <UserNavbar/>

@@ -124,18 +124,23 @@ export default function PostFood() {
             formData.append(fieldName, file);
         });
 
+        function isKeyOfValues(key: string): key is keyof typeof values {
+            return key in values;
+        }
+
         for (const key in values) {
+            if (!isKeyOfValues(key)) continue;
+
             if (key !== 'images') {
                 const value = values[key];
                 if (Array.isArray(value) || (typeof value === 'object' && value !== null)) {
                     formData.append(key, JSON.stringify(value));
                 } else {
-                    formData.append(key, value);
+                    formData.append(key, value.toString());
                 }
             }
         }
 
-        // Add the transformed sizes, ensuring that the 'quantities' key is associated with a stringified array
         formData.append('quantities', JSON.stringify([
             {size: 'small', price: values.small_price, quantity: values.small_amount},
             {size: 'medium', price: values.medium_price, quantity: values.medium_amount},
@@ -146,7 +151,6 @@ export default function PostFood() {
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
         try {
-            console.log('Submitting form data', formData.get('images'))
             const addFoodPostResponse = await fetch(`${apiURL}/api/food`, {
                 method: 'POST',
                 headers: {
@@ -158,7 +162,6 @@ export default function PostFood() {
             if (addFoodPostResponse.ok) {
                 router.push('/kterer/dashboard');
             } else {
-                // Handle the error accordingly
                 toast({
                     variant: "destructive",
                     title: "Error",
@@ -166,11 +169,9 @@ export default function PostFood() {
                 });
             }
         } catch (error) {
-            // Handle the error accordingly
             console.error('Error submitting form', error);
         }
     }
-
 
     return (
         <>
@@ -355,10 +356,11 @@ export default function PostFood() {
                                         )}
                                     />
                                 </div>
-                                {/* No Size price, amount selected error message */}
-                                {form.formState.errors[""]?.message && (
+                                {/* @ts-ignore */}
+                                {form.formState.errors[""] && (
                                     <div className="col-span-3">
                                         <p className="text-sm font-medium text-destructive">
+                                            {/* @ts-ignore */}
                                             {form.formState.errors[""].message}
                                         </p>
                                     </div>
@@ -430,7 +432,8 @@ export default function PostFood() {
                                             Pork, Alcohol, and Gelatin are NOT halal. For more
                                             information, please
                                             visit
-                                            <Link href="/examples/forms">Your Website Link</Link>.
+                                            <Link href="https://www.jamiaislamia.org/images/halalharam.pdf">Your Website
+                                                Link</Link>.
                                         </FormDescription>
                                         <FormMessage/>
                                     </FormItem>

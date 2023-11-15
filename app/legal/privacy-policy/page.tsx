@@ -13,7 +13,7 @@ export default function PrivacyPolicy() {
                         DO NOT UNDERSTAND.</p>
                     <p className="font-bold mb-4">YOUR USE OF THIS SERVICE CONSTITUTES ACCEPTANCE BY YOU OF THIS PRIVACY
                         STATEMENT.</p>
-                    <p className="font-normal mb-4"><strong>KTERINGS INC. (hereinafter referred to as
+                    <p className="mb-4"><strong>KTERINGS INC. (hereinafter referred to as
                         KTERINGS), </strong>
                         operator of the KTERINGS App and, <a href="http://www.kterings.com/"
                                                              className="font-bold">www.kterings.com</a> (collectively,
@@ -118,7 +118,7 @@ export default function PrivacyPolicy() {
                         </li>
                     </ul>
                     <p className="font-bold italic mb-4">Information We Collect from Other Sources</p>
-                    <p className="font-normal mb-4">We may also obtain information about you from other sources and
+                    <p className="mb-4">We may also obtain information about you from other sources and
                         combine
                         that with information we collect directly. For example, we may collect information about you
                         when you post content to our pages or feeds on third party social media sites, or if you use
@@ -127,7 +127,7 @@ export default function PrivacyPolicy() {
                     <ol start={1}>
                         <li className="font-bold mb-4">2. Use of Information</li>
                     </ol>
-                    <p className="font-normal mb-4">We may use information about you for various purposes, including
+                    <p className="mb-4">We may use information about you for various purposes, including
                         to</p>
                     <ul className="list-decimal pl-5 mb-4">
                         <li>Provide, maintain and improve the Services;</li>
@@ -153,7 +153,7 @@ export default function PrivacyPolicy() {
                     <ol start={2}>
                         <li className="font-bold mb-4">3. Sharing of Information</li>
                     </ol>
-                    <p className="font-normal mb-4">We may share information about you as follows or as otherwise
+                    <p className="mb-4">We may share information about you as follows or as otherwise
                         described
                         in this Privacy Policy:</p>
                     <ul className="list-decimal pl-5 mb-4">
@@ -171,13 +171,13 @@ export default function PrivacyPolicy() {
                         </li>
                         <li>With your consent or at your direction.</li>
                     </ul>
-                    <p className="font-normal mb-4">We also may share aggregated or de-identified information, which
+                    <p className="mb-4">We also may share aggregated or de-identified information, which
                         cannot
                         reasonably be used to identify you.</p>
                     <ol start={3}>
                         <li className="font-bold mb-4">4. Social Sharing Features</li>
                     </ol>
-                    <p className="font-normal mb-4">The Services may offer social sharing features and other integrated
+                    <p className="mb-4">The Services may offer social sharing features and other integrated
                         tools, such as the Facebook and Twitter buttons (e.g., “Like” or “Tweet”), which let you share
                         actions you take on the Services with other media. Your use of such features enables the sharing
                         of information with your friends or the public, depending on the settings you establish with the
@@ -187,7 +187,7 @@ export default function PrivacyPolicy() {
                     <ol start={4}>
                         <li className="font-bold mb-4">5. Security</li>
                     </ol>
-                    <p className="font-normal mb-4">The security of your information is important to us. We implement
+                    <p className="mb-4">The security of your information is important to us. We implement
                         and
                         maintain reasonable security measures intended to protect against unauthorized use, disclosure,
                         alteration or destruction of the information we collect and maintain. However, please be aware
@@ -196,75 +196,75 @@ export default function PrivacyPolicy() {
                             YOU ACKNOWLEDGE AND ACCEPT THAT WE CANNOT GUARANTEE THE ABSOLUTE SECURITY OF YOUR
                             INFORMATION TRANSMITTED TO, THROUGH, OR ON THE SERVICES OR VIA THE INTERNET AND THAT, ANY
                             SUCH TRANSMISSION IS AT YOUR OWN RISK.</strong></p>
-                    <p className="font-normal mb-4">WHERE WE HAVE GIVEN YOU (OR WHERE YOU HAVE CHOSEN) A PASSWORD WHICH
+                    <p className="mb-4">WHERE WE HAVE GIVEN YOU (OR WHERE YOU HAVE CHOSEN) A PASSWORD WHICH
                         ENABLES YOU TO ACCESS TO YOUR ACCOUNT, YOU ARE RESPONSIBLE FOR KEEPING THIS PASSWORD
                         CONFIDENTIAL. PLEASE DO NOT TO SHARE A PASSWORD WITH ANYONE.</p>
                     <ol start={5}>
                         <li className="font-bold mb-4">6. Advertising and Analytics Services Provided by Others</li>
                     </ol>
-                    <p className="font-normal mb-4">We may allow others to serve advertisements on our behalf across the
+                    <p className="mb-4">We may allow others to serve advertisements on our behalf across the
                         Internet and to provide analytics services. We use Google Analytics and Google Crashlytics. With
                         your consent, the mobile access app uses the analysis tools Google Analytics for Firebase and
                         Firebase Crashlytics (collectively “Google Analysis Tools”) from Google LLC as described in more
                         detail below, to analyze user behavior and to report on the stability and improvement of the
                         mobile access app.</p>
-                    <p className="font-normal mb-4">Such tools are used on the basis of your consent (Art. 6 para. 1
+                    <p className="mb-4">Such tools are used on the basis of your consent (Art. 6 para. 1
                         lit. a
                         GDPR): When you start the mobile access app for the first time, you can decide whether you do or
                         do not wish to consent to the use of one or both Google analysis tools. After starting for the
                         first time, you can withdraw your consent(s), where given, at any time by disabling the
                         corresponding Google analysis tool in the settings of the mobile access app. The Google analysis
                         tools can also be (re-)enabled at any time in these settings.</p>
-                    <p className="font-normal mb-4">More information about both Google Analytics tools may be found
+                    <p className="mb-4">More information about both Google Analytics tools may be found
                         at:</p>
-                    <p className="font-normal mb-4 underline"><a
+                    <p className="mb-4 underline"><a
                         href="https://firebase.google.com/support/privacy/">https://firebase.google.com/support/privacy/</a>
                     </p>
-                    <p className="font-normal mb-4">as well as in <a href="https://policies.google.com/privacy">Google’s
+                    <p className="mb-4">as well as in <a href="https://policies.google.com/privacy">Google’s
                         privacy policy</a>.</p>
-                    <p className="font-normal mb-4">Enabling Google Analytics for Firebase permits data about the user
+                    <p className="mb-4">Enabling Google Analytics for Firebase permits data about the user
                         of the
                         mobile access App to be collected for the purposes of analysis.</p>
-                    <p className="font-normal mb-4">Through Google Analytics for Firebase, Google collects data on the
+                    <p className="mb-4">Through Google Analytics for Firebase, Google collects data on the
                         device
                         (in particular the Mobile Advertising Identifier), IP addresses and app activities on our behalf
                         to evaluate the use of the mobile access app, to compile reports on the activities performed
                         within the mobile access app and to permit it to offer us other services related to the use of
                         the mobile access app.</p>
-                    <p className="font-normal mb-4">In addition to disabling Google Analytics for Firebase in the
+                    <p className="mb-4">In addition to disabling Google Analytics for Firebase in the
                         settings of
                         the mobile access app, you may limit the use of the above-mentioned Google Play Services
                         Advertising ID (Android) or IDFA (iOS) in the device settings of your mobile device:</p>
-                    <p className="font-normal mb-4">For Android: Settings{">"} Google{">"} Ads{">"} Disable personalized
+                    <p className="mb-4">For Android: Settings{">"} Google{">"} Ads{">"} Disable personalized
                         advertising</p>
-                    <p className="font-normal mb-4">For iOS: Settings{">"} Privacy{">"} Advertising{">"} Limit Ad
+                    <p className="mb-4">For iOS: Settings{">"} Privacy{">"} Advertising{">"} Limit Ad
                         Tracking</p>
-                    <p className="font-normal mb-4">You can find more information on data protection, in particular on
+                    <p className="mb-4">You can find more information on data protection, in particular on
                         the
                         personal data involved in specific cases, at:</p>
-                    <p className="font-normal mb-4 underline"><a
+                    <p className="mb-4 underline"><a
                         href="https://support.google.com/firebase/answer/6318039">https://support.google.com/firebase/answer/6318039</a>.
                     </p>
-                    <p className="font-normal mb-4">The personal data will be deleted after 14 months.</p>
-                    <p className="font-normal mb-4">We also use the Google analysis tool Firebase Crashlytics to receive
+                    <p className="mb-4">The personal data will be deleted after 14 months.</p>
+                    <p className="mb-4">We also use the Google analysis tool Firebase Crashlytics to receive
                         error reports following any crash of the mobile access app and to measure and improve the
                         performance of the app. If the mobile access app crashes, information about the crash, such as
                         device type, operating system version and some technical data, is sent to Google via the mobile
                         device, which enables us to diagnose and solve problems (so-called crash reports). The data is
                         stored anonymously.</p>
-                    <p className="font-normal mb-4">More information about Firebase Crashlytics can be found at:</p>
-                    <p className="font-normal mb-4 underline"><a
+                    <p className="mb-4">More information about Firebase Crashlytics can be found at:</p>
+                    <p className="mb-4 underline"><a
                         href="https://firebase.google.com/docs/crashlytics">https://firebase.google.com/docs/crashlytics</a>
                     </p>
-                    <p className="font-normal mb-4">The personal data will be deleted after 90 days.</p>
-                    <p className="font-normal mb-4">With regards to personalized ads, If you want to stop receiving
+                    <p className="mb-4">The personal data will be deleted after 90 days.</p>
+                    <p className="mb-4">With regards to personalized ads, If you want to stop receiving
                         personalized ads, you can go to “Settings”, once you choose not to receive personalized ads, we
                         and our third-party partners will stop sending personalized ads to you. Please note that the
                         number of ads you see will not change, but they may be less relevant to you.</p>
                     <ol start={6}>
                         <li className="font-bold mb-4">7. Children’s Privacy</li>
                     </ol>
-                    <p className="font-normal mb-4">The Services are not intended for children under the age of 18.
+                    <p className="mb-4">The Services are not intended for children under the age of 18.
                         Children
                         under the age of 18 must not use the Services for any purpose without first obtaining legally
                         valid parental/guardian consent to this Privacy Policy (both for themselves and on your behalf).
@@ -275,7 +275,7 @@ export default function PrivacyPolicy() {
                     <ol start={7}>
                         <li className="font-bold mb-4">8. Changes to This Privacy Policy</li>
                     </ol>
-                    <p className="font-normal mb-4">We reserve the right to amend this Privacy Policy at any time. You
+                    <p className="mb-4">We reserve the right to amend this Privacy Policy at any time. You
                         will
                         know if the Privacy Policy has changed since the last time you reviewed it by checking
                         the <strong>“EFFECTIVE DATE”</strong> included at the beginning of the document. If we make a
@@ -290,7 +290,7 @@ export default function PrivacyPolicy() {
                     <ul>
                         <li className="font-bold mb-4">(a) Account Information</li>
                     </ul>
-                    <p className="font-normal mb-4">You may update, correct or modify information about you at any time
+                    <p className="mb-4">You may update, correct or modify information about you at any time
                         by
                         logging into your online account or by emailing us at <a
                             href="mailto:info@kterings.com"><strong>info@kterings.com</strong></a>. If you wish to
@@ -301,7 +301,7 @@ export default function PrivacyPolicy() {
                     <ul>
                         <li className="font-bold mb-4">(b) Location Information</li>
                     </ul>
-                    <p className="font-normal mb-4">With your consent, we may collect information about your actual
+                    <p className="mb-4">With your consent, we may collect information about your actual
                         location
                         when you use our mobile applications. You may stop the collection of this information at any
                         time by changing the settings on your mobile device, but note that some features of our mobile
@@ -309,7 +309,7 @@ export default function PrivacyPolicy() {
                     <ul>
                         <li className="font-bold mb-4">(c) Native Applications on Mobile Device</li>
                     </ul>
-                    <p className="font-normal mb-4">Some features of our mobile applications may require access to
+                    <p className="mb-4">Some features of our mobile applications may require access to
                         certain
                         native applications on your mobile device, such as the camera and photo storage applications
                         (e.g., to take and upload photos) and the phonebook application (e.g., <strong>to send
@@ -320,12 +320,12 @@ export default function PrivacyPolicy() {
                     <ul>
                         <li className="font-bold mb-4">(d) Cookies</li>
                     </ul>
-                    <p className="font-normal mb-4">Most web browsers are set to accept cookies by default. If you
+                    <p className="mb-4">Most web browsers are set to accept cookies by default. If you
                         prefer,
                         you can usually choose to set your browser to remove or reject browser cookies. Please note that
                         if you choose to remove or reject cookies, this could affect the availability and functionality
                         of the Services.</p>
-                    <p className="font-normal mb-4">Cookies are small files that we or others send to and store on or
+                    <p className="mb-4">Cookies are small files that we or others send to and store on or
                         with
                         your computer so that your computer, browser, mobile app or other application can be recognized
                         as unique the next time you access, visit, use or otherwise take advantage of the Services or
@@ -335,7 +335,7 @@ export default function PrivacyPolicy() {
                         by adjusting the settings of your browser, as your browser may permit; however, some products,
                         services or features might not be available or operate properly if cookies are not enabled. Some
                         of our advertisers and third-party service providers may also utilize their own cookies.</p>
-                    <p className="font-normal mb-4">In addition, we, our service providers and others sometimes use
+                    <p className="mb-4">In addition, we, our service providers and others sometimes use
                         data-gathering mechanisms on the Services, including without limitation “web beacons”, “clear
                         GIFs”, “pixels” and/or “tags”. These perform statistical and administrative functions, such as
                         measuring site and page traffic, verifying advertising paths, better understanding user
@@ -349,7 +349,7 @@ export default function PrivacyPolicy() {
                     <ul>
                         <li className="font-bold mb-4">(e) Promotional Communications</li>
                     </ul>
-                    <p className="font-normal mb-4">You may opt out of receiving promotional communications from us by
+                    <p className="mb-4">You may opt out of receiving promotional communications from us by
                         following the instructions in those communications or by emailing us at <a
                             href="mailto:info@kterings.com"><strong>info@kterings.com</strong></a>. If you opt out, we
                         may still send you non-promotional communications, such as those about your account or our
@@ -357,23 +357,23 @@ export default function PrivacyPolicy() {
                     <ul>
                         <li className="font-bold mb-4">(f) Push Notifications</li>
                     </ul>
-                    <p className="font-normal mb-4">With your consent, we may send promotional and non-promotional push
+                    <p className="mb-4">With your consent, we may send promotional and non-promotional push
                         notifications or alerts to your mobile device. You can deactivate these messages at any time by
                         changing the notification settings on your mobile device.</p>
                     <ol start={10}>
                         <li className="font-bold mb-4">10. WHAT ARE YOUR RIGHTS TO YOUR DATA?</li>
                     </ol>
-                    <p className="font-normal mb-4">All Your Personal Information we collect will always belong to you.
+                    <p className="mb-4">All Your Personal Information we collect will always belong to you.
                         However, we are a collector and a processor of Your Personal Information. That implies on us
                         obligations to respect your rights to Personal Information and facilitate the exercise of your
                         rights thereto. In order to use any of your rights at any time please contact us and we will
                         facilitate the exercise of your rights free of charge. We will inform you on the actions taken
                         by us under your request as soon as practically possible, but in any case, not later than in 30
                         (thirty) calendar days.</p>
-                    <p className="font-normal mb-4">In accordance with the <strong>PIPEDA</strong>, you have a
+                    <p className="mb-4">In accordance with the <strong>PIPEDA</strong>, you have a
                         significant
                         number of rights related to your Personal Information, such as e.g.:</p>
-                    <ol className="font-normal mb-4 list-decimal pl-5">
+                    <ol className="mb-4 list-decimal pl-5">
                         <li><strong>Right to Consent:</strong> Individuals have the right to provide or withhold
                             their consent for the collection, use, or disclosure of their personal information by
                             organizations. Organizations must obtain clear and informed consent before collecting or
@@ -421,7 +421,7 @@ export default function PrivacyPolicy() {
                     <ol start={11}>
                         <li className="font-bold mb-4 underline">11. CONTACTING US</li>
                     </ol>
-                    <p className="font-normal mb-4">If you have any questions about this Privacy Policy, wish to
+                    <p className="mb-4">If you have any questions about this Privacy Policy, wish to
                         exercise any
                         of your rights to your Personal Information or file a complaint, please contact us at:</p>
                     <p className="font-bold mb-4">KTERINGS</p>

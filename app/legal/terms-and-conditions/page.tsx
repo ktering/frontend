@@ -477,9 +477,9 @@ export default function TermsAndConditionsPage() {
                     </p>
                 </div>
                 <ol className="list-decimal pl-5 mb-4" start={12}>
-                    <li className="font-normal mb-2"><strong>SOFTWARE UPDATES</strong></li>
+                    <li className="mb-2"><strong>SOFTWARE UPDATES</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     We may update the Software from time to time, at our sole discretion. The update may be in the form
                     of adding new features, bug fixing and new versions of the Software. In order to provide you with
                     the most current version of the Software, you agree that new updates and versions of the Software
@@ -488,15 +488,15 @@ export default function TermsAndConditionsPage() {
                     new features may include additional terms that you will have to agree to.
                 </p>
                 <ol className="list-decimal pl-5 mb-4" start={13}>
-                    <li className="font-normal mb-2"><strong>APP USE LICENSE</strong></li>
+                    <li className="mb-2"><strong>APP USE LICENSE</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     When you use the Services through the App, then KTERINGS APP grant you a revocable,
                     non-transferable, non-exclusive, limited right to install and use it on wireless phones and devices
                     that are in accordance with the terms and conditions of this license, used and controlled by you and
                     shall not:
                 </p>
-                <ul className="list-disc pl-5 font-normal mb-4">
+                <ul className="list-disc pl-5 mb-4">
                     <li className="mb-2">Decompile, disassemble, reverse-engineer, attempt to know the source code of
                         the App, or decrypt it;
                     </li>
@@ -524,15 +524,15 @@ export default function TermsAndConditionsPage() {
                     </li>
                 </ul>
                 <ol className="list-decimal pl-5 mb-4" start={14}>
-                    <li className="font-normal mb-2"><strong>TERMS REGARDING APPLE AND ANDROID DEVICES</strong></li>
+                    <li className="mb-2"><strong>TERMS REGARDING APPLE AND ANDROID DEVICES</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     The following terms and conditions will apply when you access the App either from the Apple Store or
                     the Google Play Store. You acknowledge that these Terms is between you and KTERINGS APP only and not
                     with Apple Inc. or Google Inc. (both an “App Distributor”), and KTERINGS APP (which is not an App
                     Distributor) is directly responsible for the App and the App Content thereof.
                 </p>
-                <ul className="list-disc pl-5 font-normal mb-4">
+                <ul className="list-disc pl-5 mb-4">
                     <li className="mb-2">Scope of License: The license granted to you for the App is limited to a
                         non-transferable permit to use the App on a device that uses the Apple iOS and/or Android
                         operating system as applicable and in line with the usage rules set forth in the applicable App
@@ -580,21 +580,21 @@ export default function TermsAndConditionsPage() {
                     </li>
                 </ul>
                 <ol className="list-decimal pl-5 mb-4" start={15}>
-                    <li className="font-normal mb-2"><strong>TERMINATION</strong></li>
+                    <li className="mb-2"><strong>TERMINATION</strong></li>
                 </ol>
-                <p className="font-normal mb-4"><strong>Termination by you</strong>. You may terminate these Terms and
+                <p className="mb-4"><strong>Termination by you</strong>. You may terminate these Terms and
                     the license granted to you hereunder at any time by uninstalling and removing the Software from your
                     device, and by ceasing to use the App.</p>
-                <p className="font-normal mb-4"><strong>Termination by us.</strong> Without prejudice to any other
+                <p className="mb-4"><strong>Termination by us.</strong> Without prejudice to any other
                     rights we may have, these Terms and the license granted to you hereunder automatically terminate
                     without notice, if you fail to comply with or breach any provision of these Terms. In no event will
                     we be liable for the suspension, removal of or disabling of your access to KTERINGS APP or to any
                     feature available therein. You acknowledge that upon expiration or termination of your license, the
                     license key may automatically de-activate.</p>
                 <ol className="list-decimal pl-5 mb-4" start={16}>
-                    <li className="font-normal mb-2"><strong>EXCLUSION OF LIABILITY FOR EXTERNAL LINKS</strong></li>
+                    <li className="mb-2"><strong>EXCLUSION OF LIABILITY FOR EXTERNAL LINKS</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     The Website may provide links to external Internet sites. <strong>KTERINGS APP</strong> hereby
                     declares explicitly that it has no influence on the layout or content of the linked pages and
                     dissociates itself expressly from all contents of all linked pages of third parties. <strong>KTERINGS
@@ -603,18 +603,18 @@ export default function TermsAndConditionsPage() {
                     apply to any collection and processing of your personal data on or through such external sites.
                 </p>
                 <ol className="list-decimal pl-5 mb-4" start={17}>
-                    <li className="font-normal mb-2"><strong>YOUR REPRESENTATIONS AND WARRANTIES</strong></li>
+                    <li className="mb-2"><strong>YOUR REPRESENTATIONS AND WARRANTIES</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     You hereby represent and warrant that: (i) you will only use KTERINGS APP as permitted under these
                     Terms; (ii) you agree to comply with all applicable laws, rules and regulations, and industry best
                     practices while using KTERINGS APP; (iii) you will not use KTERINGS APP for any fraudulent or
                     inappropriate purpose; (iv) you shall not prevent others from using KTERINGS APP.
                 </p>
                 <ol className="list-decimal pl-5 mb-4" start={18}>
-                    <li className="font-normal mb-2"><strong>DISCLAIMER OF WARRANTIES</strong></li>
+                    <li className="mb-2"><strong>DISCLAIMER OF WARRANTIES</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     KTERINGS APP IS PROVIDED TO YOU “AS IS”, WITHOUT WARRANTY OF ANY KIND. TO THE MAXIMUM EXTENT
                     PERMITTED BY APPLICABLE LAW, WE DISCLAIM ALL WARRANTIES, INCLUDING, WITHOUT LIMITATION, ANY IMPLIED
                     WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT AND ANY
@@ -631,9 +631,9 @@ export default function TermsAndConditionsPage() {
                     herein contained, and for any loss or damage which we may suffer as a result of any such breach.
                 </p>
                 <ol className="list-decimal pl-5 mb-4" start={19}>
-                    <li className="font-normal mb-2"><strong>LIMITATION OF LIABILITY</strong></li>
+                    <li className="mb-2"><strong>LIMITATION OF LIABILITY</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     TO THE EXTENT PERMITTED UNDER APPLICABLE LAW, UNDER NO CIRCUMSTANCES SHALL WE, OUR OFFICERS,
                     DIRECTORS, EMPLOYEES, PARENTS, AFFILIATES, SUCCESSORS, ASSIGNS, OR LICENSORS BE LIABLE TO YOU OR ANY
                     OTHER THIRD PARTY FOR ANY INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL, EXEMPLARY OR PUNITIVE
@@ -652,9 +652,9 @@ export default function TermsAndConditionsPage() {
                     EXCEED THE AMOUNT PAID IF ANY, BY YOU FOR THE USE OF KTERINGS APP.
                 </p>
                 <ol className="list-decimal pl-5 mb-4" start={20}>
-                    <li className="font-normal mb-2"><strong>INDEMNITY</strong></li>
+                    <li className="mb-2"><strong>INDEMNITY</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     You agree to defend, indemnify and hold us, our parent corporation, officers, directors, employees
                     and agents, harmless from and against any and all claims, damages, obligations, losses, liabilities,
                     costs and expenses (including but not limited to attorney's fees) arising from: (i) your access to
@@ -662,17 +662,17 @@ export default function TermsAndConditionsPage() {
                     party right, including without limitation, any intellectual property right, or privacy right.
                 </p>
                 <ol className="list-decimal pl-5 mb-4" start={21}>
-                    <li className="font-normal mb-2"><strong>GOVERNING LAW AND DISPUTES</strong></li>
+                    <li className="mb-2"><strong>GOVERNING LAW AND DISPUTES</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     This Agreement will be governed by, construed and enforced in accordance with the laws of Canada,
                     without regard to its conflicts of law principles or provisions. Canada Courts shall have
                     jurisdiction to adjudicate disputes.
                 </p>
                 <ol className="list-decimal pl-5 mb-4" start={22}>
-                    <li className="font-normal mb-2"><strong>GENERAL</strong></li>
+                    <li className="mb-2"><strong>GENERAL</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     These Terms constitutes the entire understanding between the parties with respect to the matters
                     referred to herein. The Section headings in these Terms are provided for convenience purpose only
                     and have no legal or contractual significance. If any provision of these Terms is held to be
@@ -689,9 +689,9 @@ export default function TermsAndConditionsPage() {
                     behalf.
                 </p>
                 <ol className="list-decimal pl-5 mb-4" start={23}>
-                    <li className="font-normal mb-2"><strong>Contact Us.</strong></li>
+                    <li className="mb-2"><strong>Contact Us.</strong></li>
                 </ol>
-                <p className="font-normal mb-4">
+                <p className="mb-4">
                     If you have any questions (or comments) concerning these Terms, you are most welcomed to contact us
                     at <a href="mailto:info@kterings.com"
                           className="font-bold text-blue-500 hover:underline">info@kterings.com</a>, and we will make an

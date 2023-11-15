@@ -11,6 +11,10 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast"
 import {useRouter, useSearchParams} from "next/navigation";
+import {ArrowLeftIcon} from "@heroicons/react/20/solid";
+import {FoodItem} from "@/types/shared/food";
+import {TrashIcon} from "@heroicons/react/24/outline";
+import {SizeMap} from "@/types/pages/kterer/edit-food";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -19,12 +23,12 @@ const formSchema = z.object({
         type: z.string(),
     })),
     name: z.string().min(2, "Food name must be at least 2 characters").max(50, "Food name can't be longer than 50 characters"),
-    small_price: z.coerce.number(),
-    small_amount: z.coerce.number(),
-    medium_price: z.coerce.number(),
-    medium_amount: z.coerce.number(),
-    large_price: z.coerce.number(),
-    large_amount: z.coerce.number(),
+    small_price: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
+    small_amount: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
+    medium_price: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
+    medium_amount: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
+    large_price: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
+    large_amount: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
     description: z.string().min(2, "Description must be at least 2 characters").max(1000, "Description can't be longer than 1000 characters"),
     ingredients: z.string().min(1, "Ingredients list cannot be empty"),
     halal: z.string().refine(value => value !== "", {
@@ -51,12 +55,15 @@ const formSchema = z.object({
 export default function EditFood() {
     const searchParams = useSearchParams();
     const foodId = searchParams.get('food_id');
-    const [foodDetails, setFoodDetails] = useState(null);
+    const [foodDetails, setFoodDetails] = useState<FoodItem | null>(null);
     const {toast} = useToast();
     const router = useRouter();
     const [ingredientsList, setIngredientsList] = useState<string[]>([]);
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
+    const [existingImages, setExistingImages] = useState<string[]>([]);
+    const [newImages, setNewImages] = useState<File[]>([]);
+    const [deletedImages, setDeletedImages] = useState<string[]>([]);
+    const totalImageCount = existingImages.length + newImages.length;
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -89,24 +96,30 @@ export default function EditFood() {
         const getFoodInfo = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/food/${foodId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            try {
+                const response = await fetch(`${apiURL}/api/food/${foodId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
 
-            if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setFoodDetails(data.data);
+            } catch (error) {
+                console.error('Error fetching food info', error);
             }
-
-            const data = await response.json();
-            setFoodDetails(data.data);
         }
 
-        getFoodInfo();
+        getFoodInfo().catch(error => {
+            console.error('Error fetching food info', error);
+        });
     }, [foodId]);
 
 
@@ -115,55 +128,43 @@ export default function EditFood() {
 
         console.log('foodDetails', foodDetails);
 
-        const {
-            images,
-            name,
-            description,
-            ingredients,
-            halal,
-            kosher,
-            vegetarian,
-            contains_nuts,
-            meat_type,
-            ethnic_type,
-            quantities,
-        } = foodDetails;
+        const initialSizes: SizeMap = {};
 
-        const priceAmountMap = quantities.reduce((acc, quantity) => {
-            acc[`${quantity.size}_price`] = parseFloat(quantity.price) || 0;
-            acc[`${quantity.size}_amount`] = parseInt(quantity.quantity) || 0;
-            return acc;
-        }, {});
+        const {small, medium, large} = foodDetails.quantities.reduce((sizes, {size, price, quantity}) => {
+            sizes[size as keyof SizeMap] = {price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0};
+            return sizes;
+        }, initialSizes);
 
-        const newImages = images.map(image => ({
-            path: image.image_url,
-            size: undefined, // 'size' field is not provided in the foodDetails, so you need to handle it accordingly
-            type: undefined, // 'type' field is not provided in the foodDetails, so you need to handle it accordingly
-        }));
-
-        // Prepare a new object that matches the structure of your form's 'defaultValues'
-        const formValues = {
-            images: newImages,
-            name,
-            small_price: priceAmountMap.small_price,
-            small_amount: priceAmountMap.small_amount,
-            medium_price: priceAmountMap.medium_price,
-            medium_amount: priceAmountMap.medium_amount,
-            large_price: priceAmountMap.large_price,
-            large_amount: priceAmountMap.large_amount,
-            description,
-            ingredients,
-            halal: halal || "",
-            kosher,
-            vegetarian,
-            contains_nuts,
-            meat_type,
-            ethnic_type,
+        const defaultValues = {
+            small_price: small?.price || 0,
+            small_amount: small?.quantity || 0,
+            medium_price: medium?.price || 0,
+            medium_amount: medium?.quantity || 0,
+            large_price: large?.price || 0,
+            large_amount: large?.quantity || 0,
         };
 
-        // Set each form value with validation
-        Object.keys(formValues).forEach(key => {
-            form.setValue(key as keyof typeof formValues, formValues[key as keyof typeof formValues], {shouldValidate: true});
+        const imageUrls = foodDetails.images.map(image => image.image_url);
+        setExistingImages(imageUrls);
+
+        const imageObjects = imageUrls.map(url => ({
+            path: url,
+            size: 0,
+            type: 'image/png'
+        }));
+
+        form.reset({
+            ...defaultValues,
+            images: imageObjects,
+            name: foodDetails.name,
+            description: foodDetails.description,
+            ingredients: foodDetails.ingredients,
+            halal: foodDetails.halal,
+            kosher: foodDetails.kosher,
+            vegetarian: foodDetails.vegetarian,
+            contains_nuts: foodDetails.contains_nuts,
+            meat_type: foodDetails.meat_type,
+            ethnic_type: foodDetails.ethnic_type,
         });
     }, [foodDetails, form]);
 
@@ -173,93 +174,117 @@ export default function EditFood() {
     }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newFiles = Array.from(event.target.files || []);
-        const allFiles = [...selectedFiles, ...newFiles];
-        if (allFiles.length > 3) {
+        const uploadedFiles = Array.from(event.target.files || []);
+        const totalFiles = existingImages.length + newImages.length + uploadedFiles.length;
+        if (totalFiles > 3) {
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
                 description: "You can only upload up to 3 images.",
-            })
+            });
             return;
         }
-        setSelectedFiles(allFiles);
-        setPreviewUrls(allFiles.map(file => URL.createObjectURL(file)));
-        form.setValue('images', allFiles.map(file => ({
-            path: file.name,
-            size: file.size,
-            type: file.type,
-        })));
+        setNewImages(prev => [...prev, ...uploadedFiles]);
     };
 
-    const removeImage = (index: number) => {
-        const updatedFiles = [...selectedFiles];
-        updatedFiles.splice(index, 1);
-        setSelectedFiles(updatedFiles);
-        const updatedUrls = [...previewUrls];
-        updatedUrls.splice(index, 1);
-        setPreviewUrls(updatedUrls);
-        form.setValue('images', updatedFiles.map(file => ({
-            path: file.name,
-            size: file.size,
-            type: file.type,
-        })));
+    // const removeExistingImage = (index: number) => {
+    //     const updatedExistingImages = [...existingImages];
+    //     updatedExistingImages.splice(index, 1);
+    //     setExistingImages(updatedExistingImages);
+    // };
+
+    const removeExistingImage = (index: number) => {
+        const updatedExistingImages = [...existingImages];
+        const [removedImage] = updatedExistingImages.splice(index, 1); // Remove and capture the deleted image
+        setExistingImages(updatedExistingImages);
+        setDeletedImages(prev => [...prev, removedImage]); // Add the removed image to the deletedImages state
+    };
+
+    const removeNewImage = (index: number) => {
+        const updatedNewImages = newImages.filter((_, i) => i !== index);
+        setNewImages(updatedNewImages);
     };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const {
-            small_price,
-            small_amount,
-            medium_price,
-            medium_amount,
-            large_price,
-            large_amount,
-            ...restOfValues
-        } = values;
+        // TODO: when the user removes all images and doesnt add any new ones, show an error message and dont submit the form
+        const formData = new FormData();
 
-        const transformed_values = [
-            {size: "small", price: small_price, quantity: small_amount},
-            {size: "medium", price: medium_price, quantity: medium_amount},
-            {size: "large", price: large_price, quantity: large_amount},
-        ];
+        function isKeyOfValues(key: string): key is keyof typeof values {
+            return key in values;
+        }
 
-        // filter out sizes with 0 price and 0 amount
-        const filtered_values = transformed_values.filter((size) => {
-            return size.price > 0 && size.quantity > 0;
+        for (const key in values) {
+            if (!isKeyOfValues(key)) continue;
+
+            if (key !== 'images') {
+                if (key === 'small_price' || key === 'small_amount' ||
+                    key === 'medium_price' || key === 'medium_amount' ||
+                    key === 'large_price' || key === 'large_amount') {
+                    continue;
+                }
+                formData.append(key, values[key].toString());
+            }
+        }
+
+        newImages.forEach((image, index) => {
+            formData.append(`image_${index + 1}`, image);
         });
 
-        const food_post = {
-            ...restOfValues,
-            quantities: filtered_values
-        }
+        deletedImages.forEach((url, index) => {
+            formData.append(`deleted_image_${index + 1}`, url);
+        });
+
+        // existingImages.forEach((url, index) => {
+        //     // deleted_image_1, deleted_image_2, deleted_image_3
+        //     formData.append(`existingImages_${index + 1}`, url);
+        // });
+
+        const quantities = [
+            {size: 'small', price: values.small_price, quantity: values.small_amount},
+            {size: 'medium', price: values.medium_price, quantity: values.medium_amount},
+            {size: 'large', price: values.large_price, quantity: values.large_amount},
+        ].filter(size => size.price > 0 && size.quantity > 0);
+
+        formData.append('quantities', JSON.stringify(quantities));
+
+        formData.append('_method', 'PUT');
 
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
-        const addFoodPostResponse = await fetch(`${apiURL}/api/food`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify(food_post),
-        });
 
-        if (addFoodPostResponse.ok) {
-            router.push('/kterer/dashboard');
-        } else {
-            console.log(addFoodPostResponse.statusText);
+        try {
+            const addFoodPostResponse = await fetch(`${apiURL}/api/food/${foodDetails?.id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: formData,
+            });
+
+            if (addFoodPostResponse.ok) {
+                router.push('/kterer/dashboard');
+            } else {
+                console.log(addFoodPostResponse.statusText);
+            }
+        } catch (error) {
+            console.error('Error submitting form', error);
         }
     }
 
     return (
         <>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <p className="font-bold text-xl mb-12">Edit Food</p>
+                <p className="font-bold text-xl mb-12 flex items-center">
+                    <Link href="/kterer/dashboard">
+                        <ArrowLeftIcon className="h-6 w-6 text-primary-color mr-2"/>
+                    </Link>
+                    Edit Food
+                </p>
                 <div className="max-w-2xl mx-auto">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                {previewUrls.map((url, index) => (
+                                {existingImages.map((url, index) => (
                                     <div className="space-y-2" key={index}>
                                         <div className="h-48 overflow-hidden rounded-lg relative">
                                             <img
@@ -270,14 +295,29 @@ export default function EditFood() {
                                         </div>
                                         <button
                                             type="button"
-                                            onClick={() => removeImage(index)}
+                                            onClick={() => removeExistingImage(index)}
                                             className="p-1 rounded-lg hover:bg-gray-50"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                 strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-                                            </svg>
+                                            <TrashIcon className="h-6 w-6"/>
+                                        </button>
+                                    </div>
+                                ))}
+                                {newImages.map((file, index) => (
+                                    <div className="space-y-2" key={index}>
+                                        <div className="h-48 overflow-hidden rounded-lg relative">
+                                            <img
+                                                src={URL.createObjectURL(file)}
+                                                alt={`New Image ${index + 1}`}
+                                                className="w-full h-full object-cover rounded-lg"
+                                                // onLoad={() => URL.revokeObjectURL(URL.createObjectURL(file))} // Revoke URL to avoid memory leaks
+                                            />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeNewImage(index)}
+                                            className="p-1 rounded-lg hover:bg-gray-50"
+                                        >
+                                            <TrashIcon className="h-6 w-6"/>
                                         </button>
                                     </div>
                                 ))}
@@ -295,10 +335,8 @@ export default function EditFood() {
                                                     id="foodImagesInput"
                                                     className="hidden"
                                                     multiple
-                                                    onChange={(event) => {
-                                                        handleFileChange(event);
-                                                    }}
-                                                    disabled={selectedFiles.length >= 3}
+                                                    onChange={(event) => handleFileChange(event)}
+                                                    disabled={totalImageCount >= 3}
                                                 />
                                                 <label htmlFor="foodImagesInput"
                                                        className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">
@@ -309,9 +347,9 @@ export default function EditFood() {
                                                               d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
                                                     </svg>
                                                     <span
-                                                        className="mt-2 block text-sm font-semibold text-gray-900"> {selectedFiles.length < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
+                                                        className="mt-2 block text-sm font-semibold text-gray-900"> {totalImageCount < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
-                                                        className="mt-2 block text-xs font-semibold text-gray-900">{selectedFiles.length} out of 3 Uploaded</span>
+                                                        className="mt-2 block text-xs font-semibold text-gray-900">{totalImageCount} out of 3 Uploaded</span>
                                                 </label>
                                             </div>
                                         </FormControl>
@@ -435,9 +473,11 @@ export default function EditFood() {
                                     />
                                 </div>
                                 {/* No Size price, amount selected error message */}
+                                {/* @ts-ignore */}
                                 {form.formState.errors[""]?.message && (
                                     <div className="col-span-3">
                                         <p className="text-sm font-medium text-destructive">
+                                            {/* @ts-ignore */}
                                             {form.formState.errors[""].message}
                                         </p>
                                     </div>
@@ -489,7 +529,7 @@ export default function EditFood() {
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Halal?</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue/>
@@ -523,7 +563,7 @@ export default function EditFood() {
                                         <FormLabel>Kosher?</FormLabel>
                                         <Select
                                             onValueChange={(value) => field.onChange(value === '1')}
-                                            defaultValue={field.value ? '1' : '0'}
+                                            value={field.value ? '1' : '0'}
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
@@ -546,7 +586,7 @@ export default function EditFood() {
                                     <FormItem>
                                         <FormLabel>Vegetarian?</FormLabel>
                                         <Select onValueChange={(value) => field.onChange(value === '1')}
-                                                defaultValue={field.value ? '1' : '0'}>
+                                                value={field.value ? '1' : '0'}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue/>
@@ -568,7 +608,7 @@ export default function EditFood() {
                                     <FormItem>
                                         <FormLabel>May Contain Nuts?</FormLabel>
                                         <Select onValueChange={(value) => field.onChange(value === '1')}
-                                                defaultValue={field.value ? '1' : '0'}>
+                                                value={field.value ? '1' : '0'}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue/>
@@ -589,7 +629,7 @@ export default function EditFood() {
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Meat Type</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue placeholder="Chicken/Beef..."/>
@@ -616,7 +656,7 @@ export default function EditFood() {
                                 render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Ethnic Type</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue placeholder="Pakistani/Indian/Chinese..."/>

@@ -1,5 +1,6 @@
 "use client";
-import {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
+import Biryani from "@/static/landing-page/biryani.png";
 import AsianIcon from "@/static/home/asian-icon.svg";
 import ChickenIcon from "@/static/home/chicken-icon.svg";
 import DessertsIcon from "@/static/home/desserts-icon.svg";
@@ -20,35 +21,73 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
-import Biryani from "@/static/landing-page/biryani.png";
+import {HeartIcon as HeartIconOutline} from "@heroicons/react/24/outline";
+import {FoodItem} from "@/types/shared/food";
+import {SearchContext} from "@/app/context/searchContext";
 
 export default function Kterings() {
-    const [nearYouFood, setNearYouFood] = useState([]);
-    const [position, setPosition] = useState("over4")
+    const [nearYouFood, setNearYouFood] = useState<FoodItem[]>([]);
+    const [position, setPosition] = useState("over4");
+    const contextValue = useContext(SearchContext);
+    if (!contextValue) {
+        return null;
+    }
+    const {searchInput} = contextValue;
+    const isSearching = searchInput.trim().length > 0;
+    const tryNewFood = nearYouFood;
 
     useEffect(() => {
         const getNearYouFood = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/food`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
 
-            if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+            try {
+                const response = await fetch(`${apiURL}/api/food`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setNearYouFood(data.data);
+
+            } catch (error) {
+                console.error(`Error: ${error}`);
             }
-
-            const data = await response.json();
-            setNearYouFood(data.data);
         }
 
-        getNearYouFood();
+        getNearYouFood().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
     }, []);
+
+    const filteredFood = nearYouFood.filter(item =>
+        item.name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+
+    const toggleFavorite = async (foodId: string) => {
+        const accessToken = localStorage.getItem('accessToken');
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${apiURL}/api/favourite/food/${foodId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+        });
+
+        if (!response.ok) {
+            console.error(`Error: ${response.statusText}`);
+            return;
+        }
+    }
 
     const icons = [
         {src: TrendingIcon, iconName: "Trending", onClick: () => console.log('Trending Icon clicked')},
@@ -107,80 +146,93 @@ export default function Kterings() {
 
                 {/* Near You */}
 
-                <p className="font-bold text-xl my-12">NEAR YOU</p>
-
+                <p className="font-bold text-xl my-12">{isSearching ? "SEARCHED FOOD" : "NEAR YOU"}</p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-                    {nearYouFood.map((item, index) => {
-                        const food_id = new URLSearchParams({
-                            food_id: item.id,
-                        }).toString();
+                    {isSearching && filteredFood.length === 0 ? (
+                        <p>No search results found</p>
+                    ) : (
+                        filteredFood.map((item, index) => {
+                            const food_id = new URLSearchParams({
+                                food_id: item.id,
+                            }).toString();
 
-                        return (
-                            <div key={index} className="relative">
-                                <Link href={`/kterings/${item.name}?${food_id}`}>
-                                    <div
-                                        className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
-                                        <Image src={item.images[0].image_url || Biryani} alt={item.name} layout="fill"
-                                               className="mx-auto rounded-lg w-full"/>
+                            return (
+                                <div key={index} className="relative">
+                                    <Link href={`/kterings/${item.name}?${food_id}`}>
+                                        <div
+                                            className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
+
+                                            <Image
+                                                src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
+                                                alt={item.name}
+                                                layout="fill"
+                                                className="mx-auto rounded-lg w-full"/>
+                                        </div>
+                                    </Link>
+                                    <div className="flex justify-between items-center mt-2">
+                                        <div className="text-left">
+                                            <p className="text-lg">{item.name}</p>
+                                            {item.rating !== 0 &&
+                                                <StarRating rating={item.rating}/>
+                                            }
+                                            {/* TODO: update the distance from the endpoint */}
+                                            <p className="text-sm mt-1">00 min away</p>
+                                        </div>
+
+
+                                        <span onClick={() => toggleFavorite(item.id)}>
+                                        <HeartIconOutline className="h-6 w-6 cursor-pointer"/>
+                                    </span>
                                     </div>
-                                </Link>
-                                <div className="flex justify-between items-center mt-2">
-                                    <div className="text-left">
-                                        <p className="text-lg">{item.name}</p>
-                                        {/* TODO: update the rating here from the endpoint */}
-                                        <StarRating rating={5}/>
-                                        {/* TODO: update the distance from the endpoint */}
-                                        <p className="text-sm mt-1">00 min away</p>
-                                    </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
-                                    </svg>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })
+                    )}
                 </div>
 
                 {/* TRY SOMETHING NEW */}
+                {!isSearching && (
+                    <>
+                        <p className="font-bold text-xl my-12">TRY SOMETHING NEW</p>
 
-                <p className="font-bold text-xl my-12">TRY SOMETHING NEW</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+                            {nearYouFood.map((item, index) => {
+                                const food_id = new URLSearchParams({
+                                    food_id: item.id,
+                                }).toString();
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-                    {nearYouFood.map((item, index) => {
-                        const food_id = new URLSearchParams({
-                            food_id: item.id,
-                        }).toString();
-
-                        return (
-                            <div key={index} className="relative">
-                                <Link href={`/kterings/${item.name}?${food_id}`}>
-                                    <div
-                                        className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
-                                        <Image src={item.images[0].image_url || Biryani} alt={item.name} layout="fill"
-                                               className="mx-auto rounded-lg w-full"/>
+                                return (
+                                    <div key={index} className="relative">
+                                        <Link href={`/kterings/${item.name}?${food_id}`}>
+                                            <div
+                                                className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
+                                                <Image
+                                                    src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
+                                                    alt={item.name}
+                                                    layout="fill"
+                                                    className="mx-auto rounded-lg w-full"/>
+                                            </div>
+                                        </Link>
+                                        <div className="flex justify-between items-center mt-2">
+                                            <div className="text-left">
+                                                <p className="text-lg">{item.name}</p>
+                                                {/* TODO: update the rating here from the endpoint */}
+                                                <StarRating rating={5}/>
+                                                {/* TODO: update the distance from the endpoint */}
+                                                <p className="text-sm mt-1">00 min away</p>
+                                            </div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                 strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round"
+                                                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
+                                            </svg>
+                                        </div>
                                     </div>
-                                </Link>
-                                <div className="flex justify-between items-center mt-2">
-                                    <div className="text-left">
-                                        <p className="text-lg">{item.name}</p>
-                                        {/* TODO: update the rating here from the endpoint */}
-                                        <StarRating rating={5}/>
-                                        {/* TODO: update the distance from the endpoint */}
-                                        <p className="text-sm mt-1">00 min away</p>
-                                    </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
-
+                                );
+                            })}
+                        </div>
+                    </>
+                )}
             </div>
         </>
     )

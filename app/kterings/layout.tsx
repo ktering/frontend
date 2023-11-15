@@ -1,14 +1,16 @@
+import React from "react";
 import type {Metadata} from 'next'
 import UserNavbar from "@/components/userNavbar";
 import KtererDashboardNavbar from "@/components/ktererDashboardNavbar";
 import {currentUser} from '@clerk/nextjs';
+import {SearchProvider} from "@/app/context/searchProvider";
 
 export const metadata: Metadata = {
-    title: 'Ktering',
-    description: 'Ktering Homepage',
+    title: 'Kterings',
+    description: 'Kterings Homepage',
 }
 
-export default async function KteringLayout({children}: {
+export default async function KteringsLayout({children}: {
     children: React.ReactNode;
 }) {
     const user = await currentUser();
@@ -19,11 +21,13 @@ export default async function KteringLayout({children}: {
 
     return (
         <section>
-            <div>
-                <UserNavbar/>
-                {isKterer ? <KtererDashboardNavbar/> : null}
-                {children}
-            </div>
+            <SearchProvider>
+                <div>
+                    <UserNavbar/>
+                    {isKterer ? <KtererDashboardNavbar/> : null}
+                    {children}
+                </div>
+            </SearchProvider>
         </section>
     );
 }
