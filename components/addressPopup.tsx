@@ -51,33 +51,34 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen, setAddressChan
     const fetchAddresses = () => {
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
-        const user_id = new URLSearchParams({
-            user_id: user?.id,
-        }).toString();
+        if (user && user.user && user.user.id) {
+            const user_id = new URLSearchParams({
+                user_id: user.user.id,
+            }).toString();
 
-        fetch(`${apiURL}/api/address?${user_id}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch addresses');
-                }
-                return response.json();
+            fetch(`${apiURL}/api/address?${user_id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
             })
-            .then(data => {
-                console.log('Addresses fetched:', data);
-                const homeAddress = data.home ? data.home.address : '';
-                const officeAddress = data.work ? data.work.address : '';
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch addresses');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const homeAddress = data.home ? data.home.address : '';
+                    const officeAddress = data.work ? data.work.address : '';
 
-                setHomeAddress(homeAddress);
-                setOfficeAddress(officeAddress);
-            })
-            .catch(error => {
-                console.error('Error fetching addresses:', error);
-            });
+                    setHomeAddress(homeAddress);
+                    setOfficeAddress(officeAddress);
+                })
+                .catch(error => {
+                    console.error('Error fetching addresses:', error);
+                });
+        }
     };
 
     const saveAddress = (type: AddressType) => {
