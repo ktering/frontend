@@ -1,8 +1,8 @@
 
-export type AddressType = 'home' | 'office';
+export type AddressType = 'home' | 'work';
 
 export type Address = {
-    type: 'home' | 'office';
+    type: 'home' | 'work';
     address: string;
 };
 

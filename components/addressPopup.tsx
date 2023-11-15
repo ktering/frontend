@@ -5,7 +5,7 @@ import {Input} from "@/components/ui/input";
 import {BriefcaseIcon, HomeIcon, PencilSquareIcon} from "@heroicons/react/24/solid";
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
 import {useUser} from "@clerk/nextjs";
-import {Address, AddressPopupProps, AddressSectionProps, AddressType} from "@/types/components/addressPopup";
+import {AddressPopupProps, AddressSectionProps, AddressType} from "@/types/components/addressPopup";
 
 const AddressSection = ({label, address, onEdit, isEditing}: AddressSectionProps) => (
     <div className={`flex justify-between items-center ${isEditing ? 'bg-red-100' : ''} p-4 rounded-md`}>
@@ -68,6 +68,7 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen, setAddressChan
                 return response.json();
             })
             .then(data => {
+                console.log('Addresses fetched:', data);
                 const homeAddress = data.home ? data.home.address : '';
                 const officeAddress = data.work ? data.work.address : '';
 
@@ -91,6 +92,8 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen, setAddressChan
                 address: addressValue,
                 type: type,
             };
+
+            console.log('Saving address:', payload)
 
             const accessToken = localStorage.getItem('accessToken');
 
@@ -143,9 +146,9 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen, setAddressChan
         if (type === 'home') {
             setInput(homeAddress);
             setEditing('home');
-        } else if (type === 'office') {
+        } else if (type === 'work') {
             setInput(officeAddress);
-            setEditing('office');
+            setEditing('work');
         }
     };
 
@@ -198,21 +201,21 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen, setAddressChan
                         isEditing={editing === 'home'}
                     />
                     <AddressSection
-                        label="office"
+                        label="work"
                         address={officeAddress}
-                        onEdit={() => editAddress('office')}
-                        isEditing={editing === 'office'}
+                        onEdit={() => editAddress('work')}
+                        isEditing={editing === 'work'}
                     />
                 </div>
 
                 <div className="flex flex-col items-center pt-4 space-y-2">
                     {editing && (
                         <span className="text-sm">
-                            {`Editing ${editing === 'home' ? 'Home' : 'Office'} Address`}
+                            {`Editing ${editing === 'home' ? 'Home' : 'Work'} Address`}
                         </span>
                     )}
                     <button
-                        onClick={() => saveAddress(editing === 'office' ? 'office' : 'home')}
+                        onClick={() => saveAddress(editing === 'work' ? 'work' : 'home')}
                         className="rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                     >
                         Save Address

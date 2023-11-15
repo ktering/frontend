@@ -1,6 +1,11 @@
-import {FetchAddressProps} from "@/types/hooks/fetchAddress"
+interface User {
+    id: string;
+}
 
-export const fetchHomeAddress = async ({setHomeAddress, user}: FetchAddressProps) => {
+export const fetchHomeAddress = async (
+    setHomeAddress: (address: string) => void,
+    user: User
+) => {
     const accessToken = localStorage.getItem('accessToken');
     const apiURL = process.env.NEXT_PUBLIC_API_URL;
     const userId = user?.id;

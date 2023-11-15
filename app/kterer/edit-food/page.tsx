@@ -206,6 +206,7 @@ export default function EditFood() {
     };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        // TODO: when the user removes all images and doesnt add any new ones, show an error message and dont submit the form
         const formData = new FormData();
 
         function isKeyOfValues(key: string): key is keyof typeof values {
@@ -472,9 +473,11 @@ export default function EditFood() {
                                     />
                                 </div>
                                 {/* No Size price, amount selected error message */}
+                                {/* @ts-ignore */}
                                 {form.formState.errors[""]?.message && (
                                     <div className="col-span-3">
                                         <p className="text-sm font-medium text-destructive">
+                                            {/* @ts-ignore */}
                                             {form.formState.errors[""].message}
                                         </p>
                                     </div>

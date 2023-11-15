@@ -1,5 +1,5 @@
 "use client";
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     ArrowLeftOnRectangleIcon,
     Bars3Icon,
@@ -51,10 +51,6 @@ export default function UserNavbar() {
         searchInput: '', setSearchInput: () => {
         }
     };
-    // if (!contextValue) {
-    //     return null;
-    // }
-    // const {searchInput, setSearchInput} = contextValue;
 
     const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (setSearchInput) {
@@ -222,7 +218,8 @@ export default function UserNavbar() {
                             </div>
 
                             {/* Notification Icon */}
-                            <div className="flex items-center md:mr-4 md:flex md:flex-shrink-0 md:items-center space-x-2">
+                            <div
+                                className="flex items-center md:mr-4 md:flex md:flex-shrink-0 md:items-center space-x-2">
                                 <div className="flex flex-end">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger> <BellIcon className="h-6 w-6"
