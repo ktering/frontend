@@ -124,7 +124,13 @@ export default function PostFood() {
             formData.append(fieldName, file);
         });
 
+        function isKeyOfValues(key: string): key is keyof typeof values {
+            return key in values;
+        }
+
         for (const key in values) {
+            if (!isKeyOfValues(key)) continue;
+
             if (key !== 'images') {
                 const value = values[key];
                 if (Array.isArray(value) || (typeof value === 'object' && value !== null)) {
