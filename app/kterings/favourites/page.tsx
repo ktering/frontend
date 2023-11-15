@@ -98,7 +98,7 @@ export default function Favourites() {
             <div className="grid grid-cols-2 lg:grid-cols-4 place-items-center gap-8">
                 {favourites.map((favourite) => {
                         const kterer_id = new URLSearchParams({
-                            kterer_id: favourite.id,
+                            kterer_id: favourite.id.toString(),
                         }).toString();
 
                         return (
