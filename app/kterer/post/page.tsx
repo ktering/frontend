@@ -356,9 +356,11 @@ export default function PostFood() {
                                         )}
                                     />
                                 </div>
+                                {/* @ts-ignore */}
                                 {form.formState.errors[""] && (
                                     <div className="col-span-3">
                                         <p className="text-sm font-medium text-destructive">
+                                            {/* @ts-ignore */}
                                             {form.formState.errors[""].message}
                                         </p>
                                     </div>
