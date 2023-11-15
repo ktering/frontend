@@ -14,6 +14,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {ArrowLeftIcon} from "@heroicons/react/20/solid";
 import {FoodItem} from "@/types/shared/food";
 import {TrashIcon} from "@heroicons/react/24/outline";
+import {SizeMap} from "@/types/pages/kterer/edit-food";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -94,24 +95,30 @@ export default function EditFood() {
         const getFoodInfo = async () => {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const response = await fetch(`${apiURL}/api/food/${foodId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`
-                },
-            });
+            try {
+                const response = await fetch(`${apiURL}/api/food/${foodId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
 
-            if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setFoodDetails(data.data);
+            } catch (error) {
+                console.error('Error fetching food info', error);
             }
-
-            const data = await response.json();
-            setFoodDetails(data.data);
         }
 
-        getFoodInfo();
+        getFoodInfo().catch(error => {
+            console.error('Error fetching food info', error);
+        });
     }, [foodId]);
 
 
@@ -120,10 +127,12 @@ export default function EditFood() {
 
         console.log('foodDetails', foodDetails);
 
+        const initialSizes: SizeMap = {};
+
         const {small, medium, large} = foodDetails.quantities.reduce((sizes, {size, price, quantity}) => {
-            sizes[size] = {price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0};
+            sizes[size as keyof SizeMap] = {price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0};
             return sizes;
-        }, {});
+        }, initialSizes);
 
         const defaultValues = {
             small_price: small?.price || 0,
@@ -191,14 +200,20 @@ export default function EditFood() {
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const formData = new FormData();
 
+        function isKeyOfValues(key: string): key is keyof typeof values {
+            return key in values;
+        }
+
         for (const key in values) {
+            if (!isKeyOfValues(key)) continue;
+
             if (key !== 'images') {
                 if (key === 'small_price' || key === 'small_amount' ||
                     key === 'medium_price' || key === 'medium_amount' ||
                     key === 'large_price' || key === 'large_amount') {
                     continue;
                 }
-                formData.append(key, values[key]);
+                formData.append(key, values[key].toString());
             }
         }
 
@@ -206,8 +221,8 @@ export default function EditFood() {
             formData.append(`newImage_${index + 1}`, image);
         });
 
-        existingImages.forEach(url => {
-            formData.append('existingImages', url);
+        existingImages.forEach((url, index) => {
+            formData.append(`existingImages_${index + 1}`, url);
         });
 
         const quantities = [
