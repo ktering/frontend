@@ -136,7 +136,7 @@ export default function PostFood() {
                 if (Array.isArray(value) || (typeof value === 'object' && value !== null)) {
                     formData.append(key, JSON.stringify(value));
                 } else {
-                    formData.append(key, value);
+                    formData.append(key, value.toString());
                 }
             }
         }
