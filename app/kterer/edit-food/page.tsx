@@ -62,6 +62,7 @@ export default function EditFood() {
 
     const [existingImages, setExistingImages] = useState<string[]>([]);
     const [newImages, setNewImages] = useState<File[]>([]);
+    const [deletedImages, setDeletedImages] = useState<string[]>([]);
     const totalImageCount = existingImages.length + newImages.length;
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -186,10 +187,17 @@ export default function EditFood() {
         setNewImages(prev => [...prev, ...uploadedFiles]);
     };
 
+    // const removeExistingImage = (index: number) => {
+    //     const updatedExistingImages = [...existingImages];
+    //     updatedExistingImages.splice(index, 1);
+    //     setExistingImages(updatedExistingImages);
+    // };
+
     const removeExistingImage = (index: number) => {
         const updatedExistingImages = [...existingImages];
-        updatedExistingImages.splice(index, 1);
+        const [removedImage] = updatedExistingImages.splice(index, 1); // Remove and capture the deleted image
         setExistingImages(updatedExistingImages);
+        setDeletedImages(prev => [...prev, removedImage]); // Add the removed image to the deletedImages state
     };
 
     const removeNewImage = (index: number) => {
@@ -218,12 +226,17 @@ export default function EditFood() {
         }
 
         newImages.forEach((image, index) => {
-            formData.append(`newImage_${index + 1}`, image);
+            formData.append(`image_${index + 1}`, image);
         });
 
-        existingImages.forEach((url, index) => {
-            formData.append(`existingImages_${index + 1}`, url);
+        deletedImages.forEach((url, index) => {
+            formData.append(`deleted_image_${index + 1}`, url);
         });
+
+        // existingImages.forEach((url, index) => {
+        //     // deleted_image_1, deleted_image_2, deleted_image_3
+        //     formData.append(`existingImages_${index + 1}`, url);
+        // });
 
         const quantities = [
             {size: 'small', price: values.small_price, quantity: values.small_amount},
