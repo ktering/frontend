@@ -21,9 +21,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
-import {HeartIcon as HeartIconOutline} from "@heroicons/react/24/outline";
+import {CheckCircleIcon, HeartIcon as HeartIconOutline} from "@heroicons/react/24/outline";
+import {HeartIcon as HeartIconSolid} from "@heroicons/react/24/solid";
 import {FoodItem} from "@/types/shared/food";
 import {SearchContext} from "@/app/context/searchContext";
+import {toast} from "@/components/ui/use-toast";
 
 export default function Kterings() {
     const [nearYouFood, setNearYouFood] = useState<FoodItem[]>([]);
@@ -35,6 +37,7 @@ export default function Kterings() {
     const {searchInput} = contextValue;
     const isSearching = searchInput.trim().length > 0;
     const tryNewFood = nearYouFood;
+    const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         const getNearYouFood = async () => {
@@ -87,6 +90,29 @@ export default function Kterings() {
             console.error(`Error: ${response.statusText}`);
             return;
         }
+
+        setFavorites(prev => {
+            const newFavorites = new Set(prev);
+            if (newFavorites.has(foodId)) {
+                newFavorites.delete(foodId);
+            } else {
+                newFavorites.add(foodId);
+            }
+            return newFavorites;
+        });
+
+        toast({
+            description: (
+                <>
+                    <div className="flex items-center">
+                        <CheckCircleIcon
+                            className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                        Kterer Successfully Favorited!
+                    </div>
+                </>
+            ),
+            duration: 5000,
+        });
     }
 
     const icons = [
@@ -181,8 +207,12 @@ export default function Kterings() {
 
 
                                         <span onClick={() => toggleFavorite(item.id)}>
-                                        <HeartIconOutline className="h-6 w-6 cursor-pointer"/>
-                                    </span>
+                                            {favorites.has(item.id) ? (
+                                                <HeartIconSolid className="h-6 w-6 cursor-pointer text-primary-color"/>
+                                            ) : (
+                                                <HeartIconOutline className="h-6 w-6 cursor-pointer"/>
+                                            )}
+                                        </span>
                                     </div>
                                 </div>
                             );
@@ -216,16 +246,22 @@ export default function Kterings() {
                                         <div className="flex justify-between items-center mt-2">
                                             <div className="text-left">
                                                 <p className="text-lg">{item.name}</p>
-                                                {/* TODO: update the rating here from the endpoint */}
-                                                <StarRating rating={5}/>
+                                                {item.rating !== 0 &&
+                                                    <StarRating rating={item.rating}/>
+                                                }
                                                 {/* TODO: update the distance from the endpoint */}
                                                 <p className="text-sm mt-1">00 min away</p>
                                             </div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                 strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
-                                            </svg>
+
+
+                                            <span onClick={() => toggleFavorite(item.id)}>
+                                                {favorites.has(item.id) ? (
+                                                    <HeartIconSolid
+                                                        className="h-6 w-6 cursor-pointer text-primary-color"/>
+                                                ) : (
+                                                    <HeartIconOutline className="h-6 w-6 cursor-pointer"/>
+                                                )}
+                                            </span>
                                         </div>
                                     </div>
                                 );
