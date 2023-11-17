@@ -17,6 +17,7 @@ import {toast} from "@/components/ui/use-toast";
 import {FoodItem} from "@/types/shared/food";
 import {Reviews} from "@/types/shared/reviews";
 import {CartItem} from "@/types/hooks/useCart";
+import {useUser} from "@clerk/nextjs";
 
 const formSchema = z.object({
     rating: z.number().min(1).max(5),
@@ -24,6 +25,10 @@ const formSchema = z.object({
 });
 
 export default function Food() {
+    const {user} = useUser();
+    if (!user) {
+        return null;
+    }
     // TODO: fix this default image
     const searchParams = useSearchParams();
     const foodIdMainPage = searchParams.get('food_id');
@@ -37,6 +42,7 @@ export default function Food() {
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const hasReviews = reviews && reviews.length > 0;
     const router = useRouter();
+
 
     useEffect(() => {
         if (!foodIdMainPage || foodIdMainPage === '' || foodIdMainPage === 'undefined' || foodIdMainPage === 'null') {
@@ -201,30 +207,33 @@ export default function Food() {
         }
 
         if (response.ok) {
-            if (reviews && reviews.length > 0) {
-                const newReview: Reviews = {
-                    ...values,
-                    user: {
-                        first_name: reviews[0].user.first_name,
-                        last_name: reviews[0].user.last_name,
-                    },
-                    created_at: new Date().toISOString(),
-                }
-                setReviews((currentReviews) => [...(currentReviews || []), newReview]);
-                setIsReviewModalOpen(false);
-                form.reset();
-                toast({
-                    description: (
-                        <>
-                            <div className="flex items-center">
-                                <CheckCircleIcon
-                                    className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
-                                Review Successfully Added!
-                            </div>
-                        </>
-                    )
-                });
+            setIsReviewModalOpen(false);
+            // if (reviews && reviews.length > 0) {
+            // TODO: add the names from the database, for now its from clerk
+            const newReview: Reviews = {
+                ...values,
+                user: {
+                    first_name: user?.firstName,
+                    // first_name: reviews[0].user.first_name,
+                    last_name: user?.lastName,
+                    // last_name: reviews[0].user.last_name,
+                },
+                created_at: new Date().toISOString(),
             }
+            setReviews((currentReviews) => [...(currentReviews || []), newReview]);
+            form.reset();
+            toast({
+                description: (
+                    <>
+                        <div className="flex items-center">
+                            <CheckCircleIcon
+                                className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                            Review Successfully Added!
+                        </div>
+                    </>
+                )
+            });
+            // }
         }
     }
 

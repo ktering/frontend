@@ -19,6 +19,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {FoodItem} from "@/types/shared/food";
 import Biryani from "@/static/landing-page/biryani.png";
+import {formatDistanceToNow} from "date-fns";
 
 const formSchema = z.object({
     rating: z.number().min(1).max(5),
@@ -146,6 +147,16 @@ export default function KtererProfile() {
         return 'Invalid date';
     };
 
+    const formatDateReview = (date: string) => {
+        if (date.trim() !== '') {
+            const dateObj = new Date(date);
+            if (!isNaN(dateObj.valueOf())) {
+                return formatDistanceToNow(dateObj, {addSuffix: true});
+            }
+        }
+        return 'Invalid date';
+    };
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -184,8 +195,10 @@ export default function KtererProfile() {
                 const newReview = {
                     ...values,
                     user: {
-                        first_name: reviews[0].user.first_name,
-                        last_name: reviews[0].user.last_name,
+                        first_name: user?.firstName,
+                        // first_name: reviews[0].user.first_name,
+                        last_name: user?.lastName,
+                        // last_name: reviews[0].user.last_name,
                     },
                     created_at: new Date().toISOString(),
                 }
@@ -297,7 +310,7 @@ export default function KtererProfile() {
                                     <div className="flex items-center my-3">
                                         <StarRating rating={review?.rating}/>
                                         <span className={`mx-2 text-gray-300`}>|</span>
-                                        <p className="text-sm text-gray-500">{formatDate(review?.created_at)}</p>
+                                        <p className="text-sm text-gray-500">{formatDateReview(review?.created_at)}</p>
                                     </div>
                                     <p>{review.review}</p>
                                 </div>
