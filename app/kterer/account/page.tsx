@@ -12,6 +12,7 @@ import {useClerk} from "@clerk/nextjs";
 import {Textarea} from "@/components/ui/textarea";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {KtererInfo} from "@/types/shared/user";
+import {CheckCircleIcon} from "@heroicons/react/24/outline";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -213,12 +214,8 @@ export default function KtererAccount() {
                 description: (
                     <>
                         <div className="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"
-                                 stroke="currentColor"
-                                 className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
+                            <CheckCircleIcon
+                                className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
                             Account Info Successfully Updated!
                         </div>
                     </>

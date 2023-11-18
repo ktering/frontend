@@ -132,7 +132,7 @@ export default function SignUpForm() {
 
                         <form className="text-black">
                             <div className="mt-2">
-                                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
+                                <div className="mt-10 grid grid-cols-1 auto-cols-fr gap-x-6 gap-y-4 sm:grid-cols-6">
                                     {/* First Name */}
                                     <div className="col-span-3 sm:col-span-3">
                                         <label
