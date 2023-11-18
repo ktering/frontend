@@ -95,37 +95,48 @@ export default function Favourites() {
                 </AlertDialogContent>
             </AlertDialog>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 place-items-center gap-8">
-                {favourites.map((favourite) => {
-                        const kterer_id = new URLSearchParams({
-                            kterer_id: favourite.id.toString(),
-                        }).toString();
+            {favourites.length === 0 ? (
+                <div className="text-center py-10">
+                    <p className="">You have no saved kterers.</p>
+                    <Link href="/kterings">
+                        <p className="text-primary-color hover:underline mt-2 inline-block">
+                            Explore Kterings
+                        </p>
+                    </Link>
+                </div>
+            ) : (
+                <div className="grid grid-cols-2 lg:grid-cols-4 place-items-center gap-8">
+                    {favourites.map((favourite) => {
+                            const kterer_id = new URLSearchParams({
+                                kterer_id: favourite.id.toString(),
+                            }).toString();
 
-                        return (
-                            <div key={favourite.id} className="w-40 flex items-center flex-col my-3">
-                                <Link href={`/kterings/kterer-profile/${favourite.id}?${kterer_id}`}>
-                                    <img src={favourite.profile_image_url} alt="Kterer Profile Picture"
-                                         className="rounded-full w-32 h-32 object-cover"/>
-                                </Link>
-                                <div className="flex w-full justify-between items-center mt-3">
-                                    <div>
-                                        <p className="text-lg font-semibold">{favourite.first_name} {favourite.last_name}</p>
-                                        <StarRating rating={favourite.rating}/>
-                                    </div>
-                                    <div>
-                                        <HeartIcon className="h-5 w-5 cursor-pointer text-primary-color"
-                                                   onClick={() => {
-                                                       setIsDialogOpen(true);
-                                                       setPostToDelete(favourite.id);
-                                                   }}
-                                        />
+                            return (
+                                <div key={favourite.id} className="w-40 flex items-center flex-col my-3">
+                                    <Link href={`/kterings/kterer-profile/${favourite.id}?${kterer_id}`}>
+                                        <img src={favourite.profile_image_url} alt="Kterer Profile Picture"
+                                             className="rounded-full w-32 h-32 object-cover"/>
+                                    </Link>
+                                    <div className="flex w-full justify-between items-center mt-3">
+                                        <div>
+                                            <p className="text-lg font-semibold">{favourite.first_name} {favourite.last_name}</p>
+                                            <StarRating rating={favourite.rating}/>
+                                        </div>
+                                        <div>
+                                            <HeartIcon className="h-5 w-5 cursor-pointer text-primary-color"
+                                                       onClick={() => {
+                                                           setIsDialogOpen(true);
+                                                           setPostToDelete(favourite.id);
+                                                       }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )
-                    }
-                )}
-            </div>
+                            )
+                        }
+                    )}
+                </div>
+            )}
         </div>
     )
 }

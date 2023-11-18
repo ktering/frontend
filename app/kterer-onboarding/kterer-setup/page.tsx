@@ -18,20 +18,22 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const formSchema = z.object({
-    street_address: z.string().min(5).max(100),
-    city: z.string().min(2).max(50),
+    street_address: z.string().min(5, {message: "Street Address must contain at least 5 character(s)"}).max(100, {message: "Street Address can't be longer than 100 characters"}),
+    city: z.string().min(2, {message: "City must contain at least 2 character(s)"}).max(50, {message: "City can't be longer than 50 characters"}),
     apartment: z.string().optional(),
-    province: z.string().min(2).max(50),
-    country: z.string().min(2).max(50),
-    postal_code: z.string().min(5).max(10),
+    province: z.string().min(2, {message: "Province must contain at least 2 character(s)"}).max(50, {message: "Province can't be longer than 50 characters"}),
+    country: z.string().min(2, {message: "Country must contain at least 2 character(s)"}).max(50, {message: "Country can't be longer than 50 characters"}),
+    postal_code: z.string().min(5, {message: "Postal Code must contain at least 5 character(s)"}).max(10, {message: "Postal Code can't be longer than 10 characters"}),
 
-    profile_image_url: z
-        .any()
-        .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-        .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-            "Only .jpg, .jpeg, .png and .webp formats are supported."
-        ),
+    profile_image_url: z.union([
+        z.instanceof(File)
+            .refine((file) => file.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+            .refine(
+                (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+                "Only .jpg, .jpeg, .png, and .webp formats are supported."
+            ),
+        z.string().url({message: "Must be a valid URL"}),
+    ]),
     bio: z.string().max(500, "Bio can't be longer than 500 characters"),
     ethnicity: z.string(),
     experienceUnit: z.coerce.number(),
@@ -43,9 +45,9 @@ const formSchema = z.object({
 });
 
 export default function KtererSetup() {
-    // :TODO: change the default profile image
     const [profileImageSrc, setProfileImageSrc] = useState<string>("https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isKycVerifiedButtonClicked, setIsKycVerifiedButtonClicked] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -57,7 +59,7 @@ export default function KtererSetup() {
             country: "Canada",
             postal_code: "",
 
-            profile_image_url: "",
+            profile_image_url: "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg",
             bio: "",
             ethnicity: "",
             experienceUnit: 0,
@@ -72,7 +74,7 @@ export default function KtererSetup() {
 
         formData.append('street_address', values.street_address);
         formData.append('city', values.city);
-        if(values.apartment) {
+        if (values.apartment) {
             formData.append('apartment', values.apartment);
         }
         formData.append('province', values.province);
@@ -99,14 +101,18 @@ export default function KtererSetup() {
         });
 
         if (addKtererInfoResponse.ok) {
-            // :TODO: change the state of the website so they cant see the kterer setup page again
-            const hostedFlowLink = process.env.NEXT_PUBLIC_PERSONA_KYC_API_URL;
-            window.open(hostedFlowLink, "_blank");
             setIsModalOpen(true);
         } else {
             console.log(addKtererInfoResponse.statusText);
         }
     }
+
+    const openIdentityVerification = () => {
+        setIsKycVerifiedButtonClicked(true);
+        // :TODO: change the state of the website so they cant see the kterer setup page again
+        const hostedFlowLink = process.env.NEXT_PUBLIC_PERSONA_KYC_API_URL;
+        window.open(hostedFlowLink, "_blank");
+    };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -162,10 +168,34 @@ export default function KtererSetup() {
                                                 <CheckIcon className="h-6 w-6 text-green-600" aria-hidden="true"/>
                                             </div>
                                             <div className="mt-3 text-center sm:mt-5">
-                                                <Dialog.Title as="h3"
-                                                              className="text-base font-semibold leading-6 text-gray-900">
-                                                    Please go to the new tab and close this tab.
-                                                </Dialog.Title>
+                                                {!isKycVerifiedButtonClicked ? (
+                                                    <>
+                                                        <Dialog.Title as="h3"
+                                                                      className="text-base font-semibold leading-6 text-gray-900">
+                                                            Please verify your identity
+                                                        </Dialog.Title>
+                                                        <div className="mt-2">
+                                                            <p className="text-sm text-gray-500">
+                                                                Click the button below to complete the identity
+                                                                verification process.
+                                                            </p>
+                                                        </div>
+                                                        <div className="mt-4">
+                                                            <button
+                                                                type="button"
+                                                                className="inline-flex justify-center rounded-full border border-transparent bg-primary-color px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-primary-color-hover focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2"
+                                                                onClick={openIdentityVerification}
+                                                                disabled={isKycVerifiedButtonClicked}
+                                                            >
+                                                                Verify Identity
+                                                            </button>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <p className="text-sm text-gray-500">
+                                                        Please go to the opened tab to complete your verification.
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     </Dialog.Panel>
@@ -397,7 +427,7 @@ export default function KtererSetup() {
                                                 I’ve read and accepted the Vendor Terms and Conditions
                                             </label>
                                             {fieldState.invalid && <span
-                                                className="text-primary-color">{form.formState.errors.terms?.message}</span>}
+                                                className="text-destructive ">{form.formState.errors.terms?.message}</span>}
                                         </>
                                     )}
                                 />

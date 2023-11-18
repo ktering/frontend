@@ -69,11 +69,14 @@ export default function Food() {
             let data = await response.json();
 
             if (data.data && data.data.quantities) {
-                const smallSizeAvailable = data.data.quantities.some((q: {
-                    size: string;
-                }) => q.size === 'small');
-                if (smallSizeAvailable) {
-                    setSelectedSize('small');
+                const sizePreference = ["small", "medium", "large"];
+
+                const firstAvailableSize = sizePreference.find((size) =>
+                    data.data.quantities.some((q: { size: string }) => q.size === size)
+                );
+
+                if (firstAvailableSize) {
+                    setSelectedSize(firstAvailableSize);
                 }
             }
 
@@ -429,7 +432,7 @@ export default function Food() {
 
                                             <div className="flex flex-col space-y-1 mt-8">
                                                 <div className="font-semibold mb-2">Rating</div>
-                                                <div className="space-x-2">
+                                                <div className="space-x-1 sm:space-x-2">
                                                     {[1, 2, 3, 4, 5].map((starValue) => (
                                                         <button
                                                             key={starValue}

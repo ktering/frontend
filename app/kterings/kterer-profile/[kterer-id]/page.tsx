@@ -8,7 +8,7 @@ import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {toast} from "@/components/ui/use-toast";
 import {CheckCircleIcon, StarIcon} from "@heroicons/react/24/outline";
-import {Dialog, DialogContent, DialogHeader} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormMessage} from "@/components/ui/form";
 import {Textarea} from "@/components/ui/textarea";
 import {useSearchParams} from "next/navigation";
@@ -190,33 +190,34 @@ export default function KtererProfile() {
         }
 
         if (response.ok) {
-            if (reviews && reviews.length > 0) {
-                // TODO: when the inital review is made, the name doesnt show up correctly
-                const newReview = {
-                    ...values,
-                    user: {
-                        first_name: user?.firstName,
-                        // first_name: reviews[0].user.first_name,
-                        last_name: user?.lastName,
-                        // last_name: reviews[0].user.last_name,
-                    },
-                    created_at: new Date().toISOString(),
-                }
-                setReviews((currentReviews) => [...(currentReviews || []), newReview]);
-                setIsReviewModalOpen(false);
-                form.reset();
-                toast({
-                    description: (
-                        <>
-                            <div className="flex items-center">
-                                <CheckCircleIcon
-                                    className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
-                                Review Successfully Added!
-                            </div>
-                        </>
-                    )
-                });
+            setIsReviewModalOpen(false);
+            // if (reviews && reviews.length > 0) {
+            // TODO: add the names from the database, for now its from clerk
+            // TODO: when the initial review is made, the name doesnt show up correctly
+            const newReview = {
+                ...values,
+                user: {
+                    first_name: user?.firstName,
+                    // first_name: reviews[0].user.first_name,
+                    last_name: user?.lastName,
+                    // last_name: reviews[0].user.last_name,
+                },
+                created_at: new Date().toISOString(),
             }
+            setReviews((currentReviews) => [...(currentReviews || []), newReview]);
+            form.reset();
+            toast({
+                description: (
+                    <>
+                        <div className="flex items-center">
+                            <CheckCircleIcon
+                                className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                            Review Successfully Added!
+                        </div>
+                    </>
+                )
+            });
+            // }
         }
     }
 
@@ -240,7 +241,10 @@ export default function KtererProfile() {
                                 <div className="w-full space-y-2">
                                     {[
                                         {label: 'Ethnicity', value: ktererInfo?.ethnicity},
-                                        {label: 'Experience', value: `${ktererInfo?.experienceUnit} ${ktererInfo?.experienceValue}`},
+                                        {
+                                            label: 'Experience',
+                                            value: `${ktererInfo?.experienceUnit} ${ktererInfo?.experienceValue}`
+                                        },
                                         {label: 'Member Since', value: formatDate(ktererInfo?.created_at)},
                                     ].map((item, index) => (
                                         <div key={index} className="flex justify-between">
@@ -327,7 +331,7 @@ export default function KtererProfile() {
             <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        {/*<DialogTitle>{ktererInfo.user.first_name}'s Kterer Review</DialogTitle>*/}
+                        <DialogTitle>{ktererInfo?.user?.first_name}'s Kterer Review</DialogTitle>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                 <Controller
