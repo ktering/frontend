@@ -13,7 +13,7 @@ import {useToast} from "@/components/ui/use-toast"
 import {useRouter, useSearchParams} from "next/navigation";
 import {ArrowLeftIcon} from "@heroicons/react/20/solid";
 import {FoodItem} from "@/types/shared/food";
-import {TrashIcon} from "@heroicons/react/24/outline";
+import {PhotoIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {SizeMap} from "@/types/pages/kterer/edit-food";
 
 const formSchema = z.object({
@@ -35,7 +35,12 @@ const formSchema = z.object({
         message: "Halal is required, please select an option",
     }),
     kosher: z.boolean(),
-    vegetarian: z.boolean(),
+    vegetarian: z.string().refine(value => value !== "", {
+        message: "Vegetarian/Vegan is required, please select an option",
+    }),
+    desserts: z.string().refine(value => value !== "", {
+        message: "Desserts is required, please select an option",
+    }),
     contains_nuts: z.boolean(),
     meat_type: z.string().refine(value => value !== "", {
         message: "Meat Type is required, please select an option",
@@ -80,7 +85,8 @@ export default function EditFood() {
             ingredients: "",
             halal: "",
             kosher: false,
-            vegetarian: false,
+            vegetarian: "",
+            desserts: "",
             contains_nuts: false,
             meat_type: "",
             ethnic_type: "",
@@ -162,6 +168,7 @@ export default function EditFood() {
             halal: foodDetails.halal,
             kosher: foodDetails.kosher,
             vegetarian: foodDetails.vegetarian,
+            desserts: foodDetails.desserts,
             contains_nuts: foodDetails.contains_nuts,
             meat_type: foodDetails.meat_type,
             ethnic_type: foodDetails.ethnic_type,
@@ -186,12 +193,6 @@ export default function EditFood() {
         }
         setNewImages(prev => [...prev, ...uploadedFiles]);
     };
-
-    // const removeExistingImage = (index: number) => {
-    //     const updatedExistingImages = [...existingImages];
-    //     updatedExistingImages.splice(index, 1);
-    //     setExistingImages(updatedExistingImages);
-    // };
 
     const removeExistingImage = (index: number) => {
         const updatedExistingImages = [...existingImages];
@@ -233,11 +234,6 @@ export default function EditFood() {
         deletedImages.forEach((url, index) => {
             formData.append(`deleted_image_${index + 1}`, url);
         });
-
-        // existingImages.forEach((url, index) => {
-        //     // deleted_image_1, deleted_image_2, deleted_image_3
-        //     formData.append(`existingImages_${index + 1}`, url);
-        // });
 
         const quantities = [
             {size: 'small', price: values.small_price, quantity: values.small_amount},
@@ -309,7 +305,6 @@ export default function EditFood() {
                                                 src={URL.createObjectURL(file)}
                                                 alt={`New Image ${index + 1}`}
                                                 className="w-full h-full object-cover rounded-lg"
-                                                // onLoad={() => URL.revokeObjectURL(URL.createObjectURL(file))} // Revoke URL to avoid memory leaks
                                             />
                                         </div>
                                         <button
@@ -340,12 +335,7 @@ export default function EditFood() {
                                                 />
                                                 <label htmlFor="foodImagesInput"
                                                        className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                         viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
-                                                         className="mx-auto h-12 w-12 text-gray-400">
-                                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                                              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
-                                                    </svg>
+                                                    <PhotoIcon className="mx-auto h-12 w-12 text-gray-400"/>
                                                     <span
                                                         className="mt-2 block text-sm font-semibold text-gray-900"> {totalImageCount < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
@@ -371,7 +361,7 @@ export default function EditFood() {
                                 )}
                             />
                             {/* Size Start */}
-                            <div className="grid grid-cols-3 col-span-1 gap-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8">
                                 <div className="space-y-4">
                                     <div className="bg-primary-color rounded-full p-2 text-white text-center">
                                         Small
@@ -584,17 +574,39 @@ export default function EditFood() {
                                 name="vegetarian"
                                 render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Vegetarian?</FormLabel>
-                                        <Select onValueChange={(value) => field.onChange(value === '1')}
-                                                value={field.value ? '1' : '0'}>
+                                        <FormLabel>Vegetarian/Vegan?</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="1">Yes</SelectItem>
-                                                <SelectItem value="0">No</SelectItem>
+                                                <SelectItem value="Vegetarian">Vegetarian</SelectItem>
+                                                <SelectItem value="Vegan">Vegan</SelectItem>
+                                                <SelectItem value="None">None</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="desserts"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Desserts/Drinks?</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger className="rounded-full">
+                                                    <SelectValue/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Desserts">Desserts</SelectItem>
+                                                <SelectItem value="Drinks">Drinks</SelectItem>
+                                                <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage/>

@@ -78,11 +78,8 @@ export default function Help() {
         <>
             {/* Section 1 */}
             <section className="w-full relative overflow-x-hidden">
-                <Image src={HelpPageBackground} className="bg-primary-color w-full h-[50vh] md:h-[60vh] object-cover"
+                <Image src={HelpPageBackground} className="bg-primary-color w-full h-[30vh] md:h-[40vh] object-cover"
                        alt="hero section food image"/>
-                <div className="absolute top-0 left-0 right-0 flex justify-center items-center px-8 py-2">
-                    <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24"/>
-                </div>
                 {/* Center Content */}
                 <div
                     className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
@@ -141,7 +138,7 @@ export default function Help() {
                     <>
                         {/* Section 2 */}
                         <section>
-                            <div className="space-y-4">
+                            <div className="space-y-4 flex flex-col items-center sm:items-start">
                                 <h1 className="font-bold text-xl flex items-center">Welcome to Kterings Help</h1>
                                 <p>What can we help you with you today?</p>
                             </div>

@@ -11,6 +11,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast"
 import {useRouter} from "next/navigation";
+import {PhotoIcon, TrashIcon} from "@heroicons/react/24/outline";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -31,7 +32,12 @@ const formSchema = z.object({
         message: "Halal is required, please select an option",
     }),
     kosher: z.boolean(),
-    vegetarian: z.boolean(),
+    vegetarian: z.string().refine(value => value !== "", {
+        message: "Vegetarian/Vegan is required, please select an option",
+    }),
+    desserts: z.string().refine(value => value !== "", {
+        message: "Desserts is required, please select an option",
+    }),
     contains_nuts: z.boolean(),
     meat_type: z.string().refine(value => value !== "", {
         message: "Meat Type is required, please select an option",
@@ -75,7 +81,8 @@ export default function PostFood() {
             ingredients: "",
             halal: "",
             kosher: false,
-            vegetarian: false,
+            vegetarian: "",
+            desserts: "",
             contains_nuts: false,
             meat_type: "",
             ethnic_type: "",
@@ -195,11 +202,7 @@ export default function PostFood() {
                                             onClick={() => removeImage(index)}
                                             className="p-1 rounded-lg hover:bg-gray-50"
                                         >
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                 strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                                                <path strokeLinecap="round" strokeLinejoin="round"
-                                                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-                                            </svg>
+                                            <TrashIcon className="h-6 w-6"/>
                                         </button>
                                     </div>
                                 ))}
@@ -224,12 +227,7 @@ export default function PostFood() {
                                                 />
                                                 <label htmlFor="foodImagesInput"
                                                        className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                         viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
-                                                         className="mx-auto h-12 w-12 text-gray-400">
-                                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                                              d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
-                                                    </svg>
+                                                    <PhotoIcon className="mx-auto h-12 w-12 text-gray-400"/>
                                                     <span
                                                         className="mt-2 block text-sm font-semibold text-gray-900"> {selectedFiles.length < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
@@ -255,7 +253,7 @@ export default function PostFood() {
                                 )}
                             />
                             {/* Size Start */}
-                            <div className="grid grid-cols-3 col-span-1 gap-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8">
                                 <div className="space-y-4">
                                     <div className="bg-primary-color rounded-full p-2 text-white text-center">
                                         Small
@@ -468,17 +466,39 @@ export default function PostFood() {
                                 name="vegetarian"
                                 render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Vegetarian?</FormLabel>
-                                        <Select onValueChange={(value) => field.onChange(value === '1')}
-                                                defaultValue={field.value ? '1' : '0'}>
+                                        <FormLabel>Vegetarian/Vegan?</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
                                                     <SelectValue/>
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value="1">Yes</SelectItem>
-                                                <SelectItem value="0">No</SelectItem>
+                                                <SelectItem value="Vegetarian">Vegetarian</SelectItem>
+                                                <SelectItem value="Vegan">Vegan</SelectItem>
+                                                <SelectItem value="None">None</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="desserts"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Desserts/Drinks?</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger className="rounded-full">
+                                                    <SelectValue/>
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                <SelectItem value="Desserts">Desserts</SelectItem>
+                                                <SelectItem value="Drinks">Drinks</SelectItem>
+                                                <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage/>
@@ -555,7 +575,7 @@ export default function PostFood() {
                                                 <SelectItem value="Mexican">Mexican</SelectItem>
                                                 <SelectItem value="Korean">Korean</SelectItem>
                                                 <SelectItem value="Asian">Asian</SelectItem>
-                                                <SelectItem value="Mediterranean">Mediterranean</SelectItem>
+                                                <SelectItem value="Middle-Eastern">Middle Eastern</SelectItem>
                                                 <SelectItem value="Other">Other</SelectItem>
                                                 <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
