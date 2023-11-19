@@ -1,14 +1,18 @@
 "use client";
 import {useEffect} from "react";
 import KtererFAQ from "@/app/help/kterer_faq.json";
+import CustomerFAQ from "@/app/help/customer_faq.json";
 import {Button} from "@/components/ui/button";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 
 export default function HelpQuestion({params}: { params: { id: string } }) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const faqType = searchParams.get('faq_type');
     const faqId = params.id;
 
-    const faq = KtererFAQ.kterer_faqs.find(faq => faq.id.toString() === faqId);
+    const faqData = faqType === 'kterer' ? KtererFAQ.kterer_faqs : CustomerFAQ.customer_faqs;
+    const faq = faqData.find(faq => faq.id.toString() === faqId);
 
     useEffect(() => {
         if (!faq) {

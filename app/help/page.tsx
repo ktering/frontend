@@ -10,9 +10,11 @@ import {Form, FormControl, FormField, FormItem, FormMessage,} from "@/components
 import {Input} from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea";
 import KtererFAQ from "@/app/help/kterer_faq.json";
+import CustomerFAQ from "@/app/help/customer_faq.json";
 import Link from "next/link";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
+import {FAQ} from "@/types/pages/help/help";
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -32,23 +34,22 @@ const formSchema = z.object({
 
 export default function Help() {
     const ktererFAQs = KtererFAQ.kterer_faqs;
+    const customerFAQs = CustomerFAQ.customer_faqs;
     const [searchInput, setSearchInput] = useState("");
     const [searchInitiated, setSearchInitiated] = useState(false);
+    const [filteredFAQs, setFilteredFAQs] = useState<FAQ[]>([]);
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            email: "",
-            subject: "",
-            message: "",
-        },
-    })
-
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
-    }
+    useEffect(() => {
+        const searchLowerCase = searchInput.toLowerCase();
+        const combinedFAQs = [
+            ...ktererFAQs.map(faq => ({...faq, id: faq.id.toString()})),
+            ...customerFAQs.map(faq => ({...faq, id: faq.id.toString()}))
+        ];
+        const filtered = combinedFAQs.filter(faq =>
+            faq.question.toLowerCase().includes(searchLowerCase)
+        );
+        setFilteredFAQs(filtered.slice(0, 5));
+    }, [searchInput, ktererFAQs, customerFAQs]);
 
     const handleSearchChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setSearchInput(e.target.value);
@@ -70,21 +71,46 @@ export default function Help() {
         ];
     }
 
-    const filteredFAQs = ktererFAQs.filter(faq =>
-        faq.question.toLowerCase().includes(searchInput.toLowerCase())
-    ).slice(0, 5);
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            email: "",
+            subject: "",
+            message: "",
+        },
+    })
+
+    function onSubmit(values: z.infer<typeof formSchema>) {
+        // Do something with the form values.
+        // ✅ This will be type-safe and validated.
+        console.log(values)
+    }
 
     return (
         <>
             {/* Section 1 */}
-            <section className="w-full relative overflow-x-hidden">
-                <Image src={HelpPageBackground} className="bg-primary-color w-full h-[30vh] md:h-[40vh] object-cover"
-                       alt="hero section food image"/>
+            <section className="w-full relative overflow-x-hidden transition-all duration-700 ease-in-out">
+                {/* Background Image */}
+                <div
+                    className={`transition-all duration-700 ease-in-out ${searchInitiated ? 'h-28 opacity-0' : 'h-[50vh] md:h-[60vh] opacity-1'}`}>
+                    <Image src={HelpPageBackground}
+                           className="bg-primary-color w-full h-full object-cover"
+                           alt="hero section food image"/>
+                </div>
+
+                {/* Logo */}
+                <div
+                    className={`absolute top-0 left-0 right-0 flex justify-center items-center px-8 py-2 transition-opacity duration-700 ease-in-out ${searchInitiated ? 'opacity-0' : 'opacity-1'}`}>
+                    <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24"/>
+                </div>
+
                 {/* Center Content */}
                 <div
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                    <h1 className="text-2xl lg:text-4xl text-white font-bold text-center mb-4 md:mb-8">Got Any
-                        Questions?</h1>
+                    className={`absolute ${searchInitiated ? 'top-4  pt-12' : 'top-1/3'} left-1/2 transform -translate-x-1/2 transition-all duration-700 ease-in-out`}>
+                    {!searchInitiated && (
+                        <h1 className="text-2xl lg:text-4xl text-white font-bold text-center mb-4 md:mb-8">Got Any
+                            Questions?</h1>
+                    )}
                     {/* Search bar */}
                     <div className="relative w-96">
                         {/* Icon */}
@@ -150,9 +176,9 @@ export default function Help() {
                                 <div>
                                     <h1 className="font-bold text-xl mb-4">Customer Support</h1>
                                     <ul className="space-y-2">
-                                        {ktererFAQs.slice(0, 5).map((faq) => (
+                                        {customerFAQs.slice(0, 5).map((faq) => (
                                             <li key={faq.id}>
-                                                <Link href={`/help/${faq.id}?faq_type=kterer`}>
+                                                <Link href={`/help/${faq.id}?faq_type=customer`}>
                                                     <p className="hover:text-primary-color">
                                                         {faq.question}
                                                     </p>
