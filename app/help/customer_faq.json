@@ -1,69 +1,69 @@
 {
   "customer_faqs": [
     {
-      "id": "1",
+      "id": "0001",
       "question": "How can I change my address?",
       "answer": "To change your address, follow these steps: Log in to your account, click on your existing address at the top bar, click on the edit icon at the right of the address, search for the new address, click save address."
     },
     {
-      "id": "2",
+      "id": "0002",
       "question": "How can I place an order?",
       "answer": "To place an order, follow these steps: Find a food you like through search/recent/browsing, click into the food, select size and quantity, place your order."
     },
     {
-      "id": "3",
+      "id": "0003",
       "question": "How can I save a Kterer?",
-      "answer": "To save a Kterer you can put them in your saved Kterers list. To do that follow these steps: Find a food who’s Kterer you would like to save, click on the heart shaped icon at the bottom right of the picture. You can also save a Kterer by searching for the Kterer you want to save, clicking into the profile, click on the heart shaped icon."
+      "answer": "To save a Kterer you can put them in your saved Kterers list. To do that follow these steps: Find a food who’s Kterer you would like to save, click on the heart shaped icon at the bottom right of the picture. You can also save a Kterer by searching for the Kterer you want to save, clicking into the profile, and clicking on the heart shaped icon."
     },
     {
-      "id": "4",
+      "id": "0004",
       "question": "How do I see my saved Kterers?",
       "answer": "To view your saved Kterers follow these simple steps: Log in to your account, click the 3 lines at the top left for the menu (hamburger menu), click on 'Saved Kterers'."
     },
     {
-      "id": "5",
+      "id": "0005",
       "question": "Order was missing an item/incorrect order",
-      "answer": "Answer to go here"
+      "answer": "If a delivered order was missing item(s) or had incorrect item(s), please submit a report to the Kterings support team by following these steps: Log in with the account used to place the order, click the 3 lines at the top left for the menu (hamburger menu), click on 'Orders', select the order you are inquiring about and then click help, input the details in the ticket section and write missing items as the subject, under the description explain what went wrong and press submit. We will review and get back to you within 24 hours. Thank you for your patience."
     },
     {
-      "id": "6",
+      "id": "0006",
       "question": "Why was my order cancelled?",
-      "answer": "Answer to go here"
+      "answer": "Your order could have been cancelled for the following reasons: Kterer could not make the food, Kterer ran out of an item to make the food, Kterer is no longer taking orders, the current time is beyond the Kterers’ operating hours. We will ensure you receive a full credit or refund."
     },
     {
-      "id": "7",
+      "id": "0007",
       "question": "Where can I see the receipt for my order?",
-      "answer": "Answer to go here"
+      "answer": "To view the receipt for your order follow the following steps: Log in to your account, click the 3 lines at the top left for the menu (hamburger menu), select 'Orders', click 'View Receipt' on the order you wish to see the receipt for."
     },
     {
-      "id": "8",
+      "id": "0008",
       "question": "The credit or refund I received is incorrect",
-      "answer": "Answer to go here"
+      "answer": "If you received an incorrect credit or refund for a specific order, please submit a ticket below and include the following information: Order date, food name, Kterer Name."
     },
     {
-      "id": "9",
+      "id": "0009",
       "question": "The quality of my food was bad",
-      "answer": "Answer to go here"
+      "answer": "We sincerely apologize if the quality of your food was not up to standard. For the fastest resolution please submit a ticket below following these steps: Click submit a ticket below, write poor food quality in the subject, under the description explain what went wrong and press submit. We will review and get back to you within 24 hours. Thank you for your patience."
     },
     {
-      "id": "10",
+      "id": "0010",
       "question": "How do I place a refund request?",
-      "answer": "Answer to go here"
+      "answer": "A refund can be processed for the following reasons: Poor quality, missing item(s). To request a refund click submit a ticket below and follow these steps: Click submit a ticket, write/select refund in the subject, under the description explain what went wrong and press submit. We will review and get back to you within 24 hours. Thank you for your patience."
     },
     {
-      "id": "11",
+      "id": "0011",
       "question": "How do I reset my passwords?",
-      "answer": "Answer to go here"
+      "answer": "To reset your password follow the steps below. If you are logged in: Click the 3 lines at the top left for the menu (hamburger menu), select 'Account', click on 'Reset Password' at the top right, follow the steps and complete your password reset. If you are not logged in: Click sign in, enter the email attached to your account, click on 'Forgot Password', follow the steps and complete your password reset."
     },
     {
-      "id": "12",
+      "id": "0012",
       "question": "How do I know the food is halal?",
-      "answer": "Answer to go here"
+      "answer": "We understand that different cultured/religious people have different needs. That is why we created tags. To look for 'Halal' tags click into a product of choice, on top of the food name/description look for colored bubbles, in these colored bubbles look for a tag that says either 'Machine Slaughtered Halal', 'Hand Slaughtered Halal' or 'Halal' if no meat was involved in the making of the food. If it does not have the above tags please do not consider it halal."
     },
     {
-      "id": "13",
+      "id": "0013",
       "question": "My order didn’t arrive",
-      "answer": "Answer to go here"
+      "answer": "We sincerely apologize if your order did not arrive. For the fastest resolution please submit a ticket below following these steps: Click submit a ticket below, write/select 'Order did not arrive' in the subject field, under the description explain what went wrong and press submit. We will review and get back to you within 24 hours. Thank you for your patience."
     }
   ]
 }

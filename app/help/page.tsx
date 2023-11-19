@@ -42,14 +42,15 @@ export default function Help() {
     useEffect(() => {
         const searchLowerCase = searchInput.toLowerCase();
         const combinedFAQs = [
-            ...ktererFAQs.map(faq => ({...faq, id: faq.id.toString()})),
-            ...customerFAQs.map(faq => ({...faq, id: faq.id.toString()}))
+            ...ktererFAQs.map(faq => ({...faq, id: faq.id.toString(), type: 'kterer'})),
+            ...customerFAQs.map(faq => ({...faq, id: faq.id.toString(), type: 'customer'})),
         ];
         const filtered = combinedFAQs.filter(faq =>
             faq.question.toLowerCase().includes(searchLowerCase)
         );
         setFilteredFAQs(filtered.slice(0, 5));
     }, [searchInput, ktererFAQs, customerFAQs]);
+
 
     const handleSearchChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setSearchInput(e.target.value);
@@ -140,7 +141,7 @@ export default function Help() {
                                         const [before, highlight, after] = highlightSearchText(faq.question, searchInput);
                                         return (
                                             <li key={faq.id}>
-                                                <Link href={`/help/${faq.id}?faq_type=kterer`}>
+                                                <Link href={`/help/${faq.id}?faq_type=${faq.type}`}>
                                                     <p className="hover:text-primary-color">
                                                         {before}
                                                         <span className="bg-yellow-200">{highlight}</span>
@@ -151,7 +152,6 @@ export default function Help() {
                                         );
                                     })}
                                 </ul>
-
                             </div>
                         </section>
                     ) : (
