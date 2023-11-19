@@ -107,7 +107,7 @@ export default function UserNavbar() {
             href: isKterer ? "/kterer/account" : "/consumer/account"
         },
         {name: "Saved Kterers", icon: <HeartIcon className="h-6 w-6"/>, href: "/kterings/favourites"},
-        {name: "Help", icon: <QuestionMarkCircleIcon className="h-6 w-6"/>, href: "/kterings"},
+        {name: "Help", icon: <QuestionMarkCircleIcon className="h-6 w-6"/>, href: "/help"},
         {name: "Sign Out", icon: <ArrowLeftOnRectangleIcon className="h-6 w-6"/>, href: "/kterings"},
     ];
 

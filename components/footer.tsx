@@ -97,9 +97,9 @@ export default function Footer() {
 
                             <ul className="mt-6 space-y-4 text-sm">
                                 <li>
-                                    <a href="#" className="text-gray-700 transition hover:opacity-75">
+                                    <Link href="/help" className="text-gray-700 transition hover:opacity-75">
                                         Help
-                                    </a>
+                                    </Link>
                                 </li>
 
                                 <li>

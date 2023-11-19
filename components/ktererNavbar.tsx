@@ -10,7 +10,7 @@ import {Fragment, useRef, useState} from "react";
 import SignUpForm from "@/app/sign-up/[[...sign-up]].page";
 
 const navigation = [
-    {name: "Help", href: "/"},
+    {name: "Help", href: "/help"},
     {name: "About Us", href: "/about-us"},
     {name: "Become a Kterer", href: "/become-a-kterer"},
 ];

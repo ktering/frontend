@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function KtererDashboardNavbar() {
     const buttons = [
-        {name: 'Help', href: '/share'},
+        {name: 'Help', href: '/help'},
         {name: 'Dashboard', href: '/kterer/dashboard'},
         {name: 'Earnings', href: '/logout'},
         {name: 'Post Food', href: '/kterer/post'},
