@@ -12,7 +12,7 @@ import {Controller, useForm} from "react-hook-form"
 import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormDescription, FormField, FormItem, FormMessage,} from "@/components/ui/form"
 import {Textarea} from "@/components/ui/textarea";
-import {CheckCircleIcon, StarIcon} from "@heroicons/react/24/outline";
+import {CheckCircleIcon, MinusSmallIcon, PlusSmallIcon, StarIcon} from "@heroicons/react/24/outline";
 import {toast} from "@/components/ui/use-toast";
 import {FoodItem} from "@/types/shared/food";
 import {Reviews} from "@/types/shared/reviews";
@@ -331,16 +331,13 @@ export default function Food() {
                                     type="button"
                                     className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5}
-                                         stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6"/>
-                                    </svg>
+                                    <MinusSmallIcon className="w-6 h-6"/>
                                 </button>
                                 <input
                                     type="number"
                                     id="Quantity"
                                     value={quantity}
+                                    readOnly
                                     onChange={(e) => setQuantity(Math.max(0, parseInt(e.target.value) || 0))}
                                     className="h-10 w-16 text-center border-transparent appearance-none outline-none"
                                 />
@@ -349,11 +346,7 @@ export default function Food() {
                                     type="button"
                                     className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5}
-                                         stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6"/>
-                                    </svg>
+                                    <PlusSmallIcon className="w-6 h-6"/>
                                 </button>
                             </div>
                         </div>

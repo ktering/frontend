@@ -21,7 +21,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from "next/link";
-import {CheckCircleIcon, HeartIcon as HeartIconOutline} from "@heroicons/react/24/outline";
+import {CheckCircleIcon, ChevronDownIcon, HeartIcon as HeartIconOutline} from "@heroicons/react/24/outline";
 import {HeartIcon as HeartIconSolid} from "@heroicons/react/24/solid";
 import {FoodItem} from "@/types/shared/food";
 import {SearchContext} from "@/app/context/searchContext";
@@ -154,10 +154,7 @@ export default function Kterings() {
                         <Button variant="outline">
                             <div className="flex gap-2 items-center">
                                 Over 4 <div className="fa fa-star text-yellow-400"/>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
-                                </svg>
+                                <ChevronDownIcon className="w-6 h-6"/>
                             </div>
                         </Button>
                     </DropdownMenuTrigger>
