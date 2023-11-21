@@ -13,8 +13,9 @@ import KtererFAQ from "@/app/help/kterer_faq.json";
 import CustomerFAQ from "@/app/help/customer_faq.json";
 import Link from "next/link";
 import React, {useEffect, useState} from "react";
-import {MagnifyingGlassIcon} from "@heroicons/react/24/outline";
+import {CheckCircleIcon, MagnifyingGlassIcon} from "@heroicons/react/24/outline";
 import {FAQ} from "@/types/pages/help/help";
+import {toast} from "@/components/ui/use-toast";
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -81,10 +82,38 @@ export default function Help() {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        console.log(values);
+
+        const accessToken = localStorage.getItem('accessToken');
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${apiURL}/api/support`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(values)
+        });
+
+        if (!response.ok) {
+            console.error(`Error: ${response.statusText}`);
+            return;
+        }
+
+        form.reset();
+        toast({
+            description: (
+                <>
+                    <div className="flex items-center">
+                        <CheckCircleIcon
+                            className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                        Support ticket submitted successfully. We will get back to you as soon as possible.
+                    </div>
+                </>
+            ),
+            duration: 5000,
+        });
     }
 
     return (

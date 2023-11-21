@@ -5,6 +5,7 @@ import {
     Bars3Icon,
     BellIcon,
     ChevronDownIcon,
+    CurrencyDollarIcon,
     HeartIcon,
     HomeIcon,
     MagnifyingGlassIcon,
@@ -109,6 +110,10 @@ export default function UserNavbar() {
             icon: <UserCircleIcon className="h-6 w-6"/>,
             href: isKterer ? "/kterer/account" : "/consumer/account"
         },
+        {
+            isKterer: true, name: "Payment", icon: <CurrencyDollarIcon
+                className="h-6 w-6"/>, href: "/kterer/stripe-onboarding"
+        },
         {name: "Saved Kterers", icon: <HeartIcon className="h-6 w-6"/>, href: "/kterings/favourites"},
         {name: "Help", icon: <QuestionMarkCircleIcon className="h-6 w-6"/>, href: "/help"},
         {name: "Sign Out", icon: <ArrowLeftOnRectangleIcon className="h-6 w-6"/>, href: "/kterings"},
@@ -128,6 +133,53 @@ export default function UserNavbar() {
             );
         }
         return null;
+    };
+
+    const handleCheckout = async () => {
+        if (cartItems.length === 0) {
+            alert("Your cart is empty.");
+            return;
+        }
+
+        // Process cart items to extract the real food IDs
+        const cartForBackend = cartItems.map(item => {
+            const lastIndex = item.id.lastIndexOf('-'); // Find the last hyphen
+            const realFoodId = item.id.substring(0, lastIndex); // Get the string before the last hyphen
+            return {
+                food_id: realFoodId,
+                quantity: item.quantity,
+                size: item.size,
+                price: item.price
+            };
+        });
+
+        console.log('Cart for backend:', cartForBackend)
+
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            const response = await fetch(`${apiURL}/api/checkout`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({cart: cartForBackend}),
+            });
+
+            console.log('Checkout response:', response);
+
+            const {url} = await response.json();
+
+            console.log('Checkout URL:', url);
+
+            // Redirect to Stripe Checkout
+            window.location.href = url;
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert("There was an error processing your checkout.");
+        }
     };
 
     const signOutF = () => {
@@ -288,6 +340,7 @@ export default function UserNavbar() {
                             Your Cart
                         </div>
                         <button
+                            onClick={handleCheckout}
                             className="rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                         >Checkout
                         </button>
