@@ -5,7 +5,6 @@ import {
     Bars3Icon,
     BellIcon,
     ChevronDownIcon,
-    CurrencyDollarIcon,
     HeartIcon,
     HomeIcon,
     MagnifyingGlassIcon,
@@ -109,10 +108,6 @@ export default function UserNavbar() {
             name: "Account",
             icon: <UserCircleIcon className="h-6 w-6"/>,
             href: isKterer ? "/kterer/account" : "/consumer/account"
-        },
-        {
-            isKterer: true, name: "Payment", icon: <CurrencyDollarIcon
-                className="h-6 w-6"/>, href: "/kterer/stripe-onboarding"
         },
         {name: "Saved Kterers", icon: <HeartIcon className="h-6 w-6"/>, href: "/kterings/favourites"},
         {name: "Help", icon: <QuestionMarkCircleIcon className="h-6 w-6"/>, href: "/help"},

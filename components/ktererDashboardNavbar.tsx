@@ -4,7 +4,7 @@ export default function KtererDashboardNavbar() {
     const buttons = [
         {name: 'Help', href: '/help'},
         {name: 'Dashboard', href: '/kterer/dashboard'},
-        {name: 'Earnings', href: '/logout'},
+        {name: 'Earnings', href: '/kterer/earnings'},
         {name: 'Post Food', href: '/kterer/post'},
     ];
 
