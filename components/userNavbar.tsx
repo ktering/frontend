@@ -103,7 +103,7 @@ export default function UserNavbar() {
 
     const USER_SIDEBAR_ITEMS = [
         {name: "Home", icon: <HomeIcon className="h-6 w-6"/>, href: "/kterings"},
-        {name: "Orders", icon: <ShoppingBagIcon className="h-6 w-6"/>, href: "/kterings"},
+        {name: "Orders", icon: <ShoppingBagIcon className="h-6 w-6"/>, href: "/consumer/orders"},
         {
             name: "Account",
             icon: <UserCircleIcon className="h-6 w-6"/>,
