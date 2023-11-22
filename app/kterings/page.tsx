@@ -29,6 +29,7 @@ import {toast} from "@/components/ui/use-toast";
 
 export default function Kterings() {
     const [nearYouFood, setNearYouFood] = useState<FoodItem[]>([]);
+    const [displayedFood, setDisplayedFood] = useState<FoodItem[]>([]);
     const [position, setPosition] = useState("over4");
     const contextValue = useContext(SearchContext);
     if (!contextValue) {
@@ -38,6 +39,8 @@ export default function Kterings() {
     const isSearching = searchInput.trim().length > 0;
     const tryNewFood = nearYouFood;
     const [favorites, setFavorites] = useState<Set<string>>(new Set());
+    const [currentFilter, setCurrentFilter] = useState("Near You");
+
 
     useEffect(() => {
         const getNearYouFood = async () => {
@@ -60,6 +63,7 @@ export default function Kterings() {
 
                 const data = await response.json();
                 setNearYouFood(data.data);
+                setDisplayedFood(data.data);
 
             } catch (error) {
                 console.error(`Error: ${error}`);
@@ -70,10 +74,14 @@ export default function Kterings() {
             console.error(`Error: ${error}`);
         });
     }, []);
+    //
+    // const filteredFood = nearYouFood.filter(item =>
+    //     item.name.toLowerCase().includes(searchInput.toLowerCase())
+    // );
 
-    const filteredFood = nearYouFood.filter(item =>
-        item.name.toLowerCase().includes(searchInput.toLowerCase())
-    );
+    const filteredFood = isSearching
+        ? nearYouFood.filter(item => item.name.toLowerCase().includes(searchInput.toLowerCase()))
+        : displayedFood;
 
     const toggleFavorite = async (foodId: string) => {
         const accessToken = localStorage.getItem('accessToken');
@@ -115,16 +123,57 @@ export default function Kterings() {
         });
     }
 
+    const filterFood = (category: string) => {
+        switch (category) {
+            case "Indian":
+                return nearYouFood.filter(item => item.ethnic_type === "Indian");
+            case "Asian":
+                return nearYouFood.filter(item => item.ethnic_type === "Asian");
+            case "Mexican":
+                return nearYouFood.filter(item => item.ethnic_type === "Mexican");
+            case "Middle Eastern":
+                return nearYouFood.filter(item => item.ethnic_type === "Middle Eastern");
+            case "Vegan":
+                return nearYouFood.filter(item => item.vegetarian === "Vegan");
+            case "Chicken":
+                return nearYouFood.filter(item => item.meat_type === "Chicken");
+            case "Desserts":
+                return nearYouFood.filter(item => item.desserts === "Desserts");
+            case "Drinks":
+                return nearYouFood.filter(item => item.desserts === "Drinks");
+            default:
+                return nearYouFood;
+        }
+    };
+
+    // const handleIconClick = (category: string) => {
+    //     const filtered = filterFood(category);
+    //     setDisplayedFood(filtered);
+    // };
+
+    const handleIconClick = (category: string) => {
+        let filtered;
+        if (category === "All") {
+            filtered = nearYouFood;
+            setCurrentFilter("Near You");
+        } else {
+            filtered = filterFood(category);
+            setCurrentFilter(category);
+        }
+        setDisplayedFood(filtered);
+    };
+
+
     const icons = [
-        {src: TrendingIcon, iconName: "Trending", onClick: () => console.log('Trending Icon clicked')},
-        {src: IndianIcon, iconName: "Indian", onClick: () => console.log('Indian Icon clicked')},
-        {src: AsianIcon, iconName: "Asian", onClick: () => console.log('Asian Icon clicked')},
-        {src: MexicanIcon, iconName: "Mexican", onClick: () => console.log('Mexican Icon clicked')},
-        {src: MiddleEasternIcon, iconName: "Middle Eastern", onClick: () => console.log('Middle Eastern Icon clicked')},
-        {src: VeganIcon, iconName: "Vegan", onClick: () => console.log('Vegan Icon clicked')},
-        {src: ChickenIcon, iconName: "Chicken", onClick: () => console.log('Chicken Icon clicked')},
-        {src: DessertsIcon, iconName: "Desserts", onClick: () => console.log('Desserts Icon clicked')},
-        {src: DrinksIcon, iconName: "Drinks", onClick: () => console.log('Drinks Icon clicked')},
+        {src: TrendingIcon, iconName: "Trending", onClick: () => handleIconClick("All")},
+        {src: IndianIcon, iconName: "Indian", onClick: () => handleIconClick("Indian")},
+        {src: AsianIcon, iconName: "Asian", onClick: () => handleIconClick("Asian")},
+        {src: MexicanIcon, iconName: "Mexican", onClick: () => handleIconClick("Mexican")},
+        {src: MiddleEasternIcon, iconName: "Middle Eastern", onClick: () => handleIconClick("Middle Eastern")},
+        {src: VeganIcon, iconName: "Vegan", onClick: () => handleIconClick("Vegan")},
+        {src: ChickenIcon, iconName: "Chicken", onClick: () => handleIconClick("Chicken")},
+        {src: DessertsIcon, iconName: "Desserts", onClick: () => handleIconClick("Desserts")},
+        {src: DrinksIcon, iconName: "Drinks", onClick: () => handleIconClick("Drinks")},
     ];
 
     return (
@@ -168,12 +217,11 @@ export default function Kterings() {
                 </DropdownMenu>
 
                 {/* Near You */}
-
-                <p className="font-bold text-xl my-12">{isSearching ? "SEARCHED FOOD" : "NEAR YOU"}</p>
+                <p className="font-bold text-xl my-12">
+                    {searchInput.trim().length > 0 ? "SEARCHED FOOD" : currentFilter}
+                </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-                    {isSearching && filteredFood.length === 0 ? (
-                        <p>No search results found</p>
-                    ) : (
+                    {filteredFood.length > 0 ? (
                         filteredFood.map((item, index) => {
                             const food_id = new URLSearchParams({
                                 food_id: item.id,
@@ -202,7 +250,6 @@ export default function Kterings() {
                                             <p className="text-sm mt-1">00 min away</p>
                                         </div>
 
-
                                         <span onClick={() => toggleFavorite(item.id)}>
                                             {favorites.has(item.id) ? (
                                                 <HeartIconSolid className="h-6 w-6 cursor-pointer text-primary-color"/>
@@ -214,14 +261,15 @@ export default function Kterings() {
                                 </div>
                             );
                         })
+                    ) : (
+                        <p>No search results found</p>
                     )}
                 </div>
 
                 {/* TRY SOMETHING NEW */}
-                {!isSearching && (
+                {!isSearching && currentFilter === "Near You" && (
                     <>
                         <p className="font-bold text-xl my-12">TRY SOMETHING NEW</p>
-
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
                             {nearYouFood.map((item, index) => {
                                 const food_id = new URLSearchParams({

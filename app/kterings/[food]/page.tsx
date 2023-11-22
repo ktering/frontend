@@ -99,7 +99,6 @@ export default function Food() {
             }
 
             data = await response.json();
-            console.log('data', data.data);
             setReviews(data.data);
         }
 
@@ -291,10 +290,16 @@ export default function Food() {
                                     Kosher
                                 </span>
                             )}
-                            {foodDetails?.vegetarian && (
+                            {foodDetails?.vegetarian && foodDetails?.vegetarian !== "None" && (
                                 <span
-                                    className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
-                                    Vegetarian
+                                    className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                                    {foodDetails.vegetarian}
+                                </span>
+                            )}
+                            {foodDetails?.desserts && foodDetails?.desserts !== "None" && (
+                                <span
+                                    className="inline-flex items-center rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-700">
+                                    {foodDetails.desserts}
                                 </span>
                             )}
                             {foodDetails?.meat_type && foodDetails?.meat_type !== "None" && foodDetails?.meat_type !== "Other" && (

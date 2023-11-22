@@ -15,7 +15,8 @@ export default function StripeOnboarding() {
         try {
             const accessToken = localStorage.getItem('accessToken');
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
-            const params = new URLSearchParams({client_id: user?.user.id || ""});
+            const clientId = user && user.user ? user.user.id : "";
+            const params = new URLSearchParams({client_id: clientId}).toString();
 
             const response = await fetch(`${apiURL}/api/stripe/onboarding?${params}`, {
                 method: 'POST',
