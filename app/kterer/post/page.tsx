@@ -18,7 +18,7 @@ const formSchema = z.object({
         path: z.string(),
         size: z.number(),
         type: z.string(),
-    })),
+    })).min(1, "At least one image is required"),
     name: z.string().min(2, "Food name must be at least 2 characters").max(50, "Food name can't be longer than 50 characters"),
     small_price: z.coerce.number(),
     small_amount: z.coerce.number(),
@@ -124,6 +124,16 @@ export default function PostFood() {
     };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        // A final check just in case
+        if (selectedFiles.length === 0) {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "Please upload at least one image.",
+            });
+            return;
+        }
+
         const formData = new FormData();
 
         selectedFiles.forEach((file, index) => {
@@ -585,6 +595,7 @@ export default function PostFood() {
                                 )}
                             />
                             <Button
+                                disabled={selectedFiles.length === 0}
                                 className="bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
                                 type="submit">Post Food</Button>
                         </form>
