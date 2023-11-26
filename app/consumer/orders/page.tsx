@@ -1,7 +1,12 @@
+"use client";
+import {useEffect, useState} from "react";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 import {Button} from "@/components/ui/button";
+import {useSearchParams} from "next/navigation";
+import useCart from "@/app/hooks/useCart";
+import {toast} from "@/components/ui/use-toast";
 
-const orders = [
+const temp_orders = [
     {
         buyer_name: 'Jane Cooper',
         date: '2021-01-07',
@@ -21,6 +26,56 @@ const orders = [
 ]
 
 export default function ConsumerOrders() {
+    const searchParams = useSearchParams();
+    const orderSuccess = searchParams.get('success');
+
+    const {clearCart} = useCart();
+    const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        if (orderSuccess === 'true') {
+            clearCart();
+        } else if (orderSuccess === 'false') {
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "Payment failed. Please try again.",
+            });
+        }
+    }, [orderSuccess]);
+
+    useEffect(() => {
+        const getUserOrders = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            try {
+                const response = await fetch(`${apiURL}/api/orders`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setOrders(data.data);
+
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            }
+        }
+
+        getUserOrders().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
+    }, []);
+
     return (
         <>
             <div className="flex justify-between my-8">
@@ -30,7 +85,7 @@ export default function ConsumerOrders() {
             <h2 className="my-4 font-bold text-lg">Open</h2>
 
             <div className="my-8">
-                {orders.map((order, index) => (
+                {temp_orders.map((order, index) => (
                     <Alert className="mt-8">
                         <AlertTitle className="font-bold text-lg border-b pb-2">{order.buyer_name}</AlertTitle>
                         <AlertDescription>
@@ -66,7 +121,7 @@ export default function ConsumerOrders() {
             <h2 className="my-4 font-bold text-lg">Completed</h2>
 
             <div className="my-8">
-                {orders.map((order, index) => (
+                {temp_orders.map((order, index) => (
                     <Alert className="mt-8">
                         <AlertTitle className="font-bold text-lg border-b pb-2">{order.buyer_name}</AlertTitle>
                         <AlertDescription>

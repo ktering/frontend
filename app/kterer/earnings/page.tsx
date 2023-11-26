@@ -4,6 +4,7 @@ import {useUser} from "@clerk/nextjs";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert"
 import {Earnings} from "@/types/pages/earnings/earnings";
 import {Button} from "@/components/ui/button";
+import {KtererInfo} from "@/types/shared/user";
 
 const orders = [
     {
@@ -31,6 +32,40 @@ export default function Earnings() {
     }
     const [loading, setLoading] = useState(false);
     const [earnings, setEarnings] = useState<Earnings>({available: [], pending: []});
+    const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
+    const [ktererOrders, setKtererOrders] = useState([]);
+
+    useEffect(() => {
+        const getKtererOrders = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            try {
+                const response = await fetch(`${apiURL}/api/orders`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setKtererOrders(data.data);
+
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            }
+        }
+
+        getKtererOrders().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
+    }, []);
 
     const handleOnboarding = async () => {
         setLoading(true);
@@ -95,6 +130,36 @@ export default function Earnings() {
         });
     }, [user.user]);
 
+    useEffect(() => {
+        const getKtererAccountInfo = async () => {
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            try {
+                const response = await fetch(`${apiURL}/api/user`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setKtererInfo(data.user.kterer.stripe_account_id);
+            } catch (error) {
+                console.error('An error occurred:', error);
+            }
+        }
+
+        getKtererAccountInfo().catch(error => {
+            console.error('An error occurred:', error);
+        });
+    }, []);
+
     const isEarningsLoaded = earnings.available.length > 0 || earnings.pending.length > 0;
 
     const totalEarnings = isEarningsLoaded
@@ -105,13 +170,16 @@ export default function Earnings() {
     return (
         <>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <Alert className="mt-8">
-                    <AlertTitle className="text-yellow-500">Heads up!</AlertTitle>
-                    <AlertDescription className="text-yellow-500">
-                        Start Stripe onboarding to receive payments from your customers. Otherwise, you will not be able
-                        to receive payments or post foods. Click the button below to start the onboarding process.
-                    </AlertDescription>
-                </Alert>
+                {!ktererInfo && (
+                    <Alert className="mt-8">
+                        <AlertTitle className="text-yellow-500">Heads up!</AlertTitle>
+                        <AlertDescription className="text-yellow-500">
+                            Start Stripe onboarding to receive payments from your customers. Otherwise, you will not be
+                            able
+                            to receive payments or post foods. Click the button below to start the onboarding process.
+                        </AlertDescription>
+                    </Alert>
+                )}
                 <div className="flex justify-between my-8">
                     <div className="text-2xl font-bold ">Earnings</div>
                     <button

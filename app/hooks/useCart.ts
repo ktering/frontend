@@ -91,6 +91,11 @@ function useCart() {
         });
     };
 
+    const clearCart = () => {
+        setCartItems([]);
+        localStorage.removeItem('cart');
+    };
+
     return {
         cartItems,
         setCartItems,
@@ -98,6 +103,7 @@ function useCart() {
         removeItemFromCart,
         updateItemQuantity,
         useLocalStorageCart,
+        clearCart,
     };
 }
 
