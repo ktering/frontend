@@ -163,6 +163,19 @@ export default function Food() {
 
         addItemToCart(cartItem);
 
+        toast({
+            description: (
+                <>
+                    <div className="flex items-center">
+                        <CheckCircleIcon
+                            className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                        Food added to cart
+                    </div>
+                </>
+            ),
+            duration: 3000,
+        });
+
         updateCartCount(cartCount + 1);
     };
 
