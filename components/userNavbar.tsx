@@ -36,6 +36,7 @@ import AddressPopup from "@/components/addressPopup";
 import {CartItem} from "@/types/hooks/useCart";
 import {fetchHomeAddress} from "@/app/hooks/fetchAddress";
 import {SearchContext} from "@/app/context/searchContext";
+import {useCartCount} from "@/components/cartContext";
 
 export default function UserNavbar() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -48,6 +49,7 @@ export default function UserNavbar() {
     const cartLength = useLocalStorageCart();
     const [savedAddress, setSavedAddress] = useState('');
     const [addressChanged, setAddressChanged] = useState(false);
+    const { cartCount } = useCartCount();
 
     const contextValue = useContext(SearchContext);
     const {searchInput, setSearchInput} = contextValue || {
@@ -147,8 +149,6 @@ export default function UserNavbar() {
                 price: item.price
             };
         });
-
-        console.log('Cart for backend:', cartForBackend)
 
         try {
             const accessToken = localStorage.getItem('accessToken');
@@ -296,10 +296,10 @@ export default function UserNavbar() {
                                             <span className="sr-only">Check Shopping Cart</span>
                                             <ShoppingCartIcon className="h-6 w-6 z-100" aria-hidden="true"/>
                                             {/* Badge showing the number of items in the cart */}
-                                            {cartLength > 0 && (
+                                            {cartCount > 0 && (
                                                 <span
                                                     className="flex items-center justify-center absolute -top-2 -right-2 h-6 w-6 text-xs font-semibold rounded-full bg-primary-color text-white">
-                                                    {cartItems.length}
+                                                    {cartCount}
                                                 </span>
                                             )}
                                         </div>

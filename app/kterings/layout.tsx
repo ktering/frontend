@@ -4,6 +4,7 @@ import UserNavbar from "@/components/userNavbar";
 import KtererDashboardNavbar from "@/components/ktererDashboardNavbar";
 import {currentUser} from '@clerk/nextjs';
 import {SearchProvider} from "@/app/context/searchProvider";
+import {CartProvider} from "@/components/cartContext";
 
 export const metadata: Metadata = {
     title: 'Kterings',
@@ -21,6 +22,7 @@ export default async function KteringsLayout({children}: {
 
     return (
         <section>
+            <CartProvider>
             <SearchProvider>
                 <div>
                     <UserNavbar/>
@@ -28,6 +30,7 @@ export default async function KteringsLayout({children}: {
                     {children}
                 </div>
             </SearchProvider>
+            </CartProvider>
         </section>
     );
 }

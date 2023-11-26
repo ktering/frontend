@@ -18,6 +18,7 @@ import {FoodItem} from "@/types/shared/food";
 import {Reviews} from "@/types/shared/reviews";
 import {CartItem} from "@/types/hooks/useCart";
 import {useUser} from "@clerk/nextjs";
+import {useCartCount} from "@/components/cartContext";
 
 const formSchema = z.object({
     rating: z.number().min(1).max(5),
@@ -42,6 +43,8 @@ export default function Food() {
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const hasReviews = reviews && reviews.length > 0;
     const router = useRouter();
+
+    const { cartCount, updateCartCount } = useCartCount();
 
 
     useEffect(() => {
@@ -159,6 +162,8 @@ export default function Food() {
         };
 
         addItemToCart(cartItem);
+
+        updateCartCount(cartCount + 1);
     };
 
     const renderSizeButton = (size: string) => {
