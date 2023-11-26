@@ -44,7 +44,7 @@ export default function Food() {
     const hasReviews = reviews && reviews.length > 0;
     const router = useRouter();
 
-    const { cartCount, updateCartCount } = useCartCount();
+    const {cartCount, updateCartCount} = useCartCount();
 
 
     useEffect(() => {
@@ -194,6 +194,12 @@ export default function Food() {
         ) : null;
     };
 
+    const allSizesOutOfStock = () => {
+        return foodDetails?.quantities.every(q => parseInt(q.quantity) === 0);
+    };
+
+    const isOutOfStock = allSizesOutOfStock();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -341,7 +347,9 @@ export default function Food() {
                         }) => q.size === selectedSize)?.price : "Loading..."}
                         </p>
                         <div className="flex flex-col space-y-2">
-                            <p>Size</p>
+                            {!isOutOfStock ? (
+                                <p>Size</p>
+                            ) : <p>No Sizes Available</p>}
                             <div className="my-2 space-x-2">
                                 {['small', 'medium', 'large'].map((size) => renderSizeButton(size))}
                             </div>
@@ -373,11 +381,19 @@ export default function Food() {
                                 </button>
                             </div>
                         </div>
-                        <button
-                            onClick={addToCart}
-                            className="rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">Add
-                            to Cart
-                        </button>
+                        {!isOutOfStock ? (
+                            <button
+                                onClick={addToCart}
+                                className="rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">
+                                Add to Cart
+                            </button>
+                        ) : (
+                            <button
+                                disabled
+                                className="rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm">
+                                Out of Stock
+                            </button>
+                        )}
                         <div className="my-8">
                             <Accordion type="single" collapsible defaultValue="item-1">
                                 <AccordionItem value="item-1">
