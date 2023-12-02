@@ -46,7 +46,7 @@ export default function Dashboard() {
                         const userInfo = responseJson.user;
 
                         if (userInfo.publicMetadata.ktererSignUpCompleted === true) {
-                            router.push("/kterer/dashboard");
+                            router.push("/kterer/earnings");
                         } else {
                             console.log('Metadata updated not updated to false');
                         }

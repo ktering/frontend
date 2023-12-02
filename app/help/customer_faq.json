@@ -1,0 +1,69 @@
+{
+  "customer_faqs": [
+    {
+      "id": "0001",
+      "question": "How can I change my address?",
+      "answer": "To change your address, follow these steps: \n\t1. Log in to your account \n\t2. Click on your existing address at the top bar \n\t3. Click on the edit icon at the right of the address\n\t4.Search for the new address\n\t5. Click save address"
+    },
+    {
+      "id": "0002",
+      "question": "How can I place an order?",
+      "answer": "To place an order, follow these steps: \n\t1. Find a food you like through search/recent/browsing \n\t2. Click into the food \n\t3. Select size and quantity\n\t4. Place your order"
+    },
+    {
+      "id": "0003",
+      "question": "How can I save a Kterer?",
+      "answer": "To save a Kterer you can put them in your saved Kterers list. To do that follow these steps: \n\t1. Find a food who’s Kterer you would like to save \n\t2. Click on the heart shaped icon at the bottom right of the picture \n\nYou can also save a Kterer by \n\n\t1. Searching for the Kterer you want to save \n\t2. Clicking into the profile \n\t3. Click on the heart shaped icon"
+    },
+    {
+      "id": "0004",
+      "question": "How do I see my saved Kterers?",
+      "answer": "To view your saved Kterers follow these simple steps: \n\t1. Log in to your account \n\t2. Click the 3 lines at the top left for the menu (hamburger menu) \n\t3. Click on 'Saved Kterers'"
+    },
+    {
+      "id": "0005",
+      "question": "Order was missing an item/incorrect order",
+      "answer": "We are very sorry for the inconvenience If a delivered order was missing item(s) or had incorrect item(s), please submit a report to the Kterings support team by following these steps:\n\n\t1. Log in with the account used to place the order\n\t2. Click the 3 lines at the top left for the menu (hamburger menu)\n\t3. Click on 'Orders'\n\t4. Select the order you are inquiring about and then click help\n\t5. Input the details in the ticket section and write missing items as the subject\n\t6. Under the description explain what went wrong and press submit\n\nPlease submit a ticket right away once the defected delivery is made. We will review and get\nback to you within 24 hours. Thank you for your patience"
+    },
+    {
+      "id": "0006",
+      "question": "Why was my order cancelled?",
+      "answer": "Your order could have been cancelled for the following reasons: \n\n\t1. Kterer could not make the food\n\t2. Kterer ran out of an item to make the food\n\t3. Kterer is no longer taking orders\n\t4. The current time is beyond the Kterers’ operating hours\n\nWhile we never want this to happen, if it does we will ensure you receive a full credit or refund"
+    },
+    {
+      "id": "0007",
+      "question": "Where can I see the receipt for my order?",
+      "answer": "To view the receipt for your order follow the following steps: \n\n\t1. Log in to your account \n\t2. Click the 3 lines at the top left for the menu (hamburger menu) \n\t3. Select 'Orders' \n\t4. Click 'View Receipt' on the order you wish to see the receipt for."
+    },
+    {
+      "id": "0008",
+      "question": "The credit or refund I received is incorrect",
+      "answer": "If you received an incorrect credit or refund for a specific order, please submit a ticket below and include the following information: \n\n\t1. Order date\n\t2. Food name\n\t3. Kterer Name"
+    },
+    {
+      "id": "0009",
+      "question": "The quality of my food was bad",
+      "answer": "We sincerely apologize if the quality of your food was not up to standard. For the fastest resolution please submit a ticket below following these steps:\n\n\t1. Click submit a ticket below\n\t2. Write poor food quality in the subject\n\t3. Under the description explain what went wrong and press submit\n\n Please submit a ticket right away once the defected delivery is made. We will review and get\nback to you within 24 hours. Thank you for your patience"
+    },
+    {
+      "id": "0010",
+      "question": "How do I place a refund request?",
+      "answer": "A refund can be processed for the following reasons: \n\n\t1. Poor quality\n\t2. Missing item(s)\n\nTo request a refund click submit a ticket below and follow these steps: \n\n\t1. Click submit a ticket\n\t2. Write/select refund in the subject\n\t3. Under the description explain what went wrong and press submit\n\nPlease submit a ticket right away once the defected delivery is made. We will review and get\nback to you within 24 hours. Thank you for your patience"
+    },
+    {
+      "id": "0011",
+      "question": "How do I reset my passwords?",
+      "answer": "To reset your password follow the steps below: \n\nIf you are logged in:\n\n\t1. Click the 3 lines at the top left for the menu (hamburger menu) \n\t2. Select 'Account' \n\t3. Click on 'Reset Password' at the top right \n\t4. Follow the steps and complete your password reset. \n\nIf you are not logged in: \n\n\t1. Click sign in \n\t2. Enter the email attached to your account \n\t3. Click on 'Forgot Password' \n\t4. Follow the steps and complete your password reset."
+    },
+    {
+      "id": "0012",
+      "question": "How do I know the food is halal?",
+      "answer": "We understand that different cultured/religious people have different needs. That is why we created tags.\n\n To look for 'Halal' tags \n\n\t1. Click into a product of choice \n\t2. On top of the food name/description look for colored bubbles \n\t3. In these colored bubbles look for a tag that says either 'Machine Slaughtered Halal', 'Hand Slaughtered Halal' or 'Halal' if no meat was involved in the making of the food. \n\n\tIn the case that it does not have the above tags please do not consider it halal"
+    },
+    {
+      "id": "0013",
+      "question": "My order didn’t arrive",
+      "answer": "We sincerely apologize if your order did not arrive. For the fastest resolution please submit a ticket below following these steps: \n\n\t1. Click submit a ticket below \n\t2. Write/select 'Order did not arrive' in the subject field \n\t3. Under the description explain what went wrong and press submit. \n\nPlease submit a ticket right away once the situation has occurred. We will review and get back to you within 24 hours. Thank you for your patience"
+    }
+  ]
+}

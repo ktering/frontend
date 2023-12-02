@@ -20,7 +20,8 @@ export interface FoodItem {
     ingredients: string;
     halal: string;
     kosher: boolean;
-    vegetarian: boolean;
+    vegetarian: string;
+    desserts: string
     contains_nuts: boolean;
     meat_type: string;
     ethnic_type: string;

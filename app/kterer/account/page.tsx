@@ -13,6 +13,15 @@ import {Textarea} from "@/components/ui/textarea";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {KtererInfo} from "@/types/shared/user";
 import {CheckCircleIcon} from "@heroicons/react/24/outline";
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -49,10 +58,17 @@ const formSchema = z.object({
 })
 
 export default function KtererAccount() {
+    const {user, signOut,} = useClerk();
+    const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false);
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [signOutOfOtherSessions, setSignOutOfOtherSessions] = useState(true);
+    const [updateSuccess, setUpdateSuccess] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
+    const [updateError, setUpdateError] = useState("");
+
     const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
     const router = useRouter();
     const {toast} = useToast();
-    const {signOut} = useClerk();
     const [profileImageSrc, setProfileImageSrc] = useState(DEFAULT_IMAGE_SRC);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -130,6 +146,14 @@ export default function KtererAccount() {
             form.setValue(key, formValues[key], {shouldValidate: true});
         });
     }, [ktererInfo, form]);
+
+    useEffect(() => {
+        if (!isPasswordResetOpen) {
+            setUpdateError("");
+            setCurrentPassword("");
+            setNewPassword("");
+        }
+    }, [isPasswordResetOpen]);
 
     const deleteAccount = async () => {
         // TODO: We should use a transaction here to delete the user from the db and Clerk. Dont have time to implement this now.
@@ -249,8 +273,24 @@ export default function KtererAccount() {
     };
 
     const handleRemovePicture = () => {
-        setProfileImageSrc(DEFAULT_IMAGE_SRC); // Reset to default image
-        form.setValue("profile_image_url", ""); // Update form state
+        setProfileImageSrc(DEFAULT_IMAGE_SRC);
+        form.setValue("profile_image_url", "");
+    };
+
+    const handlePasswordUpdate = async () => {
+        try {
+            await user?.updatePassword({
+                newPassword: newPassword,
+                currentPassword: currentPassword,
+                signOutOfOtherSessions: signOutOfOtherSessions,
+            });
+            setUpdateSuccess(true);
+            setUpdateError("");
+        } catch (error) {
+            console.error('Error updating password:', error);
+            const errorMessage = "Error! Please check your current and new passwords or have a strong new password.";
+            setUpdateError(errorMessage);
+        }
     };
 
     return (
@@ -259,8 +299,9 @@ export default function KtererAccount() {
                 <div className="flex justify-between my-8">
                     <div className="text-2xl font-bold ">Kterer Account</div>
                     <button
+                        onClick={() => setIsPasswordResetOpen(true)}
                         className="rounded-full px-4 py-2.5 font-semibold border text-primary-color hover:bg-gray-50 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">
-                        Reset Password
+                        Change Password
                     </button>
                 </div>
                 <div className="max-w-2xl mx-auto">
@@ -474,6 +515,59 @@ export default function KtererAccount() {
                     </button>
                 </div>
             </div>
+
+            <AlertDialog open={isPasswordResetOpen} onOpenChange={setIsPasswordResetOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Change Password</AlertDialogTitle>
+                        {!updateSuccess ? (
+                            <AlertDialogDescription>
+                                Enter your current and new password.
+                            </AlertDialogDescription>
+                        ) : (
+                            <>
+                                <AlertDialogDescription>
+                                    Your password has been updated successfully.
+                                </AlertDialogDescription>
+                                <AlertDialogCancel>Close</AlertDialogCancel>
+                            </>
+                        )}
+                    </AlertDialogHeader>
+                    {!updateSuccess && (
+                        <AlertDialogFooter>
+                            <div className="flex flex-col w-full space-y-8">
+                                <div className="space-y-4">
+                                    <Input
+                                        type="password"
+                                        value={currentPassword}
+                                        onChange={(e) => setCurrentPassword(e.target.value)}
+                                        placeholder="Current Password"
+                                    />
+                                    <Input
+                                        type="password"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="New Password"
+                                    />
+                                </div>
+                                {updateError && (
+                                    <div className="rounded-md bg-red-50 p-4 col-span-6">
+                                        <div className="flex">
+                                            <div className="ml-2">
+                                                <h3 className="text-sm font-medium text-red-800">{updateError}</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="space-x-4">
+                                    <Button onClick={handlePasswordUpdate}>Update Password</Button>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                </div>
+                            </div>
+                        </AlertDialogFooter>
+                    )}
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     )
         ;

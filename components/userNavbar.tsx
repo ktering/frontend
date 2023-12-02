@@ -9,10 +9,13 @@ import {
     HomeIcon,
     MagnifyingGlassIcon,
     MapPinIcon,
+    MinusSmallIcon,
+    PlusSmallIcon,
     QuestionMarkCircleIcon,
     ShoppingBagIcon,
     ShoppingCartIcon,
-    UserCircleIcon,
+    TrashIcon,
+    UserCircleIcon
 } from '@heroicons/react/24/outline'
 import Logo from "@/static/red-logo.svg"
 import Image from "next/image";
@@ -33,6 +36,7 @@ import AddressPopup from "@/components/addressPopup";
 import {CartItem} from "@/types/hooks/useCart";
 import {fetchHomeAddress} from "@/app/hooks/fetchAddress";
 import {SearchContext} from "@/app/context/searchContext";
+import {useCartCount} from "@/components/cartContext";
 
 export default function UserNavbar() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -45,6 +49,7 @@ export default function UserNavbar() {
     const cartLength = useLocalStorageCart();
     const [savedAddress, setSavedAddress] = useState('');
     const [addressChanged, setAddressChanged] = useState(false);
+    const { cartCount } = useCartCount();
 
     const contextValue = useContext(SearchContext);
     const {searchInput, setSearchInput} = contextValue || {
@@ -100,14 +105,14 @@ export default function UserNavbar() {
 
     const USER_SIDEBAR_ITEMS = [
         {name: "Home", icon: <HomeIcon className="h-6 w-6"/>, href: "/kterings"},
-        {name: "Orders", icon: <ShoppingBagIcon className="h-6 w-6"/>, href: "/kterings"},
+        {name: "Orders", icon: <ShoppingBagIcon className="h-6 w-6"/>, href: "/consumer/orders"},
         {
             name: "Account",
             icon: <UserCircleIcon className="h-6 w-6"/>,
             href: isKterer ? "/kterer/account" : "/consumer/account"
         },
         {name: "Saved Kterers", icon: <HeartIcon className="h-6 w-6"/>, href: "/kterings/favourites"},
-        {name: "Help", icon: <QuestionMarkCircleIcon className="h-6 w-6"/>, href: "/kterings"},
+        {name: "Help", icon: <QuestionMarkCircleIcon className="h-6 w-6"/>, href: "/help"},
         {name: "Sign Out", icon: <ArrowLeftOnRectangleIcon className="h-6 w-6"/>, href: "/kterings"},
     ];
 
@@ -125,6 +130,51 @@ export default function UserNavbar() {
             );
         }
         return null;
+    };
+
+    const handleCheckout = async () => {
+        if (cartItems.length === 0) {
+            alert("Your cart is empty.");
+            return;
+        }
+
+        // Process cart items to extract the real food IDs
+        const cartForBackend = cartItems.map(item => {
+            const lastIndex = item.id.lastIndexOf('-'); // Find the last hyphen
+            const realFoodId = item.id.substring(0, lastIndex); // Get the string before the last hyphen
+            return {
+                food_id: realFoodId,
+                quantity: item.quantity,
+                size: item.size,
+                price: item.price
+            };
+        });
+
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            const response = await fetch(`${apiURL}/api/checkout`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({cart: cartForBackend}),
+            });
+
+            console.log('Checkout response:', response);
+
+            const {url} = await response.json();
+
+            console.log('Checkout URL:', url);
+
+            // Redirect to Stripe Checkout
+            window.location.href = url;
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert("There was an error processing your checkout.");
+        }
     };
 
     const signOutF = () => {
@@ -246,10 +296,10 @@ export default function UserNavbar() {
                                             <span className="sr-only">Check Shopping Cart</span>
                                             <ShoppingCartIcon className="h-6 w-6 z-100" aria-hidden="true"/>
                                             {/* Badge showing the number of items in the cart */}
-                                            {cartLength > 0 && (
+                                            {cartCount > 0 && (
                                                 <span
                                                     className="flex items-center justify-center absolute -top-2 -right-2 h-6 w-6 text-xs font-semibold rounded-full bg-primary-color text-white">
-                                                    {cartItems.length}
+                                                    {cartCount}
                                                 </span>
                                             )}
                                         </div>
@@ -285,6 +335,7 @@ export default function UserNavbar() {
                             Your Cart
                         </div>
                         <button
+                            onClick={handleCheckout}
                             className="rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                         >Checkout
                         </button>
@@ -315,47 +366,33 @@ export default function UserNavbar() {
                                                 type="button"
                                                 className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
                                             >
-                                                {/* Change icon to trash if quantity is 1 */}
                                                 {item.quantity > 1 ? (
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                         viewBox="0 0 24 24"
-                                                         strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                                              d="M18 12H6"/>
-                                                    </svg>
+                                                    <MinusSmallIcon className="w-6 h-6"/>
                                                 ) : (
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                         viewBox="0 0 24 24"
-                                                         strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-                                                    </svg>
+                                                    <TrashIcon className="w-5 h-5"/>
                                                 )}
                                             </button>
-                                            {/*<input*/}
-                                            {/*    type="number"*/}
-                                            {/*    id={`quantity_${item.id}_${item.size}`}*/}
-                                            {/*    value={item.quantity}*/}
-                                            {/*    readOnly*/}
-                                            {/*    className="h-10 w-16 text-center border-transparent appearance-none outline-none"*/}
-                                            {/*/>*/}
+                                            <input
+                                                type="number"
+                                                id={`quantity_${item.id}_${item.size}`}
+                                                value={item.quantity}
+                                                readOnly
+                                                className="h-10 w-16 text-center border-transparent appearance-none outline-none"
+                                            />
                                             <button
                                                 onClick={() => incrementQuantity(item)}
                                                 type="button"
                                                 className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                     strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                    <path strokeLinecap="round" strokeLinejoin="round"
-                                                          d="M12 6v12m6-6H6"/>
-                                                </svg>
+                                                <PlusSmallIcon className="h-6 w-6"/>
                                             </button>
                                         </div>
                                     </div>
                                 );
                             })}
                         </ul>
-                    )}
+                    )
+                    }
                 </SheetContent>
             </Sheet>
         </>

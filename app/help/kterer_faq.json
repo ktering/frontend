@@ -1,0 +1,54 @@
+{
+  "kterer_faqs": [
+    {
+      "id": 1111,
+      "question": "When will I get paid?",
+      "answer": "Payments happen immediately after you make a sale. Due to a high number of transactions taking place, a delay of a few hours could happen. Thank you for being patient!"
+    },
+    {
+      "id": 1112,
+      "question": "How do the fees work?",
+      "answer": "Under our Terms and Conditions and our Vendor Terms and Conditions, below is how our fees works:\n\n8. OUR FEES AND COMMISSIONS\n\n8.1. KTERER Fees: KTERERS agree to pay KTERINGS a commission fee equal to 25% of the total transaction value for each homemade food sale facilitated through the Platform.\n\n8.2. Customer Service Fee: Customers may be charged a service fee for the use of the Platform, starting at a minimum of $1.99 per transaction. This fee may increase up to 10% of the total transaction value as we deem fit.\n\n8.3. Delivery Fee: Customers may be charged a delivery fee based on the distance between the Kterer's location and the Customer's delivery address:\n\n\t• 0 - 10 km: Flat rate of $4.99\n\t• 10 - 20 km: Flat rate of $6.99\n\t• 20 - 30 km: Flat rate of $8.99\n\n8.4. Future Fees: KTERINGS reserves the right to introduce additional fees or modify existing fees in the future. Any such changes will be communicated to users through the Platform"
+    },
+    {
+      "id": 1113,
+      "question": "How does the payout system work?",
+      "answer": "Payouts happen immediately after you make a sale. Please make sure you have the right bank information attached to receive the payments. Due to a high number of transactions taking place, a delay of a few hours could happen. Thank you for being patient!"
+    },
+    {
+      "id": 1114,
+      "question": "How do I add food posts?",
+      "answer": "To post food follow these steps:\n\n\ta. Log in to your Kterer account.\n\tb. In the Kterer menu/nav bar click the post food button\n\tc. Fill in the description fields for your food\n\td. Press post food at the bottom of the page\n\nPlease note that we believe in fostering a supportive and healthy community, and as such, we will be taking measures to address instances of false information. Those found repeatedly contributing incomplete or inaccurate details may be subject to reprimand, including the possibility of moderation actions.\n\nPlease see the following blog for more information here"
+    },
+    {
+      "id": 1115,
+      "question": "What picture resolution is best?",
+      "answer": "Answer when you get a reply from Devs"
+    },
+    {
+      "id": 1116,
+      "question": "How do I edit my food posts?",
+      "answer": "To edit your food posts follow these steps:\n\n\ta. Log in to your Kterer account\n\tb. In the Kterer Home page click on the 3 dots of the post you want to edit\n\tc. Click edit \n\td. Edit the details of your post\n\te. Click done at the bottom of the page"
+    },
+    {
+      "id": 1117,
+      "question": "Where do I see my food posts?",
+      "answer": "Kterers can see their active food posts by following the below steps\n\n\ta. Log in to your Kterer account\n\tb. See your active food posts in the Kterer Home page"
+    },
+    {
+      "id": 1118,
+      "question": "Can I order food with a Kterer account?",
+      "answer": "Yes you can order food with a Kterer account. Please follow the following steps:\n\n\ta. Click on the 3 lines on the top left of the page (the hamburger menu)\n\tb. Click Home\n\tc. Look for and click the food of choice\n\td. Click add to cart\n\te. Click on checkout on the cart popup"
+    },
+    {
+      "id": 1119,
+      "question": "The amount of money transferred to me was incorrect.",
+      "answer": "We sincerely apologize for any inconvenience this may have caused. Rest assured, we are actively working to rectify this error.\n\nTo address this issue promptly, we kindly request you to submit a ticket below to provide details regarding the incorrect transaction. Our team is committed to resolving this matter efficiently and ensuring that the correct amount is credited to your account.\n\nWe apologize for any inconvenience this may have caused and appreciate your understanding as we work to rectify this situation promptly.\n\nThank you for your cooperation."
+    },
+    {
+      "id": 11110,
+      "question": "How much does Kterings take as a commission?",
+      "answer": "Answer when you get a reply from Lawyer Sam"
+    }
+  ]
+}

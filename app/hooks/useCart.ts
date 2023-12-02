@@ -1,8 +1,10 @@
 import {useEffect, useState} from 'react';
 import {CartItem} from "@/types/hooks/useCart";
+import {useCartCount} from "@/components/cartContext";
 
 function useCart() {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const { cartCount, updateCartCount } = useCartCount();
 
     useEffect(() => {
         const cart = localStorage.getItem('cart');
@@ -74,8 +76,10 @@ function useCart() {
                 (item) => !(item.id === id && item.size === size)
             );
             saveCartItems(updatedItems);
+            updateCartCount(updatedItems.length);
             return updatedItems;
         });
+
     };
 
     const updateItemQuantity = (id: string, size: string, newQuantity: number) => {
@@ -91,6 +95,11 @@ function useCart() {
         });
     };
 
+    const clearCart = () => {
+        setCartItems([]);
+        localStorage.removeItem('cart');
+    };
+
     return {
         cartItems,
         setCartItems,
@@ -98,6 +107,7 @@ function useCart() {
         removeItemFromCart,
         updateItemQuantity,
         useLocalStorageCart,
+        clearCart,
     };
 }
 

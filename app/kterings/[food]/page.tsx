@@ -12,12 +12,13 @@ import {Controller, useForm} from "react-hook-form"
 import {Button} from "@/components/ui/button"
 import {Form, FormControl, FormDescription, FormField, FormItem, FormMessage,} from "@/components/ui/form"
 import {Textarea} from "@/components/ui/textarea";
-import {CheckCircleIcon, StarIcon} from "@heroicons/react/24/outline";
+import {CheckCircleIcon, MinusSmallIcon, PlusSmallIcon, StarIcon} from "@heroicons/react/24/outline";
 import {toast} from "@/components/ui/use-toast";
 import {FoodItem} from "@/types/shared/food";
 import {Reviews} from "@/types/shared/reviews";
 import {CartItem} from "@/types/hooks/useCart";
 import {useUser} from "@clerk/nextjs";
+import {useCartCount} from "@/components/cartContext";
 
 const formSchema = z.object({
     rating: z.number().min(1).max(5),
@@ -42,6 +43,8 @@ export default function Food() {
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const hasReviews = reviews && reviews.length > 0;
     const router = useRouter();
+
+    const {cartCount, updateCartCount} = useCartCount();
 
 
     useEffect(() => {
@@ -99,7 +102,6 @@ export default function Food() {
             }
 
             data = await response.json();
-            console.log('data', data.data);
             setReviews(data.data);
         }
 
@@ -160,6 +162,21 @@ export default function Food() {
         };
 
         addItemToCart(cartItem);
+
+        toast({
+            description: (
+                <>
+                    <div className="flex items-center">
+                        <CheckCircleIcon
+                            className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                        Food added to cart
+                    </div>
+                </>
+            ),
+            duration: 3000,
+        });
+
+        updateCartCount(cartCount + 1);
     };
 
     const renderSizeButton = (size: string) => {
@@ -176,6 +193,12 @@ export default function Food() {
             </button>
         ) : null;
     };
+
+    const allSizesOutOfStock = () => {
+        return foodDetails?.quantities.every(q => parseInt(q.quantity) === 0);
+    };
+
+    const isOutOfStock = allSizesOutOfStock();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -291,10 +314,16 @@ export default function Food() {
                                     Kosher
                                 </span>
                             )}
-                            {foodDetails?.vegetarian && (
+                            {foodDetails?.vegetarian && foodDetails?.vegetarian !== "None" && (
                                 <span
-                                    className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
-                                    Vegetarian
+                                    className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                                    {foodDetails.vegetarian}
+                                </span>
+                            )}
+                            {foodDetails?.desserts && foodDetails?.desserts !== "None" && (
+                                <span
+                                    className="inline-flex items-center rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-700">
+                                    {foodDetails.desserts}
                                 </span>
                             )}
                             {foodDetails?.meat_type && foodDetails?.meat_type !== "None" && foodDetails?.meat_type !== "Other" && (
@@ -318,7 +347,9 @@ export default function Food() {
                         }) => q.size === selectedSize)?.price : "Loading..."}
                         </p>
                         <div className="flex flex-col space-y-2">
-                            <p>Size</p>
+                            {!isOutOfStock ? (
+                                <p>Size</p>
+                            ) : <p>No Sizes Available</p>}
                             <div className="my-2 space-x-2">
                                 {['small', 'medium', 'large'].map((size) => renderSizeButton(size))}
                             </div>
@@ -331,16 +362,13 @@ export default function Food() {
                                     type="button"
                                     className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5}
-                                         stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M18 12H6"/>
-                                    </svg>
+                                    <MinusSmallIcon className="w-6 h-6"/>
                                 </button>
                                 <input
                                     type="number"
                                     id="Quantity"
                                     value={quantity}
+                                    readOnly
                                     onChange={(e) => setQuantity(Math.max(0, parseInt(e.target.value) || 0))}
                                     className="h-10 w-16 text-center border-transparent appearance-none outline-none"
                                 />
@@ -349,19 +377,23 @@ export default function Food() {
                                     type="button"
                                     className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth={1.5}
-                                         stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6"/>
-                                    </svg>
+                                    <PlusSmallIcon className="w-6 h-6"/>
                                 </button>
                             </div>
                         </div>
-                        <button
-                            onClick={addToCart}
-                            className="rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">Add
-                            to Cart
-                        </button>
+                        {!isOutOfStock ? (
+                            <button
+                                onClick={addToCart}
+                                className="rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">
+                                Add to Cart
+                            </button>
+                        ) : (
+                            <button
+                                disabled
+                                className="rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm">
+                                Out of Stock
+                            </button>
+                        )}
                         <div className="my-8">
                             <Accordion type="single" collapsible defaultValue="item-1">
                                 <AccordionItem value="item-1">

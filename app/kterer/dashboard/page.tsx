@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import {useRouter} from "next/navigation";
 import {FoodItem} from "@/types/shared/food";
+import {EllipsisVerticalIcon} from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 export default function Dashboard() {
     const {user} = useUser();
@@ -87,63 +89,69 @@ export default function Dashboard() {
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <p className="font-bold text-xl mb-12">Your Posts</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-                {ktererFood.map((item, index) => (
-                    <div key={index} className="relative">
-                        <div className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
-                            <Image
-                                src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
-                                alt="Food Image" fill
-                                className="object-cover object-center"/>
-                        </div>
-
-                        <div className="flex justify-between items-center mt-2">
-                            <div className="text-left">
-                                <p className="text-lg">{item.name}</p>
-                                {item.rating !== 0 &&
-                                    <StarRating rating={item.rating}/>
-                                }
+            {ktererFood.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                    {ktererFood.map((item, index) => (
+                        <div key={index} className="relative">
+                            <div className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
+                                <Image
+                                    src={item.images && item.images.length > 0 ? item.images[0].image_url : Biryani}
+                                    alt="Food Image" fill
+                                    className="object-cover object-center"/>
                             </div>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                         strokeWidth="1.5"
-                                         stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round"
-                                              d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
-                                    </svg>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuItem onSelect={() => handleEditPost(item.id)}>Edit
-                                        Post</DropdownMenuItem>
-                                    <DropdownMenuItem onSelect={() => openDeleteDialog(item.id)}>Delete
-                                        Post</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+
+                            <div className="flex justify-between items-center mt-2">
+                                <div className="text-left">
+                                    <p className="text-lg">{item.name}</p>
+                                    {item.rating !== 0 &&
+                                        <StarRating rating={item.rating}/>
+                                    }
+                                </div>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <EllipsisVerticalIcon className="h-6 w-6"/>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem onSelect={() => handleEditPost(item.id)}>Edit
+                                            Post</DropdownMenuItem>
+                                        <DropdownMenuItem onSelect={() => openDeleteDialog(item.id)}>Delete
+                                            Post</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
                         </div>
-                    </div>
-                ))}
-                <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete the post.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel asChild>
-                                <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
-                            </AlertDialogCancel>
-                            <AlertDialogAction asChild>
-                                <button className="bg-red-600 hover:bg-red-700"
-                                        onClick={() => postToDelete && handleDeletePost(postToDelete)}>Delete
-                                </button>
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </div>
+                    ))}
+                    <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete the post.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel asChild>
+                                    <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
+                                </AlertDialogCancel>
+                                <AlertDialogAction asChild>
+                                    <button className="bg-red-600 hover:bg-red-700"
+                                            onClick={() => postToDelete && handleDeletePost(postToDelete)}>Delete
+                                    </button>
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
+            ) : (
+                <div className="text-center py-10">
+                    <p>You have not posted any food items yet.</p>
+                    <Link href="/kterer/post">
+                        <p className="text-primary-color hover:underline mt-2 inline-block">
+                            Post Your Food
+                        </p>
+                    </Link>
+                </div>
+            )}
         </div>
     );
 }
