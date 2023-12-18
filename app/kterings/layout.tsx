@@ -1,36 +1,41 @@
 import React from "react";
-import type {Metadata} from 'next'
+import type { Metadata } from "next";
 import UserNavbar from "@/components/userNavbar";
 import KtererDashboardNavbar from "@/components/ktererDashboardNavbar";
-import {currentUser} from '@clerk/nextjs';
-import {SearchProvider} from "@/app/context/searchProvider";
-import {CartProvider} from "@/components/cartContext";
+import { currentUser } from "@clerk/nextjs";
+import { SearchProvider } from "@/app/context/searchProvider";
+import { CartProvider } from "@/components/cartContext";
+import { NotificationProvider } from "@/components/notificationContext";
 
 export const metadata: Metadata = {
-    title: 'Kterings',
-    description: 'Kterings Homepage',
-}
+  title: "Kterings",
+  description: "Kterings Homepage",
+};
 
-export default async function KteringsLayout({children}: {
-    children: React.ReactNode;
+export default async function KteringsLayout({
+  children,
+}: {
+  children: React.ReactNode;
 }) {
-    const user = await currentUser();
-    if (!user) {
-        return null;
-    }
-    const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
+  const user = await currentUser();
+  if (!user) {
+    return null;
+  }
+  const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
 
-    return (
-        <section>
-            <CartProvider>
-            <SearchProvider>
-                <div>
-                    <UserNavbar/>
-                    {isKterer ? <KtererDashboardNavbar/> : null}
-                    {children}
-                </div>
-            </SearchProvider>
-            </CartProvider>
-        </section>
-    );
+  return (
+    <section>
+      <CartProvider>
+        <NotificationProvider>
+          <SearchProvider>
+            <div>
+              <UserNavbar />
+              {isKterer ? <KtererDashboardNavbar /> : null}
+              {children}
+            </div>
+          </SearchProvider>
+        </NotificationProvider>
+      </CartProvider>
+    </section>
+  );
 }
