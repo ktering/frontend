@@ -31,8 +31,8 @@ export default function ConsumerOrders() {
   const orderSuccess = searchParams.get("success");
 
   const { clearCart } = useCart();
-  const [orders, setOrders] = useState([]);
-  const { updateNotifications } = useNotifications()
+  const [orders, setOrders] = useState<any[]>([]);
+  const { updateNotifications } = useNotifications();
 
   useEffect(() => {
     if (orderSuccess === "true") {
@@ -93,7 +93,7 @@ export default function ConsumerOrders() {
 
         const data = await response.json();
 
-        updateNotifications(data.map(not => not.data.message));
+        updateNotifications(data.map((not) => not.data.message));
       } catch (error) {
         console.error(`Error: ${error}`);
       }
@@ -118,13 +118,67 @@ export default function ConsumerOrders() {
         <div className="text-2xl font-bold ">Orders</div>
       </div>
 
+      <h2 className="my-4 font-bold text-lg">In Progress</h2>
+
+      <div className="my-8">
+        {orders
+          .filter((order) => order.status === "progress")
+          .map((order, index) => (
+            <Alert key={index} className="mt-8">
+              <AlertTitle className="font-bold text-lg border-b pb-2">
+                <div className="flex justify-between items-center">
+                  <p>{order.kterer_name}</p>
+                </div>
+              </AlertTitle>
+              <AlertDescription>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <div className="space-x-8 mt-4">
+                      <span className="font-bold">Date:</span>{" "}
+                      {new Date(order.created_at).getFullYear()}
+                      <span className="font-bold">Total:</span>{" "}
+                      {order.total_price}
+                      <span className="font-bold">Items:</span>{" "}
+                      {order.total_items}
+                    </div>
+                    <div>
+                      <div className="flex items-center pt-4">
+                        {order.items.map((item, index) => (
+                          <div key={index} className="mr-4">
+                            <span className="font-bold">{item.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    {/*<Link href="/help">*/}
+                    {/*    <Button variant="link">Help</Button>*/}
+                    {/*</Link>*/}
+                    {order.receipt_url && (
+                      <Button
+                        variant="link"
+                        onClick={handleLinkClick(order.receipt_url)}
+                      >
+                        View Receipt
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </AlertDescription>
+            </Alert>
+          ))}
+      </div>
+
       <h2 className="my-4 font-bold text-lg">Open</h2>
 
       <div className="my-8">
         {orders
           .filter(
             (order) =>
-              order.status !== "cancelled" && order.status !== "delivered"
+              order.status !== "cancelled" &&
+              order.status !== "delivered" &&
+              order.status !== "progress"
           )
           .map((order, index) => (
             <Alert key={index} className="mt-8">
