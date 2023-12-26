@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Earnings } from "@/types/pages/earnings/earnings";
 import { Button } from "@/components/ui/button";
 import { KtererInfo } from "@/types/shared/user";
+import { useNotifications } from "@/components/notificationContext";
 
 const orders = [
   {
@@ -37,6 +38,8 @@ export default function Earnings() {
   });
   const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
   const [ktererOrders, setKtererOrders] = useState([]);
+
+  const { updateNotifications } = useNotifications();
 
   useEffect(() => {
     const getKtererOrders = async () => {
@@ -165,6 +168,9 @@ export default function Earnings() {
     getKtererAccountInfo().catch((error) => {
       console.error("An error occurred:", error);
     });
+    getNotifications().catch((error) => {
+      console.error(`Error: ${error}`);
+    });
   }, []);
 
   const isEarningsLoaded =
@@ -200,21 +206,64 @@ export default function Earnings() {
 
       const data = await response.json();
 
-      const index = orders.findIndex(order => order.id === data.order.id)
+      const index = ktererOrders.findIndex(
+        (order) => order.id === data.order.id
+      );
 
       if (index > -1) {
-        orders[index] = data.order;
-        setOrders([...orders]);
+        ktererOrders[index] = data.order;
+        setKtererOrders([...ktererOrders]);
       }
     } catch (error) {
       console.error(`Error: ${error}`);
     }
   };
 
-  const handleCreateDelivery = (id) => () => {
-    createDelivery(id).catch((error) => {
+  const getNotifications = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+    try {
+      const response = await fetch(`${apiURL}/api/notifications`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`Error: ${response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+
+      updateNotifications(
+        data.map((not) => ({
+          id: not.id,
+          message: not.data.message,
+          read_at: not.read_at ? new Date(not.read_at) : null,
+        }))
+      );
+    } catch (error) {
       console.error(`Error: ${error}`);
-    });
+    }
+  };
+
+  const handleCreateDelivery = (id) => () => {
+    createDelivery(id)
+      .then(() => {
+        getNotifications().catch((error) => {
+          console.error(`Error: ${error}`);
+        });
+      })
+      .catch((error) => {
+        console.error(`Error: ${error}`);
+        getNotifications().catch((error) => {
+          console.error(`Error: ${error}`);
+        });
+      });
   };
 
   return (
@@ -249,59 +298,60 @@ export default function Earnings() {
         <h2 className="my-4 font-bold text-lg">In Progress</h2>
 
         <div className="my-8">
-          {ktererOrders.filter((order) => order.status === "progress")
-          .map((order, index) => (
-            <Alert key={index} className="mt-8">
-              <AlertTitle className="font-bold text-lg border-b pb-2">
-                <div className="flex justify-between items-center">
-                  <p>{order.buyer_name}</p>
+          {ktererOrders
+            .filter((order) => order.status === "progress")
+            .map((order, index) => (
+              <Alert key={index} className="mt-8">
+                <AlertTitle className="font-bold text-lg border-b pb-2">
+                  <div className="flex justify-between items-center">
+                    <p>{order.buyer_name}</p>
 
-                  <Button
-                    variant="link"
-                    onClick={handleCreateDelivery(order.id)}
-                  >
-                    Create Delivery
-                  </Button>
-                </div>
-              </AlertTitle>
-              <AlertDescription>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="space-x-8 mt-4">
-                      <span className="font-bold">Date:</span>{" "}
-                      {new Date(order.created_at).getFullYear()}
-                      <span className="font-bold">Total:</span>{" "}
-                      {order.total_price}
-                      <span className="font-bold">Items:</span>{" "}
-                      {order.total_items}
-                    </div>
+                    <Button
+                      variant="link"
+                      onClick={handleCreateDelivery(order.id)}
+                    >
+                      Create Delivery
+                    </Button>
+                  </div>
+                </AlertTitle>
+                <AlertDescription>
+                  <div className="flex justify-between items-center">
                     <div>
-                      <div className="flex items-center pt-4">
-                        {order.items.map((item, index) => (
-                          <div key={index} className="mr-4">
-                            <span className="font-bold">{item.name}</span>
-                          </div>
-                        ))}
+                      <div className="space-x-8 mt-4">
+                        <span className="font-bold">Date:</span>{" "}
+                        {new Date(order.created_at).getFullYear()}
+                        <span className="font-bold">Total:</span>{" "}
+                        {order.total_price}
+                        <span className="font-bold">Items:</span>{" "}
+                        {order.total_items}
+                      </div>
+                      <div>
+                        <div className="flex items-center pt-4">
+                          {order.items.map((item, index) => (
+                            <div key={index} className="mr-4">
+                              <span className="font-bold">{item.name}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
+                    <div>
+                      {/*<Link href="/help">*/}
+                      {/*    <Button variant="link">Help</Button>*/}
+                      {/*</Link>*/}
+                      {order.receipt_url && (
+                        <Button
+                          variant="link"
+                          onClick={handleLinkClick(order.receipt_url)}
+                        >
+                          View Receipt
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    {/*<Link href="/help">*/}
-                    {/*    <Button variant="link">Help</Button>*/}
-                    {/*</Link>*/}
-                    {order.receipt_url && (
-                      <Button
-                        variant="link"
-                        onClick={handleLinkClick(order.receipt_url)}
-                      >
-                        View Receipt
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </AlertDescription>
-            </Alert>
-          ))}
+                </AlertDescription>
+              </Alert>
+            ))}
         </div>
 
         <h2 className="my-4 font-bold text-lg">Open</h2>

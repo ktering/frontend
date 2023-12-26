@@ -57,7 +57,7 @@ export default function UserNavbar() {
   const [savedAddress, setSavedAddress] = useState("");
   const [addressChanged, setAddressChanged] = useState(false);
   const { cartCount } = useCartCount();
-  const { notifications } = useNotifications();
+  const { notifications, updateNotifications } = useNotifications();
 
   const contextValue = useContext(SearchContext);
   const { searchInput, setSearchInput } = contextValue || {
@@ -214,6 +214,43 @@ export default function UserNavbar() {
       });
   };
 
+  const markReadNotification = async (index: number) => {
+    const accessToken = localStorage.getItem("accessToken");
+    const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+    try {
+      const response = await fetch(
+        `${apiURL}/api/notifications/mark_read/${notifications[index].id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error(`Error: ${response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+
+      const tempNots = [...notifications];
+
+      tempNots[index].read_at = data.read_at;
+
+      updateNotifications(tempNots);
+    } catch (error) {
+      console.error(`Error: ${error}`);
+    }
+  };
+
+  const handleNotificationClick = (index: number) => () => {
+    markReadNotification(index).catch((error) => console.log(error));
+  };
+
   return (
     <>
       <div className="border-b">
@@ -293,18 +330,32 @@ export default function UserNavbar() {
 
               {/* Notification Icon */}
               <div className="flex items-center md:mr-4 md:flex md:flex-shrink-0 md:items-center space-x-2">
-                <div className="flex flex-end">
+                <div className="flex flex-end relative">
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       {" "}
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
+                      {notifications.filter((not) => not.read_at === null)
+                        .length ? (
+                        <span className="flex items-center justify-center absolute top-0 right-0 h-3 w-3 text-xs font-semibold rounded-full bg-primary-color text-white"></span>
+                      ) : (
+                        <></>
+                      )}
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-64">
                       <DropdownMenuLabel>Your Notifications</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       {notifications.map((notification, index) => (
-                        <div key={index} className="p-2 border-b">
-                          <p>{notification}</p>
+                        <div
+                          key={index}
+                          className="p-2 border-b cursor-pointer"
+                          onClick={handleNotificationClick(index)}
+                        >
+                          {notification.read_at ? (
+                            <p>{notification.message}</p>
+                          ) : (
+                            <p className="font-bold">{notification.message}</p>
+                          )}
                         </div>
                       ))}
                     </DropdownMenuContent>

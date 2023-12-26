@@ -93,7 +93,13 @@ export default function ConsumerOrders() {
 
         const data = await response.json();
 
-        updateNotifications(data.map((not) => not.data.message));
+        updateNotifications(
+          data.map((not) => ({
+            id: not.id,
+            message: not.data.message,
+            read_at: not.read_at ? new Date(not.read_at) : null,
+          }))
+        );
       } catch (error) {
         console.error(`Error: ${error}`);
       }
