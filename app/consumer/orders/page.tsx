@@ -94,7 +94,7 @@ export default function ConsumerOrders() {
         const data = await response.json();
 
         updateNotifications(
-          data.map((not) => ({
+          data.map((not: any) => ({
             id: not.id,
             message: not.data.message,
             read_at: not.read_at ? new Date(not.read_at) : null,
@@ -114,7 +114,7 @@ export default function ConsumerOrders() {
     });
   }, []);
 
-  const handleLinkClick = (url) => () => {
+  const handleLinkClick = (url: string) => () => {
     window.open(url);
   };
 
@@ -149,7 +149,7 @@ export default function ConsumerOrders() {
                     </div>
                     <div>
                       <div className="flex items-center pt-4">
-                        {order.items.map((item, index) => (
+                        {order.items.map((item: any, index: number) => (
                           <div key={index} className="mr-4">
                             <span className="font-bold">{item.name}</span>
                           </div>
@@ -214,7 +214,7 @@ export default function ConsumerOrders() {
                     </div>
                     <div>
                       <div className="flex items-center pt-4">
-                        {order.items.map((item, index) => (
+                        {order.items.map((item: any, index: number) => (
                           <div key={index} className="mr-4">
                             <span className="font-bold">{item.name}</span>
                           </div>
@@ -277,7 +277,7 @@ export default function ConsumerOrders() {
                     </div>
                     <div>
                       <div className="flex items-center pt-4">
-                        {order.items.map((item, index) => (
+                        {order.items.map((item: any, index: number) => (
                           <div key={index} className="mr-4">
                             <span className="font-bold">{item.name}</span>
                           </div>

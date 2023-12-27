@@ -37,7 +37,7 @@ export default function Earnings() {
     pending: [],
   });
   const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
-  const [ktererOrders, setKtererOrders] = useState([]);
+  const [ktererOrders, setKtererOrders] = useState<any[]>([]);
 
   const { updateNotifications } = useNotifications();
 
@@ -182,11 +182,11 @@ export default function Earnings() {
     : 0;
   const displayEarnings = (totalEarnings / 100).toFixed(2);
 
-  const handleLinkClick = (url) => () => {
+  const handleLinkClick = (url: string) => () => {
     window.open(url);
   };
 
-  const createDelivery = async (id) => {
+  const createDelivery = async (id: number) => {
     const accessToken = localStorage.getItem("accessToken");
     const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -240,18 +240,24 @@ export default function Earnings() {
       const data = await response.json();
 
       updateNotifications(
-        data.map((not) => ({
-          id: not.id,
-          message: not.data.message,
-          read_at: not.read_at ? new Date(not.read_at) : null,
-        }))
+        data.map(
+          (not: {
+            id: any;
+            data: { message: any };
+            read_at: string | number | Date;
+          }) => ({
+            id: not.id,
+            message: not.data.message,
+            read_at: not.read_at ? new Date(not.read_at) : null,
+          })
+        )
       );
     } catch (error) {
       console.error(`Error: ${error}`);
     }
   };
 
-  const handleCreateDelivery = (id) => () => {
+  const handleCreateDelivery = (id: number) => () => {
     createDelivery(id)
       .then(() => {
         getNotifications().catch((error) => {
@@ -327,7 +333,7 @@ export default function Earnings() {
                       </div>
                       <div>
                         <div className="flex items-center pt-4">
-                          {order.items.map((item, index) => (
+                          {order.items.map((item: any, index: number) => (
                             <div key={index} className="mr-4">
                               <span className="font-bold">{item.name}</span>
                             </div>
@@ -392,7 +398,7 @@ export default function Earnings() {
                       </div>
                       <div>
                         <div className="flex items-center pt-4">
-                          {order.items.map((item, index) => (
+                          {order.items.map((item: any, index: number) => (
                             <div key={index} className="mr-4">
                               <span className="font-bold">{item.name}</span>
                             </div>
@@ -455,7 +461,7 @@ export default function Earnings() {
                       </div>
                       <div>
                         <div className="flex items-center pt-4">
-                          {order.items.map((item, index) => (
+                          {order.items.map((item: any, index: number) => (
                             <div key={index} className="mr-4">
                               <span className="font-bold">{item.name}</span>
                             </div>
