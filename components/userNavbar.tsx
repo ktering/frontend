@@ -248,7 +248,16 @@ export default function UserNavbar() {
   };
 
   const handleNotificationClick = (index: number) => () => {
-    markReadNotification(index).catch((error) => console.log(error));
+    markReadNotification(index)
+      .then(() => {
+        if (notifications[index].message.startsWith("You have")) {
+          router.push("/kterer/earnings");
+        }
+        if (notifications[index].message.startsWith("Your order")) {
+          router.push("/consumer/orders");
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -358,6 +367,11 @@ export default function UserNavbar() {
                           )}
                         </div>
                       ))}
+                      {notifications.length ? (
+                        <></>
+                      ) : (
+                        <div className="p-2 text-center">No notifications</div>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
