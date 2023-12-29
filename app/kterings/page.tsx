@@ -313,7 +313,7 @@ export default function Kterings() {
         <p className="font-bold text-xl my-12">
           {searchInput.trim().length > 0 ? "SEARCHED FOOD" : currentFilter}
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
           {filteredFood.length > 0 ? (
             filteredFood.map((item, index) => {
               const food_id = new URLSearchParams({
@@ -323,15 +323,16 @@ export default function Kterings() {
               return (
                 <div key={index} className="relative">
                   <Link href={`/kterings/${item.name}?${food_id}`}>
-                    <div className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
+                    <div className="w-full bg-gray-200 rounded-lg overflow-hidden">
                       <Image
                         src={
                           item.images && item.images.length > 0
                             ? item.images[0].image_url
                             : Biryani
                         }
+                        width={300}
+                        height={100}
                         alt={item.name}
-                        layout="fill"
                         className="mx-auto rounded-lg w-full"
                       />
                     </div>

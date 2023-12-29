@@ -339,7 +339,7 @@ export default function EditFood() {
                                                     <span
                                                         className="mt-2 block text-sm font-semibold text-gray-900"> {totalImageCount < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
-                                                        className="mt-2 block text-xs font-semibold text-gray-900">{totalImageCount} out of 3 Uploaded</span>
+                                                        className="mt-2 block text-xs font-semibold text-gray-900">Please upload at least 1 picture (up to 3 allowed). You've uploaded {totalImageCount}</span>
                                                 </label>
                                             </div>
                                         </FormControl>
