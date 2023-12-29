@@ -502,12 +502,14 @@ export default function Food() {
         <div className="pt-12">
           <div className="flex justify-between items-center">
             <h3 className="font-bold text-xl my-12">Recent Reviews</h3>
-            <Button
-              className="rounded-full border bg-white hover:bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
-              onClick={() => setIsReviewModalOpen(true)}
-            >
-              Write a review
-            </Button>
+            {foodDetails?.kterer_id !== ktererInfo?.kterer.id && (
+              <Button
+                className="rounded-full border bg-white hover:bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                onClick={() => setIsReviewModalOpen(true)}
+              >
+                Write a review
+              </Button>
+            )}
           </div>
           {hasReviews ? (
             reviews?.map((review) => (

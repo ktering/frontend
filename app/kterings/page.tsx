@@ -332,7 +332,7 @@ export default function Kterings() {
                         }
                         alt={item.name}
                         layout="fill"
-                        className="mx-auto rounded-lg w-full"
+                        className="mx-auto rounded-lg w-full object-cover"
                       />
                     </div>
                   </Link>
