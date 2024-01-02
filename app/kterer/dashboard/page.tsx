@@ -209,7 +209,7 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="text-center py-10">
-          <p>You have not posted any food items yet.</p>
+          <p>You have not posted any food items yet</p>
           <Link href="/kterer/post">
             <p className="text-primary-color hover:underline mt-2 inline-block">
               Post Your Food

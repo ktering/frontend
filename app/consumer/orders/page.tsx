@@ -141,7 +141,7 @@ export default function ConsumerOrders() {
                   <div>
                     <div className="space-x-8 mt-4">
                       <span className="font-bold">Date:</span>{" "}
-                      {new Date(order.created_at).getFullYear()}
+                      {new Date(order.created_at).toLocaleDateString('en-US')}
                       <span className="font-bold">Total:</span>{" "}
                       {order.total_price}
                       <span className="font-bold">Items:</span>{" "}
@@ -206,7 +206,7 @@ export default function ConsumerOrders() {
                   <div>
                     <div className="space-x-8 mt-4">
                       <span className="font-bold">Date:</span>{" "}
-                      {new Date(order.created_at).getFullYear()}
+                      {new Date(order.created_at).toLocaleDateString('en-US')}
                       <span className="font-bold">Total:</span>{" "}
                       {order.total_price}
                       <span className="font-bold">Items:</span>{" "}
@@ -269,7 +269,7 @@ export default function ConsumerOrders() {
                   <div>
                     <div className="space-x-8 mt-4">
                       <span className="font-bold">Date:</span>{" "}
-                      {new Date(order.created_at).getFullYear()}
+                      {new Date(order.created_at).toLocaleDateString('en-US')}
                       <span className="font-bold">Total:</span>{" "}
                       {order.total_price}
                       <span className="font-bold">Items:</span>{" "}

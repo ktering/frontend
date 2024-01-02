@@ -23,7 +23,7 @@ const steps = [
         imgSrc: Number1Icon,
     },
     {
-        name: 'Checkout With the Food of Your Choice',
+        name: 'Checkout with the Food of Your Choice',
         imgSrc: Number2Icon,
     },
     {
@@ -93,7 +93,7 @@ export default function Home() {
         <>
             {/* Section 1 */}
             <section className="w-full relative overflow-x-hidden">
-                <Image src={LandingPicture} className="w-full h-[50vh] md:h-[60vh] object-cover"
+                <Image src={LandingPicture} className="w-full h-[50vh] md:h-[70vh] object-cover"
                        alt="hero section food image"/>
                 <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2">
                     <div className="hidden md:flex flex-1"></div>
@@ -144,16 +144,16 @@ export default function Home() {
                         {PopularFoods.map((food) => (
                             <div key={food.id} className="group relative">
                                 <div
-                                    className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none lg:h-80">
+                                    className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none lg:h-60">
                                     <Image
                                         src={food.imageSrc}
                                         alt={food.imageAlt}
                                         className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                                     />
                                 </div>
-                                <div className="mt-4">
+                                <div className="mt-2">
                                     <div>
-                                        <h3 className="text-lg">
+                                        <h3 className="text-lg font-bold">
                                             <span aria-hidden="true" className="absolute inset-0"/>
                                             {food.name}
                                         </h3>
@@ -167,7 +167,7 @@ export default function Home() {
 
             {/* Section 3 */}
             <section className="bg-white dark:bg-gray-900 max-w-7xl mx-auto">
-                <div className="container px-6 py-24 mx-auto flex justify-center">
+                <div className="container px-6 py-12 mx-auto flex justify-center">
                     <div className="grid gap-8 mt-8 sm:grid-cols-1 md:grid-cols-2 sm:gap-32">
                         {BecomeTypes.map((type, index) => (
                             <div key={index} className="w-full max-w-xs text-center">
@@ -196,7 +196,7 @@ export default function Home() {
 
             {/* Section 4 */}
             <section className="max-w-7xl mx-auto">
-                <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
+                <div className="mx-auto max-w-screen-xl px-4 py-12 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
 
                         <div className="flex-1 relative aspect-w-16 aspect-h-9 lg:aspect-h-7">
@@ -222,17 +222,17 @@ export default function Home() {
 
             {/* Section 5 */}
             <section className="max-w-7xl mx-auto">
-                <div className="bg-white py-24 sm:py-24">
+                <div className="bg-white py-12 sm:py-24">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
                         <div className="mx-auto max-w-4xl text-center">
                             <p className="mt-2 text-3xl font-bold tracking-tight">
-                                Get Homemade Food at The Snap of Your Fingers
+                                Get Homemade Food at the Snap of Your Fingers
                             </p>
                             <p className="mt-6 text-lg leading-8">
                                 All you have to do is
                             </p>
                         </div>
-                        <div className="mx-auto mt-16 max-w-xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
+                        <div className="mx-auto mt-16 sm:mt-12 max-w-xl lg:max-w-4xl">
                             <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
                                 {steps.map((step) => (
                                     <div key={step.name} className="relative flex flex-col items-center">
@@ -261,7 +261,7 @@ export default function Home() {
 
             {/* Section 6 */}
             <section className="max-w-7xl mx-auto">
-                <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
+                <div className="mx-auto max-w-screen-xl px-4 py-12 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
                         <div className="flex-1 flex items-center justify-center order-2 lg:order-1">
                             <h2 className="text-3xl text-center">
