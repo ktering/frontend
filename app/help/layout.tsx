@@ -12,16 +12,16 @@ export const metadata: Metadata = {
 export default async function HelpLayout({children}: {
     children: React.ReactNode
 }) {
-    const user = await currentUser();
-    if (!user) {
-        return null;
-    }
-    const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
+    // const user = await currentUser();
+    // if (!user) {
+    //     return null;
+    // }
+    // const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
 
     return (
         <section>
             <KtererNavbar/>
-            {isKterer ? <KtererDashboardNavbar/> : null}
+            {/*{isKterer ? <KtererDashboardNavbar/> : null}*/}
             {children}
         </section>
     )
