@@ -2,7 +2,7 @@ import {authMiddleware} from "@clerk/nextjs";
 import {NextResponse} from "next/server";
 
 export default authMiddleware({
-    publicRoutes: ['/', '/legal/:path*', '/become-a-kterer', '/about-us', '/api/:path*'],
+    publicRoutes: ['/', '/legal/:path*', '/become-a-kterer', '/about-us', '/api/:path*', '/help'],
     afterAuth(auth, req, evt) {
         // handle users who aren't authenticated
         if (!auth.userId && !auth.isPublicRoute) {

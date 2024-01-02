@@ -153,7 +153,7 @@ export default function Home() {
                                 </div>
                                 <div className="mt-2">
                                     <div>
-                                        <h3 className="text-lg font-bold">
+                                        <h3 className="text-xl">
                                             <span aria-hidden="true" className="absolute inset-0"/>
                                             {food.name}
                                         </h3>

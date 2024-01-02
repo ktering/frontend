@@ -276,9 +276,9 @@ export default function Earnings() {
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {!ktererInfo && (
-          <Alert className="mt-8">
-            <AlertTitle className="text-yellow-500">Heads up!</AlertTitle>
-            <AlertDescription className="text-yellow-500">
+          <Alert className="mt-8 bg-amber-300">
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>
               Start Stripe onboarding to receive payments from your customers.
               Otherwise, you will not be able to receive payments or post foods.
               Click the button below to start the onboarding process.

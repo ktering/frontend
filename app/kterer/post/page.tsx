@@ -26,8 +26,8 @@ const formSchema = z.object({
     medium_amount: z.coerce.number().nonnegative("Amount must be a positive number"),
     large_price: z.coerce.number().nonnegative("Price must be a positive number"),
     large_amount: z.coerce.number().nonnegative("Amount must be a positive number"),
-    description: z.string().min(2, "Description must be at least 2 characters").max(1000, "Description can't be longer than 1000 characters"),
-    ingredients: z.string().min(1, "Ingredients list cannot be empty"),
+    description: z.string().min(25, "Description must be at least 25 characters"),
+    ingredients: z.string().min(10, "Ingredients list cannot be empty and must be at least 10 characters"),
     halal: z.string().refine(value => value !== "", {
         message: "Halal is required, please select an option",
     }),

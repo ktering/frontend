@@ -10,6 +10,7 @@ const footerLinks = {
         {title: "Become a Kterer", href: "/become-a-kterer"}
     ],
     HelpfulLinks: [
+        {title: "Submit a Ticket", href: "/help#submit-ticket"},
         {title: "FAQs", href: "/help"}
     ],
     Legal: [
@@ -22,7 +23,7 @@ const footerLinks = {
 
 export default function Footer() {
     return (
-        <div className="bg-gray-200">
+        <div className="bg-gray-100">
             <footer className="max-w-7xl mx-auto">
                 <div className="mx-auto max-w-screen-xl space-y-8 px-4 py-24 sm:px-6 lg:space-y-16 lg:px-8">
                     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
