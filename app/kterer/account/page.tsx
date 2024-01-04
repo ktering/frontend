@@ -83,6 +83,7 @@ const formSchema = z.object({
 export default function KtererAccount() {
   const { user, signOut } = useClerk();
   const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false);
+  const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [signOutOfOtherSessions, setSignOutOfOtherSessions] = useState(true);
   const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -556,7 +557,7 @@ export default function KtererAccount() {
         </div>
         <div className="flex flex-col my-16 max-w-xs w-full mx-auto items-center">
           <button
-            onClick={deleteAccount}
+            onClick={() => setIsDeleteAccountOpen(true)}
             className="border mt-4 rounded-full px-4 py-2.5 font-semibold text-primary-color hover:bg-gray-50 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
           >
             Delete Account
@@ -564,6 +565,23 @@ export default function KtererAccount() {
         </div>
       </div>
 
+      <AlertDialog
+        open={isDeleteAccountOpen}
+        onOpenChange={setIsDeleteAccountOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Account</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogDescription>
+            Are you sure to delete this account?
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <Button onClick={deleteAccount}>Confirm</Button>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog
         open={isPasswordResetOpen}
         onOpenChange={setIsPasswordResetOpen}
