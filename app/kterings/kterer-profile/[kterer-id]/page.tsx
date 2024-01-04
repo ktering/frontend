@@ -324,6 +324,11 @@ export default function KtererProfile() {
                     </div>
                   );
                 })}
+                {ktererFood.length ? (
+                  <></>
+                ) : (
+                  <div className="text-center">No Food Found</div>
+                )}
               </div>
             </div>
           </div>
