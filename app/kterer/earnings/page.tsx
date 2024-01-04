@@ -276,9 +276,9 @@ export default function Earnings() {
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {!ktererInfo && (
-          <Alert className="mt-8">
-            <AlertTitle className="text-yellow-500">Heads up!</AlertTitle>
-            <AlertDescription className="text-yellow-500">
+          <Alert className="mt-8 bg-amber-300">
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>
               Start Stripe onboarding to receive payments from your customers.
               Otherwise, you will not be able to receive payments or post foods.
               Click the button below to start the onboarding process.
@@ -287,13 +287,13 @@ export default function Earnings() {
         )}
         <div className="flex justify-between my-8">
           <div className="text-2xl font-bold ">Earnings</div>
-          <button
-            className="rounded-full px-4 py-2.5 font-semibold border text-primary-color hover:bg-gray-50 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
-            onClick={handleOnboarding}
-            disabled={loading}
-          >
-            {loading ? "Loading..." : "Start Stripe Onboarding"}
-          </button>
+            <button
+                className="rounded-full px-4 py-2.5 font-semibold border text-primary-color hover:bg-gray-50 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                onClick={handleOnboarding}
+                disabled={loading}
+            >
+                {loading ? "Loading..." : (ktererInfo ? "Edit Bank Info" : "Start Stripe Onboarding")}
+            </button>
         </div>
 
         <div className="text-center">
@@ -325,7 +325,7 @@ export default function Earnings() {
                     <div>
                       <div className="space-x-8 mt-4">
                         <span className="font-bold">Date:</span>{" "}
-                        {new Date(order.created_at).getFullYear()}
+                        {new Date(order.created_at).toLocaleDateString('en-US')}
                         <span className="font-bold">Total:</span>{" "}
                         {order.total_price}
                         <span className="font-bold">Items:</span>{" "}
@@ -390,7 +390,7 @@ export default function Earnings() {
                     <div>
                       <div className="space-x-8 mt-4">
                         <span className="font-bold">Date:</span>{" "}
-                        {new Date(order.created_at).getFullYear()}
+                        {new Date(order.created_at).toLocaleDateString('en-US')}
                         <span className="font-bold">Total:</span>{" "}
                         {order.total_price}
                         <span className="font-bold">Items:</span>{" "}
@@ -453,7 +453,7 @@ export default function Earnings() {
                     <div>
                       <div className="space-x-8 mt-4">
                         <span className="font-bold">Date:</span>{" "}
-                        {new Date(order.created_at).getFullYear()}
+                        {new Date(order.created_at).toLocaleDateString('en-US')}
                         <span className="font-bold">Total:</span>{" "}
                         {order.total_price}
                         <span className="font-bold">Items:</span>{" "}

@@ -16,9 +16,9 @@ import {Dialog, Transition} from '@headlessui/react'
 
 const features = [
     {
-        name: 'Set Your Prices',
-        desc: 'Earn what you want! No more bosses dictating what you can earn.',
-        imgSrc: SetYourPricesIcon,
+        name: 'Make What You Want',
+        desc: 'You don’t have to be restricted to a set menu. Make whatever you feel like whenever you feel like it!',
+        imgSrc: MakeWhatYouWantIcon
     },
     {
         name: 'Reach More People',
@@ -26,9 +26,9 @@ const features = [
         imgSrc: ReachMorePeopleIcon,
     },
     {
-        name: 'Make What You Want',
-        desc: 'You don’t have to be restricted to a set menu. Make whatever you feel like whenever you feel like it!',
-        imgSrc: MakeWhatYouWantIcon
+        name: 'Set Your Prices',
+        desc: 'Earn what you want! No more bosses dictating what you can earn.',
+        imgSrc: SetYourPricesIcon,
     },
 ]
 
@@ -128,7 +128,7 @@ export default function BecomeKterer() {
             </section>
             {/* Section 2 */}
             <section className="max-w-7xl mx-auto">
-                <div className="bg-white py-24 sm:py-24">
+                <div className="bg-white py-16">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
                         <div className="mx-auto max-w-xl lg:max-w-4xl">
                             <dl className="grid max-w-xl grid-cols-1 gap-x-48 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
@@ -151,9 +151,8 @@ export default function BecomeKterer() {
             {/* Section 3 */}
             <section className="lg:bg-gradient-to-r lg:from-red-50 lg:to-red-200">
                 <div className="max-w-7xl mx-auto">
-                    <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
-
                             <div className="relative">
                                 <div className="overflow-hidden rounded-lg h-full">
                                     <Image
@@ -177,10 +176,9 @@ export default function BecomeKterer() {
                     </div>
                 </div>
             </section>
-
             {/* Section 4 */}
             <section className="max-w-7xl mx-auto">
-                <div className="bg-white py-24 sm:py-24">
+                <div className="bg-white py-12">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
                         <div className="mx-auto max-w-4xl text-center">
                             <p className="mt-2 text-3xl font-bold tracking-tight">
@@ -190,7 +188,7 @@ export default function BecomeKterer() {
                                 All you have to do is
                             </p>
                         </div>
-                        <div className="mx-auto mt-16 max-w-xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
+                        <div className="mx-auto mt-16 max-w-xl sm:mt-20 lg:mt-12 lg:max-w-4xl">
                             <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
                                 {ktererSteps.map((feature) => (
                                     <div key={feature.name} className="relative flex flex-col items-center">
@@ -216,7 +214,7 @@ export default function BecomeKterer() {
             {/* Section 5 */}
             <section className="lg:bg-gradient-to-l lg:from-red-50 lg:to-red-200">
                 <div className="max-w-7xl mx-auto">
-                    <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
+                    <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
                             <div className="flex items-center justify-center order-2 lg:order-1">
                                 <div>
@@ -244,7 +242,6 @@ export default function BecomeKterer() {
                     </div>
                 </div>
             </section>
-
         </>
     )
 }

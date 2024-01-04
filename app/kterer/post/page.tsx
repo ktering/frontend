@@ -20,14 +20,14 @@ const formSchema = z.object({
         type: z.string(),
     })).min(1, "At least one image is required"),
     name: z.string().min(2, "Food name must be at least 2 characters").max(50, "Food name can't be longer than 50 characters"),
-    small_price: z.coerce.number(),
-    small_amount: z.coerce.number(),
-    medium_price: z.coerce.number(),
-    medium_amount: z.coerce.number(),
-    large_price: z.coerce.number(),
-    large_amount: z.coerce.number(),
-    description: z.string().min(2, "Description must be at least 2 characters").max(1000, "Description can't be longer than 1000 characters"),
-    ingredients: z.string().min(1, "Ingredients list cannot be empty"),
+    small_price: z.coerce.number().nonnegative("Price must be a positive number"),
+    small_amount: z.coerce.number().nonnegative("Amount must be a positive number"),
+    medium_price: z.coerce.number().nonnegative("Price must be a positive number"),
+    medium_amount: z.coerce.number().nonnegative("Amount must be a positive number"),
+    large_price: z.coerce.number().nonnegative("Price must be a positive number"),
+    large_amount: z.coerce.number().nonnegative("Amount must be a positive number"),
+    description: z.string().min(25, "Description must be at least 25 characters"),
+    ingredients: z.string().min(10, "Ingredients list cannot be empty and must be at least 10 characters"),
     halal: z.string().refine(value => value !== "", {
         message: "Halal is required, please select an option",
     }),
@@ -241,7 +241,7 @@ export default function PostFood() {
                                                     <span
                                                         className="mt-2 block text-sm font-semibold text-gray-900"> {selectedFiles.length < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
-                                                        className="mt-2 block text-xs font-semibold text-gray-900">{selectedFiles.length} out of 3 Uploaded</span>
+                                                        className="mt-2 block text-xs font-semibold text-gray-900">Please upload at least 1 picture (up to 3 allowed). You've uploaded {selectedFiles.length}</span>
                                                 </label>
                                             </div>
                                         </FormControl>
@@ -266,7 +266,7 @@ export default function PostFood() {
                             <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8">
                                 <div className="space-y-4">
                                     <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Small
+                                        Quantity (Small)
                                     </div>
                                     <FormField
                                         control={form.control}
@@ -299,7 +299,7 @@ export default function PostFood() {
                                 </div>
                                 <div className="space-y-4">
                                     <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Medium
+                                        Quantity (Medium)
                                     </div>
                                     <FormField
                                         control={form.control}
@@ -332,7 +332,7 @@ export default function PostFood() {
                                 </div>
                                 <div className="space-y-4">
                                     <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Large
+                                        Quantity (Large)
                                     </div>
                                     <FormField
                                         control={form.control}
@@ -383,7 +383,7 @@ export default function PostFood() {
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
                                             <Textarea
-                                                placeholder="Tell us a little bit about the food"
+                                                placeholder="Add adescription for your food item. Describe the flavors & what buyers can expect"
                                                 className="resize-none h-48"
                                                 {...field}
                                             />

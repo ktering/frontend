@@ -11,6 +11,23 @@ const inter = Inter({subsets: ['latin']})
 export const metadata: Metadata = {
     title: 'Kterings - Get homemade food wherever and whenever you want',
     description: 'Get homemade food wherever and whenever you want',
+
+    // To get the logo showing when the link is shared
+    // openGraph: {
+    //     title: 'Kterings - Get homemade food wherever and whenever you want',
+    //     description: 'Get homemade food wherever and whenever you want',
+    //     url: 'https://kterings.com',
+    //     siteName: 'Kterings',
+    //     images: [
+    //         {
+    //             url: 'http://localhost:3000/red-logo.svg',
+    //             width: 800,
+    //             height: 800,
+    //         },
+    //     ],
+    //     locale: 'en_US',
+    //     type: 'website',
+    // },
 }
 
 export default function RootLayout({

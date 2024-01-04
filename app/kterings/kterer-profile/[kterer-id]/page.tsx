@@ -248,7 +248,7 @@ export default function KtererProfile() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {ktererInfo ? (
           <div className="grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 gap-16 pb-12 border-b">
-            <div className="col-span-1">
+            <div className="col-span-1 sticky top-0">
               <Card>
                 <CardContent>
                   <div className="flex items-center flex-col my-3">

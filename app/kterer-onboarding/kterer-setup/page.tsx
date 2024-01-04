@@ -193,7 +193,8 @@ export default function KtererSetup() {
                                                     </>
                                                 ) : (
                                                     <p className="text-sm text-gray-500">
-                                                        Please go to the opened tab to complete your verification.
+                                                        Please go to the opened tab to complete your verification. You
+                                                        may close this tab.
                                                     </p>
                                                 )}
                                             </div>

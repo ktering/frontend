@@ -19,8 +19,8 @@ import {toast} from "@/components/ui/use-toast";
 
 const formSchema = z.object({
     email: z.string().email(),
-    subject: z.string().min(10, {
-            message: "Subject must be at least 10 characters."
+    subject: z.string().min(6, {
+            message: "Subject must be at least 6 characters."
         }
     ).max(50, {
         message: "Subject must not be longer than 50 characters.",
@@ -83,8 +83,6 @@ export default function Help() {
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
-
         const accessToken = localStorage.getItem('accessToken');
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
         const response = await fetch(`${apiURL}/api/support`, {
@@ -122,7 +120,7 @@ export default function Help() {
             <section className="w-full relative overflow-x-hidden transition-all duration-700 ease-in-out">
                 {/* Background Image */}
                 <div
-                    className={`transition-all duration-700 ease-in-out ${searchInitiated ? 'h-28 opacity-0' : 'h-[50vh] md:h-[60vh] opacity-1'}`}>
+                    className={`transition-all duration-700 ease-in-out ${searchInitiated ? 'h-28 opacity-0' : 'h-[50vh] md:h-[30vh] opacity-1'}`}>
                     <Image src={HelpPageBackground}
                            className="bg-primary-color w-full h-full object-cover"
                            alt="hero section food image"/>
@@ -241,7 +239,7 @@ export default function Help() {
                         <div className="space-y-4 text-center">
                             <h1 className="font-bold text-xl">Couldn't Find What You Were Looking
                                 For?</h1>
-                            <p>Submit a Ticket Here?</p>
+                            <p>Submit a Ticket Here</p>
                         </div>
 
                         <Form {...form}>
@@ -252,7 +250,7 @@ export default function Help() {
                                     render={({field}) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Email" className="rounded-xl"
+                                                <Input placeholder="Email" className="rounded-xl border-2"
                                                        type="email" {...field} />
                                             </FormControl>
                                             <FormMessage/>
@@ -266,7 +264,7 @@ export default function Help() {
                                         <FormItem>
                                             <FormControl>
                                                 <Input placeholder="Subject/Question"
-                                                       className="rounded-xl" {...field} />
+                                                       className="rounded-xl border-2" {...field} />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -280,7 +278,7 @@ export default function Help() {
                                             <FormControl>
                                                 <Textarea
                                                     placeholder="Description"
-                                                    className="resize-none h-72 rounded-xl"
+                                                    className="resize-none h-72 rounded-xl border-2"
                                                     {...field}
                                                 />
                                             </FormControl>

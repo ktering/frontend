@@ -29,8 +29,8 @@ const formSchema = z.object({
     medium_amount: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
     large_price: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
     large_amount: z.union([z.string().transform(val => val === "" ? 0 : parseFloat(val)), z.number()]),
-    description: z.string().min(2, "Description must be at least 2 characters").max(1000, "Description can't be longer than 1000 characters"),
-    ingredients: z.string().min(1, "Ingredients list cannot be empty"),
+    description: z.string().min(25, "Description must be at least 25 characters"),
+    ingredients: z.string().min(10, "Ingredients list cannot be empty and must be at least 10 characters"),
     halal: z.string().refine(value => value !== "", {
         message: "Halal is required, please select an option",
     }),
@@ -339,7 +339,7 @@ export default function EditFood() {
                                                     <span
                                                         className="mt-2 block text-sm font-semibold text-gray-900"> {totalImageCount < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
-                                                        className="mt-2 block text-xs font-semibold text-gray-900">{totalImageCount} out of 3 Uploaded</span>
+                                                        className="mt-2 block text-xs font-semibold text-gray-900">Please upload at least 1 picture (up to 3 allowed). You've uploaded {totalImageCount}</span>
                                                 </label>
                                             </div>
                                         </FormControl>
