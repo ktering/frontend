@@ -346,7 +346,12 @@ export default function UserNavbar() {
                       <BellIcon className="h-6 w-6" aria-hidden="true" />
                       {notifications.filter((not) => not.read_at === null)
                         .length ? (
-                        <span className="flex items-center justify-center absolute top-0 right-0 h-3 w-3 text-xs font-semibold rounded-full bg-primary-color text-white"></span>
+                        <span className="flex items-center justify-center absolute -top-2 -right-2 h-6 w-6 text-xs font-semibold rounded-full bg-primary-color text-white">
+                          {
+                            notifications.filter((not) => not.read_at === null)
+                              .length
+                          }
+                        </span>
                       ) : (
                         <></>
                       )}
