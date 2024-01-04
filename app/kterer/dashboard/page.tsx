@@ -28,6 +28,7 @@ import { useNotifications } from "@/components/notificationContext";
 
 export default function Dashboard() {
   const { user } = useUser();
+  console.log(user);
   if (!user) {
     return null;
   }

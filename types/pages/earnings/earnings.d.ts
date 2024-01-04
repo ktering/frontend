@@ -1,12 +1,8 @@
 interface Earning {
-    amount: number;
-    currency: string;
-    source_types: {
-        card: number;
-    };
+  amount: number;
 }
 
 export interface Earnings {
-    available: Earning[];
-    pending: Earning[];
+  available: Earning[];
+  pending: Earning[];
 }
