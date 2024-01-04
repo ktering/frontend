@@ -34,6 +34,7 @@ import {
   MinusSmallIcon,
   PlusSmallIcon,
   StarIcon,
+  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "@/components/ui/use-toast";
 import { FoodItem } from "@/types/shared/food";
@@ -63,7 +64,7 @@ export default function Food() {
   const [selectedSize, setSelectedSize] = useState("small");
   // TODO: fix this main image
   const [mainImage, setMainImage] = useState<string | undefined>(undefined);
-  const { addItemToCart } = useCart();
+  const { addItemToCart, cartItems } = useCart();
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
@@ -211,6 +212,27 @@ export default function Food() {
   };
 
   const addToCart = () => {
+    console.log(foodDetails);
+    if (cartItems.length) {
+      let index = cartItems.findIndex(
+        (item) => item.kterer_id !== foodDetails?.kterer_id
+      );
+
+      if (index >= 0 || foodDetails?.kterer_id === undefined) {
+        toast({
+          description: (
+            <>
+              <div className="flex items-center">
+                <ExclamationTriangleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                You are allowed to buy food from only 1 keterer in one session
+              </div>
+            </>
+          ),
+          duration: 3000,
+        });
+        return;
+      }
+    }
     const maxQuantityItem = foodDetails?.quantities.find(
       (quantityItem) => quantityItem.size === selectedSize
     );
@@ -225,6 +247,7 @@ export default function Food() {
       quantity: quantity,
       maxQuantity: maxQuantityItem?.quantity || "0",
       price: priceItem?.price || "0",
+      kterer_id: foodDetails?.kterer_id,
     };
 
     addItemToCart(cartItem);
