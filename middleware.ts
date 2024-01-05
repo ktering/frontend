@@ -29,6 +29,7 @@ export default authMiddleware({
     // }
 
     // TODO: Add check for non-kterer users so they can't access the kterer pages
+    console.log(checkUser, auth.userId, req.nextUrl.pathname);
     if (auth.userId) {
       if (req.nextUrl.pathname === "/") {
         if (checkUser === true) {
@@ -40,15 +41,16 @@ export default authMiddleware({
         }
       }
 
+      // if (
+      //   !checkUser &&
+      //   (req.nextUrl.pathname === "/kterer-onboarding/kyc-verified" ||
+      //     // @ts-ignore
+      //     req.nextUrl.pathname === "/kterer/dashboard")
+      // ) {
+      //   const setupPage = new URL("/kterer-onboarding/kterer-setup", req.url);
+      //   return NextResponse.redirect(setupPage);
+      // } else if (
       if (
-        !checkUser &&
-        (req.nextUrl.pathname === "/kterer-onboarding/kyc-verified" ||
-          // @ts-ignore
-          req.nextUrl.pathname === "/kterer/dashboard")
-      ) {
-        const setupPage = new URL("/kterer-onboarding/kterer-setup", req.url);
-        return NextResponse.redirect(setupPage);
-      } else if (
         checkUser === true &&
         req.nextUrl.pathname === "/kterer-onboarding/kterer-setup"
       ) {

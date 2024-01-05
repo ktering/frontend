@@ -1,63 +1,70 @@
 "use client";
-import {useEffect} from "react";
-import {useUser} from "@clerk/nextjs";
-import {useRouter, useSearchParams} from 'next/navigation';
+import { useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Dashboard() {
-    const router = useRouter();
-    const {user} = useUser();
-    if (!user) {
-        return null
-    }
-    const userId = user.id;
-    const searchParams = useSearchParams();
-    const kycStatus = searchParams.get('status');
+  const router = useRouter();
+  const { user } = useUser();
+  if (!user) {
+    return null;
+  }
+  const userId = user.id;
+  const searchParams = useSearchParams();
+  const kycStatus = searchParams.get("status");
 
-    useEffect(() => {
-        const updateMetadata = async () => {
-            if (kycStatus === 'completed' && user.publicMetadata.ktererSignUpCompleted === false) {
-                const response = await fetch('/api/kterer', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({userId, ktererSignUpCompleted: true}),
-                });
-
-                const accessToken = localStorage.getItem('accessToken');
-                const apiURL = process.env.NEXT_PUBLIC_API_URL;
-
-                try {
-                    const localResponse = await fetch(`${apiURL}/api/kterer`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${accessToken}`
-                        },
-                        body: JSON.stringify({
-                            is_verified: true
-                        }),
-                    });
-                    if (!localResponse.ok) {
-                        console.log(localResponse.statusText);
-                    }
-                    if (response.ok && localResponse.ok) {
-                        const responseJson = await response.json();
-                        const userInfo = responseJson.user;
-
-                        if (userInfo.publicMetadata.ktererSignUpCompleted === true) {
-                            router.push("/kterer/earnings");
-                        } else {
-                            console.log('Metadata updated not updated to false');
-                        }
-                    }
-                } catch (error) {
-                    console.error(`Error: ${error}`);
-                }
-            }
-        }
-        updateMetadata().catch((error) => {
-            console.error(`Error: ${error}`);
+  useEffect(() => {
+    const updateMetadata = async () => {
+      if (
+        kycStatus === "completed" &&
+        user.publicMetadata.ktererSignUpCompleted === false
+      ) {
+        const response = await fetch("/api/kterer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId, ktererSignUpCompleted: true }),
         });
-    }, [user]);
+
+        const accessToken = localStorage.getItem("accessToken");
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        try {
+          const localResponse = await fetch(`${apiURL}/api/kterer`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({
+              is_verified: true,
+            }),
+          });
+          if (!localResponse.ok) {
+            console.log(localResponse.statusText);
+          }
+          if (response.ok && localResponse.ok) {
+            const responseJson = await response.json();
+            const userInfo = responseJson.user;
+
+            if (userInfo.publicMetadata.ktererSignUpCompleted === true) {
+              router.push("/kterer/earnings");
+            } else {
+              console.log("Metadata updated not updated to false");
+            }
+          }
+        } catch (error) {
+          console.error(`Error: ${error}`);
+        }
+      } else if (user.publicMetadata.ktererSignUpCompleted) {
+        router.push("/kterer/dashboard");
+      } else {
+        router.push("/kterer-onboarding/kterer-setup");
+      }
+    };
+    updateMetadata().catch((error) => {
+      console.error(`Error: ${error}`);
+    });
+  }, [user]);
 }

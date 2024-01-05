@@ -364,7 +364,14 @@ export default function Food() {
       const rightDiv = document.getElementById("right-side");
 
       if (leftDiv && rightDiv) {
-        // console.log(leftDiv.)
+        var position = leftDiv.getBoundingClientRect();
+
+        console.log(
+          position.top,
+          position.right,
+          position.bottom,
+          position.left
+        );
         // const longDivBottomPosition = rightDiv.getBoundingClientRect().bottom;
         // if (longDivBottomPosition >= window.innerHeight) {
         //   leftDiv.style.top = `${window.scrollY}px`;
