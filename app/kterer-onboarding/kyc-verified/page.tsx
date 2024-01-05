@@ -49,7 +49,7 @@ export default function Dashboard() {
             const userInfo = responseJson.user;
 
             if (userInfo.publicMetadata.ktererSignUpCompleted === true) {
-              router.push("/kterer/earnings");
+              window.location.reload();
             } else {
               console.log("Metadata updated not updated to false");
             }
@@ -58,7 +58,7 @@ export default function Dashboard() {
           console.error(`Error: ${error}`);
         }
       } else if (user.publicMetadata.ktererSignUpCompleted) {
-        router.push("/kterer/dashboard");
+        router.push("/kterer/earnings");
       } else {
         router.push("/kterer-onboarding/kterer-setup");
       }

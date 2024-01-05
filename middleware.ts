@@ -52,6 +52,13 @@ export default authMiddleware({
       // } else if (
       if (
         checkUser === true &&
+        req.nextUrl.pathname === "/kterer-onboarding/kyc-verified"
+      ) {
+        const setupPage = new URL("/kterer/earnings", req.url);
+        return NextResponse.redirect(setupPage);
+      }
+      if (
+        checkUser === true &&
         req.nextUrl.pathname === "/kterer-onboarding/kterer-setup"
       ) {
         const dashboardPage = new URL("/kterer/dashboard", req.url);
