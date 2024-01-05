@@ -39,10 +39,7 @@ export default authMiddleware({
           return NextResponse.redirect(signedInUserPage);
         }
       }
-      if (req.nextUrl.pathname.startsWith("/kterer") && !checkUser) {
-        const signedInUserPage = new URL("/kterings", req.url);
-        return NextResponse.redirect(signedInUserPage);
-      }
+
       if (
         !checkUser &&
         (req.nextUrl.pathname === "/kterer-onboarding/kyc-verified" ||
@@ -57,6 +54,11 @@ export default authMiddleware({
       ) {
         const dashboardPage = new URL("/kterer/dashboard", req.url);
         return NextResponse.redirect(dashboardPage);
+      }
+
+      if (req.nextUrl.pathname.startsWith("/kterer") && !checkUser) {
+        const signedInUserPage = new URL("/kterings", req.url);
+        return NextResponse.redirect(signedInUserPage);
       }
     }
   },
