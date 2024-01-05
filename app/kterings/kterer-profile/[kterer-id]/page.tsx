@@ -243,57 +243,104 @@ export default function KtererProfile() {
     }
   }
 
+  useEffect(() => {
+    let prevY = window.scrollY;
+    const handleScroll = () => {
+      let currentY = window.scrollY;
+      let difference = currentY - prevY;
+      const leftDiv = document.getElementById("left-side-image");
+      const rightDiv = document.getElementById("right-side");
+
+      if (leftDiv && rightDiv) {
+        var position = leftDiv.getBoundingClientRect();
+        const longDivBottomPosition = rightDiv.getBoundingClientRect().bottom;
+
+        console.log(position, longDivBottomPosition);
+
+        if (
+          difference >= 0 &&
+          position.bottom + difference <= longDivBottomPosition &&
+          position.top < 0
+        ) {
+          leftDiv.style.paddingTop =
+            Number(leftDiv.style.paddingTop.split("px")[0]) + difference + "px";
+        }
+
+        if (difference < 0) {
+          let realH =
+            position.height - Number(leftDiv.style.paddingTop.split("px")[0]);
+          if (position.bottom + difference > realH) {
+            leftDiv.style.paddingTop =
+              Number(leftDiv.style.paddingTop.split("px")[0]) +
+              difference +
+              "px";
+          }
+        }
+      }
+
+      prevY = currentY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {ktererInfo ? (
           <div className="grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 gap-16 pb-12 border-b">
             <div className="col-span-1 sticky top-0">
-              <Card>
-                <CardContent>
-                  <div className="flex items-center flex-col my-3">
-                    <img
-                      src={ktererInfo?.profile_image_url || DEFAULT_IMAGE_SRC}
-                      alt="Kterer Profile Picture"
-                      className="rounded-full w-32 h-32 object-cover"
-                    />
-                    <div className="flex flex-col w-full justify-between items-center mt-3">
-                      <p className="text-lg font-semibold">
-                        {ktererInfo?.user?.first_name}{" "}
-                        {ktererInfo?.user?.last_name}
-                      </p>
-                      <StarRating rating={ktererInfo?.rating || 0} />
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <div className="w-full space-y-2">
-                    {[
-                      { label: "Ethnicity", value: ktererInfo?.ethnicity },
-                      {
-                        label: "Experience",
-                        value: `${ktererInfo?.experienceUnit} ${ktererInfo?.experienceValue}`,
-                      },
-                      {
-                        label: "Member Since",
-                        value: formatDate(ktererInfo?.created_at),
-                      },
-                    ].map((item, index) => (
-                      <div key={index} className="flex justify-between">
-                        <p className="font-bold">{item.label}</p>
-                        <p>{item.value}</p>
+              <div id="left-side-image" className="pt-0">
+                <Card>
+                  <CardContent>
+                    <div className="flex items-center flex-col my-3">
+                      <img
+                        src={ktererInfo?.profile_image_url || DEFAULT_IMAGE_SRC}
+                        alt="Kterer Profile Picture"
+                        className="rounded-full w-32 h-32 object-cover"
+                      />
+                      <div className="flex flex-col w-full justify-between items-center mt-3">
+                        <p className="text-lg font-semibold">
+                          {ktererInfo?.user?.first_name}{" "}
+                          {ktererInfo?.user?.last_name}
+                        </p>
+                        <StarRating rating={ktererInfo?.rating || 0} />
                       </div>
-                    ))}
-                  </div>
-                </CardFooter>
-              </Card>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <div className="w-full space-y-2">
+                      {[
+                        { label: "Ethnicity", value: ktererInfo?.ethnicity },
+                        {
+                          label: "Experience",
+                          value: `${ktererInfo?.experienceUnit} ${ktererInfo?.experienceValue}`,
+                        },
+                        {
+                          label: "Member Since",
+                          value: formatDate(ktererInfo?.created_at),
+                        },
+                      ].map((item, index) => (
+                        <div key={index} className="flex justify-between">
+                          <p className="font-bold">{item.label}</p>
+                          <p>{item.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardFooter>
+                </Card>
 
-              <div className="text-center mt-8">
-                <p className="font-bold">Bio</p>
-                <p>{ktererInfo?.bio}</p>
+                <div className="text-center mt-8">
+                  <p className="font-bold">Bio</p>
+                  <p>{ktererInfo?.bio}</p>
+                </div>
               </div>
             </div>
-            <div className="col-span-1 lg:col-span-2">
+            <div id="right-side" className="col-span-1 lg:col-span-2">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
                 {ktererFood.map((item, index) => {
                   const food_id = new URLSearchParams({

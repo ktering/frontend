@@ -358,25 +358,40 @@ export default function Food() {
   }
 
   useEffect(() => {
+    let prevY = window.scrollY;
     const handleScroll = () => {
-      console.log("hi");
+      let currentY = window.scrollY;
+      let difference = currentY - prevY;
       const leftDiv = document.getElementById("left-side-image");
       const rightDiv = document.getElementById("right-side");
 
       if (leftDiv && rightDiv) {
         var position = leftDiv.getBoundingClientRect();
+        const longDivBottomPosition = rightDiv.getBoundingClientRect().bottom;
 
-        console.log(
-          position.top,
-          position.right,
-          position.bottom,
-          position.left
-        );
-        // const longDivBottomPosition = rightDiv.getBoundingClientRect().bottom;
-        // if (longDivBottomPosition >= window.innerHeight) {
-        //   leftDiv.style.top = `${window.scrollY}px`;
-        // }
+        console.log(position, longDivBottomPosition);
+
+        if (
+          position.bottom + difference <= longDivBottomPosition &&
+          position.top < 0
+        ) {
+          leftDiv.style.paddingTop =
+            Number(leftDiv.style.paddingTop.split("px")[0]) + difference + "px";
+        }
+
+        if (difference < 0) {
+          let realH =
+            position.height - Number(leftDiv.style.paddingTop.split("px")[0]);
+          if (position.bottom + difference > realH) {
+            leftDiv.style.paddingTop =
+              Number(leftDiv.style.paddingTop.split("px")[0]) +
+              difference +
+              "px";
+          }
+        }
       }
+
+      prevY = currentY;
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -390,24 +405,26 @@ export default function Food() {
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div id="left-side-image" className="col-span-1">
-            <div className="w-full h-96 overflow-hidden rounded-lg">
-              <img
-                src={mainImage}
-                alt="Main Product"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            </div>
-            <div className="flex mt-4 space-x-2">
-              {foodDetails?.images.map((image, index) => (
+          <div className="col-span-1">
+            <div id="left-side-image" className="pt-0">
+              <div className="w-full h-96 overflow-hidden rounded-lg">
                 <img
-                  key={image.id}
-                  src={image.image_url}
-                  alt={`Thumbnail ${index + 1}`}
-                  className="w-24 h-24 object-cover cursor-pointer rounded-lg"
-                  onClick={() => handleThumbnailClick(image.image_url)}
+                  src={mainImage}
+                  alt="Main Product"
+                  className="w-full h-full object-cover rounded-lg"
                 />
-              ))}
+              </div>
+              <div className="flex mt-4 space-x-2">
+                {foodDetails?.images.map((image, index) => (
+                  <img
+                    key={image.id}
+                    src={image.image_url}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-24 h-24 object-cover cursor-pointer rounded-lg"
+                    onClick={() => handleThumbnailClick(image.image_url)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
