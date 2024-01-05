@@ -17,8 +17,8 @@ export default authMiddleware({
       return NextResponse.redirect(homePage);
     }
     // @ts-ignore
-    const checkUser =
-      auth.sessionClaims?.ktererSignUpCompleted.ktererSignUpCompleted;
+    const checkUser = (auth.sessionClaims?.ktererSignUpCompleted as any)
+      .ktererSignUpCompleted;
 
     // let checkUser: boolean | undefined = undefined;
     // if (auth.sessionClaims && 'ktererSignUpCompleted' in auth.sessionClaims) {
