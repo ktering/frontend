@@ -18,7 +18,7 @@ export default authMiddleware({
     }
     // @ts-ignore
     const checkUser = (auth.sessionClaims?.ktererSignUpCompleted as any)
-      .ktererSignUpCompleted;
+      ?.ktererSignUpCompleted;
 
     // let checkUser: boolean | undefined = undefined;
     // if (auth.sessionClaims && 'ktererSignUpCompleted' in auth.sessionClaims) {
