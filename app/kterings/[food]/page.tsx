@@ -357,11 +357,24 @@ export default function Food() {
     }
   }
 
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log("hi");
+      const leftDiv = document.getElementById("left-side-image");
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="col-span-1">
+          <div id="left-side-image" className="col-span-1">
             <div className="w-full h-96 overflow-hidden rounded-lg">
               <img
                 src={mainImage}

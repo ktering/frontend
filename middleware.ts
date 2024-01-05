@@ -56,7 +56,12 @@ export default authMiddleware({
         return NextResponse.redirect(dashboardPage);
       }
 
-      if (req.nextUrl.pathname.startsWith("/kterer") && !checkUser) {
+      if (
+        req.nextUrl.pathname.startsWith("/kterer") &&
+        req.nextUrl.pathname !== "/kterer-onboarding/kyc-verified" &&
+        req.nextUrl.pathname !== "/kterer-onboarding/kterer-setup" &&
+        !checkUser
+      ) {
         const signedInUserPage = new URL("/kterings", req.url);
         return NextResponse.redirect(signedInUserPage);
       }
