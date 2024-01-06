@@ -20,10 +20,10 @@ export default function KtererDashboardNavbar() {
               <div
                 className={`ml-3 inline-flex items-center text-sm rounded-full px-3 md:px-4 py-2 font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color ${
                   button.name === "Post Food"
-                    ? "bg-black text-white hover:bg-slate-900 whitespace-nowrap"
+                    ? "bg-black shadow-gray-500 text-white hover:bg-slate-800 whitespace-nowrap"
                     : button.name === "Help"
                     ? "text-white hover:text-gray-50 hidden sm:block"
-                    : "bg-white text-primary-color hover:bg-gray-50"
+                    : "bg-white shadow-black text-primary-color hover:bg-gray-200"
                 }`}
               >
                 {button.name}
