@@ -265,7 +265,7 @@ export default function Earnings() {
                         <div className="ml-4">
                             <AlertTitle>Heads up!</AlertTitle>
                             <AlertDescription>
-                                Complete banking setup to receive payments from your customers.
+                                Complete bank setup to receive payments from your customers.
                                 Otherwise, you will not be able to receive payments or post
                                 foods. Click the button below to start the onboarding process.
                             </AlertDescription>
@@ -282,8 +282,8 @@ export default function Earnings() {
                         {loading
                             ? "Loading..."
                             : ktererInfo
-                                ? "Edit Bank Info"
-                                : "Complete Banking Setup"}
+                                ? "Edit Bank Information"
+                                : "Complete Bank Setup"}
                     </button>
                 </div>
 
