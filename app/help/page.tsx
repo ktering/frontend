@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import WhiteLogo from "@/static/white-logo.svg";
 import HelpPageBackground from "@/static/help/help-page-bg.png";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -124,26 +123,13 @@ export default function Help() {
                     className={`transition-all duration-700 ease-in-out ${
                         searchInitiated
                             ? "h-28 opacity-0"
-                            : "h-[50vh] md:h-[30vh] opacity-1"
+                            : "h-[20vh] opacity-1"
                     }`}
                 >
                     <Image
                         src={HelpPageBackground}
                         className="bg-primary-color w-full h-full object-cover"
-                        alt="hero section food image"
-                    />
-                </div>
-
-                {/* Logo */}
-                <div
-                    className={`absolute top-0 left-0 right-0 flex justify-center items-center px-8 py-2 transition-opacity duration-700 ease-in-out ${
-                        searchInitiated ? "opacity-0" : "opacity-1"
-                    }`}
-                >
-                    <Image
-                        src={WhiteLogo}
-                        alt="Kterings Logo"
-                        className="z-10 h-16 w-16 md:h-24 md:w-24"
+                        alt="help page hero image"
                     />
                 </div>
 
