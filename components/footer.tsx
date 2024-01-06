@@ -11,6 +11,7 @@ const footerLinks = {
     ],
     HelpfulLinks: [
         {title: "Submit a Ticket", href: "/help#submit-ticket"},
+        {title: "Report a Bug", href: "/help#submit-ticket"},
         {title: "FAQs", href: "/help"}
     ],
     Legal: [

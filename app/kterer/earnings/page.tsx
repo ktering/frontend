@@ -265,7 +265,7 @@ export default function Earnings() {
                         <div className="ml-4">
                             <AlertTitle>Heads up!</AlertTitle>
                             <AlertDescription>
-                                Start Stripe onboarding to receive payments from your customers.
+                                Complete banking setup to receive payments from your customers.
                                 Otherwise, you will not be able to receive payments or post
                                 foods. Click the button below to start the onboarding process.
                             </AlertDescription>
@@ -283,7 +283,7 @@ export default function Earnings() {
                             ? "Loading..."
                             : ktererInfo
                                 ? "Edit Bank Info"
-                                : "Start Stripe Onboarding"}
+                                : "Complete Banking Setup"}
                     </button>
                 </div>
 
