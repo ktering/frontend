@@ -12,6 +12,7 @@ import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast"
 import {useRouter} from "next/navigation";
 import {PhotoIcon, TrashIcon} from "@heroicons/react/24/outline";
+import {InformationCircleIcon} from "@heroicons/react/24/solid";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -217,6 +218,13 @@ export default function PostFood() {
                                     </div>
                                 ))}
                             </div>
+                            {selectedFiles.length < 1 ? (
+                                <div className="bg-yellow-50 px-3.5 py-2 flex justify-center items-center">
+                                    <InformationCircleIcon className="h-6 w-6 text-primary-color mr-2"/>
+                                    <p className="text-sm font-semibold text-primary-color">Please upload at least one
+                                        (1)
+                                        photo of your item.</p>
+                                </div>) : null}
                             <FormField
                                 control={form.control}
                                 name="images"
@@ -241,7 +249,7 @@ export default function PostFood() {
                                                     <span
                                                         className="mt-2 block text-sm font-semibold text-gray-900"> {selectedFiles.length < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
-                                                        className="mt-2 block text-xs font-semibold text-gray-900">Please upload at least 1 picture (up to 3 allowed). You've uploaded {selectedFiles.length}</span>
+                                                        className="mt-2 block text-xs font-semibold text-gray-900">{selectedFiles.length} out of 3 Uploaded</span>
                                                 </label>
                                             </div>
                                         </FormControl>

@@ -482,10 +482,10 @@ export default function Food() {
             </div>
             {!isOutOfStock ? (
               <button
-                disabled={foodDetails?.kterer_id === ktererInfo?.kterer.id}
+                disabled={foodDetails?.kterer_id === ktererInfo?.kterer?.id}
                 onClick={addToCart}
                 className={
-                  foodDetails?.kterer_id === ktererInfo?.kterer.id
+                  foodDetails?.kterer_id === ktererInfo?.kterer?.id
                     ? "rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm"
                     : "rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                 }
@@ -525,7 +525,7 @@ export default function Food() {
         <div className="pt-12">
           <div className="flex justify-between items-center">
             <h3 className="font-bold text-xl my-12">Recent Reviews</h3>
-            {foodDetails?.kterer_id !== ktererInfo?.kterer.id && (
+            {foodDetails?.kterer_id !== ktererInfo?.kterer?.id && (
               <Button
                 className="rounded-full border bg-white hover:bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                 onClick={() => setIsReviewModalOpen(true)}
