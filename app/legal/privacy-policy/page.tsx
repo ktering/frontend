@@ -49,7 +49,7 @@ export default function PrivacyPolicy() {
                     <p className="font-bold mb-4">KTERINGS INC.</p>
                     <p className="font-bold mb-4">2252 Mark Ave Windsor Ontario N9B 3W8</p>
                     <p className="font-bold mb-4">| Canada</p>
-                    <p className="font-bold mb-4">Telephone:</p>
+                    <p className="font-bold mb-4">Telephone: +1 (226) 759-8854</p>
                     <p className="font-bold mb-4">EMAIL: <a href="mailto:info@kterings.com">info@kterings.com</a></p>
                     <p className="mb-4">This Privacy Policy contains the following sections:</p>
                     <ol>

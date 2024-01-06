@@ -15,6 +15,7 @@ import {ArrowLeftIcon} from "@heroicons/react/20/solid";
 import {FoodItem} from "@/types/shared/food";
 import {PhotoIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {SizeMap} from "@/types/pages/kterer/edit-food";
+import {InformationCircleIcon} from "@heroicons/react/24/solid";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -317,6 +318,13 @@ export default function EditFood() {
                                     </div>
                                 ))}
                             </div>
+                            {totalImageCount < 1 ? (
+                                <div className="bg-yellow-50 px-3.5 py-2 flex justify-center items-center">
+                                    <InformationCircleIcon className="h-6 w-6 text-primary-color mr-2"/>
+                                    <p className="text-sm font-semibold text-primary-color">Please upload at least one
+                                        (1)
+                                        photo of your item.</p>
+                                </div>) : null}
                             <FormField
                                 control={form.control}
                                 name="images"
@@ -339,7 +347,7 @@ export default function EditFood() {
                                                     <span
                                                         className="mt-2 block text-sm font-semibold text-gray-900"> {totalImageCount < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
-                                                        className="mt-2 block text-xs font-semibold text-gray-900">Please upload at least 1 picture (up to 3 allowed). You've uploaded {totalImageCount}</span>
+                                                        className="mt-2 block text-xs font-semibold text-gray-900">{totalImageCount} out of 3 Uploaded</span>
                                                 </label>
                                             </div>
                                         </FormControl>
