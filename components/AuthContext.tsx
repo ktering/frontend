@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { useClerk } from "@clerk/nextjs";
 
@@ -21,11 +21,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   });
 
   const router = useRouter();
+  const pathname = usePathname();
   const { signOut } = useClerk();
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    if (!token) {
+    console.log(token, pathname);
+    if (!token && !["/fetch-user"].includes(pathname)) {
       signOut().then(() => {
         localStorage.removeItem("cart");
         router.push("/");

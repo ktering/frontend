@@ -1,11 +1,11 @@
-import {NextResponse} from 'next/server';
-import {clerkClient} from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+import { clerkClient } from "@clerk/nextjs";
 
 export async function POST(request: Request) {
-    const requestBody = await request.json();
-    const {userId} = requestBody;
+  const requestBody = await request.json();
+  const { userId } = requestBody;
 
-    await clerkClient.users.deleteUser(userId);
+  await clerkClient.users.deleteUser(userId);
 
-    return NextResponse.json({success: true});
+  return NextResponse.json({ success: true });
 }
