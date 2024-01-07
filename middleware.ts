@@ -12,6 +12,7 @@ export default authMiddleware({
   ],
   afterAuth(auth, req, evt) {
     // handle users who aren't authenticated
+
     if (!auth.userId && !auth.isPublicRoute) {
       const homePage = new URL("/", req.url);
       return NextResponse.redirect(homePage);
@@ -29,7 +30,6 @@ export default authMiddleware({
     // }
 
     // TODO: Add check for non-kterer users so they can't access the kterer pages
-    console.log(checkUser, auth.userId, req.nextUrl.pathname);
     if (auth.userId) {
       if (req.nextUrl.pathname === "/") {
         if (checkUser === true) {
