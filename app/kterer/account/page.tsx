@@ -35,6 +35,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useNotifications } from "@/components/notificationContext";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = [
@@ -95,6 +96,8 @@ export default function KtererAccount() {
   const { toast } = useToast();
   const [profileImageSrc, setProfileImageSrc] = useState(DEFAULT_IMAGE_SRC);
 
+  const { updateNotifications } = useNotifications();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -135,6 +138,48 @@ export default function KtererAccount() {
         console.error("An error occurred:", error);
       }
     };
+
+    const getNotifications = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+      try {
+        const response = await fetch(`${apiURL}/api/notifications`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`Error: ${response.statusText}`);
+          return;
+        }
+
+        const data = await response.json();
+
+        updateNotifications(
+          data.map(
+            (not: {
+              id: any;
+              data: { message: any };
+              read_at: string | number | Date;
+            }) => ({
+              id: not.id,
+              message: not.data.message,
+              read_at: not.read_at ? new Date(not.read_at) : null,
+            })
+          )
+        );
+      } catch (error) {
+        console.error(`Error: ${error}`);
+      }
+    };
+
+    getNotifications().catch((error) => {
+      console.error(`Error: ${error}`);
+    });
 
     getKtererAccountInfo().catch((error) => {
       console.error("An error occurred:", error);
