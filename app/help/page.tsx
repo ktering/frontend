@@ -123,7 +123,7 @@ export default function Help() {
                     className={`transition-all duration-700 ease-in-out ${
                         searchInitiated
                             ? "h-28 opacity-0"
-                            : "h-[20vh] opacity-1"
+                            : "h-[25vh] opacity-1"
                     }`}
                 >
                     <Image
@@ -141,7 +141,7 @@ export default function Help() {
                 >
                     {!searchInitiated && (
                         <h1 className="text-2xl lg:text-4xl text-white font-bold text-center mb-4 md:mb-8">
-                            Got Any Questions?
+                            Got any questions?
                         </h1>
                     )}
                     {/* Search bar */}
