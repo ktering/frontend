@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Favourites } from "@/types/shared/favourites";
 import Link from "next/link";
+import { useNotifications } from "@/components/notificationContext";
 
 const DEFAULT_IMAGE_SRC =
   "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg";
@@ -22,6 +23,8 @@ export default function Favourites() {
   const [favourites, setFavourites] = useState<Favourites[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<number | null>(null);
+
+  const { updateNotifications } = useNotifications();
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -47,6 +50,48 @@ export default function Favourites() {
         console.error(`Error: ${error}`);
       }
     };
+
+    const getNotifications = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+      try {
+        const response = await fetch(`${apiURL}/api/notifications`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`Error: ${response.statusText}`);
+          return;
+        }
+
+        const data = await response.json();
+
+        updateNotifications(
+          data.map(
+            (not: {
+              id: any;
+              data: { message: any };
+              read_at: string | number | Date;
+            }) => ({
+              id: not.id,
+              message: not.data.message,
+              read_at: not.read_at ? new Date(not.read_at) : null,
+            })
+          )
+        );
+      } catch (error) {
+        console.error(`Error: ${error}`);
+      }
+    };
+
+    getNotifications().catch((error) => {
+      console.error(`Error: ${error}`);
+    });
 
     fetchFavorites().catch((error) => {
       console.error(`Error: ${error}`);
