@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import WhiteLogo from "@/static/white-logo.svg";
 import HelpPageBackground from "@/static/help/help-page-bg.png";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -46,17 +45,18 @@ export default function Help() {
             ...ktererFAQs.map(faq => ({...faq, id: faq.id.toString(), type: 'kterer'})),
             ...customerFAQs.map(faq => ({...faq, id: faq.id.toString(), type: 'customer'})),
         ];
-        const filtered = combinedFAQs.filter(faq =>
-            faq.question.toLowerCase().includes(searchLowerCase)
+        const filtered = combinedFAQs.filter((faq) =>
+            faq.question.toLowerCase().includes(searchLowerCase),
         );
         setFilteredFAQs(filtered.slice(0, 5));
     }, [searchInput, ktererFAQs, customerFAQs]);
 
-
-    const handleSearchChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    const handleSearchChange = (e: {
+        target: { value: React.SetStateAction<string> };
+    }) => {
         setSearchInput(e.target.value);
         if (typeof e.target.value === "string") {
-            setSearchInitiated(e.target.value.trim() !== '');
+            setSearchInitiated(e.target.value.trim() !== "");
         }
     };
 
@@ -69,9 +69,9 @@ export default function Help() {
         return [
             text.substring(0, index),
             text.substring(index, index + searchText.length),
-            text.substring(index + searchText.length)
+            text.substring(index + searchText.length),
         ];
-    }
+    };
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -80,18 +80,18 @@ export default function Help() {
             subject: "",
             message: "",
         },
-    })
+    });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = localStorage.getItem("accessToken");
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
         const response = await fetch(`${apiURL}/api/support`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
             },
-            body: JSON.stringify(values)
+            body: JSON.stringify(values),
         });
 
         if (!response.ok) {
@@ -104,9 +104,9 @@ export default function Help() {
             description: (
                 <>
                     <div className="flex items-center">
-                        <CheckCircleIcon
-                            className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
-                        Support ticket submitted successfully. We will get back to you as soon as possible.
+                        <CheckCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                        Support ticket submitted successfully. We will get back to you as
+                        soon as possible.
                     </div>
                 </>
             ),
@@ -120,24 +120,29 @@ export default function Help() {
             <section className="w-full relative overflow-x-hidden transition-all duration-700 ease-in-out">
                 {/* Background Image */}
                 <div
-                    className={`transition-all duration-700 ease-in-out ${searchInitiated ? 'h-28 opacity-0' : 'h-[50vh] md:h-[30vh] opacity-1'}`}>
-                    <Image src={HelpPageBackground}
-                           className="bg-primary-color w-full h-full object-cover"
-                           alt="hero section food image"/>
-                </div>
-
-                {/* Logo */}
-                <div
-                    className={`absolute top-0 left-0 right-0 flex justify-center items-center px-8 py-2 transition-opacity duration-700 ease-in-out ${searchInitiated ? 'opacity-0' : 'opacity-1'}`}>
-                    <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24"/>
+                    className={`transition-all duration-700 ease-in-out ${
+                        searchInitiated
+                            ? "h-28 opacity-0"
+                            : "h-[20vh] opacity-1"
+                    }`}
+                >
+                    <Image
+                        src={HelpPageBackground}
+                        className="bg-primary-color w-full h-full object-cover"
+                        alt="help page hero image"
+                    />
                 </div>
 
                 {/* Center Content */}
                 <div
-                    className={`absolute ${searchInitiated ? 'top-4  pt-12' : 'top-1/3'} left-1/2 transform -translate-x-1/2 transition-all duration-700 ease-in-out`}>
+                    className={`absolute ${
+                        searchInitiated ? "top-4  pt-12" : "top-1/3"
+                    } left-1/2 transform -translate-x-1/2 transition-all duration-700 ease-in-out`}
+                >
                     {!searchInitiated && (
-                        <h1 className="text-2xl lg:text-4xl text-white font-bold text-center mb-4 md:mb-8">Got Any
-                            Questions?</h1>
+                        <h1 className="text-2xl lg:text-4xl text-white font-bold text-center mb-4 md:mb-8">
+                            Got Any Questions?
+                        </h1>
                     )}
                     {/* Search bar */}
                     <div className="relative w-96">
@@ -160,12 +165,18 @@ export default function Help() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {searchInput.trim() ? (
                     filteredFAQs.length > 0 ? (
-                        <section id="search-results" className="mt-8 max-w-3xl mx-auto space-y-8">
+                        <section
+                            id="search-results"
+                            className="mt-8 max-w-3xl mx-auto space-y-8"
+                        >
                             <div className="space-y-4 text-center">
                                 <h1 className="font-bold text-xl">Search Results</h1>
                                 <ul className="space-y-2">
                                     {filteredFAQs.map((faq) => {
-                                        const [before, highlight, after] = highlightSearchText(faq.question, searchInput);
+                                        const [before, highlight, after] = highlightSearchText(
+                                            faq.question,
+                                            searchInput,
+                                        );
                                         return (
                                             <li key={faq.id}>
                                                 <Link href={`/help/${faq.id}?faq_type=${faq.type}`}>
@@ -192,13 +203,18 @@ export default function Help() {
                         {/* Section 2 */}
                         <section>
                             <div className="space-y-4 flex flex-col items-center sm:items-start">
-                                <h1 className="font-bold text-xl flex items-center">Welcome to Kterings Help</h1>
+                                <h1 className="font-bold text-xl flex items-center">
+                                    Welcome to Kterings Help
+                                </h1>
                                 <p>What can we help you with you today?</p>
                             </div>
                         </section>
 
                         {/* Section 3 */}
-                        <section id="faqs" className="mt-8 max-w-3xl mx-auto space-y-8 py-16">
+                        <section
+                            id="faqs"
+                            className="mt-8 max-w-3xl mx-auto space-y-8 py-16"
+                        >
                             <div className="grid grid-cols-1 sm:grid-cols-2 space-y-8 sm:space-y-0 text-center">
                                 <div>
                                     <h1 className="font-bold text-xl mb-4">Customer Support</h1>
@@ -228,30 +244,40 @@ export default function Help() {
                                         ))}
                                     </ul>
                                 </div>
-
                             </div>
                         </section>
                     </>
                 )}
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <section id="submit-ticket" className="mt-8 max-w-3xl mx-auto space-y-8">
+                    <section
+                        id="submit-ticket"
+                        className="mt-8 max-w-3xl mx-auto space-y-8"
+                    >
                         <div className="space-y-4 text-center">
-                            <h1 className="font-bold text-xl">Couldn't Find What You Were Looking
-                                For?</h1>
+                            <h1 className="font-bold text-xl">
+                                Couldn't Find What You Were Looking For?
+                            </h1>
                             <p>Submit a Ticket Here</p>
                         </div>
 
                         <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                            <form
+                                onSubmit={form.handleSubmit(onSubmit)}
+                                className="space-y-8"
+                            >
                                 <FormField
                                     control={form.control}
                                     name="email"
                                     render={({field}) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Email" className="rounded-xl border-2"
-                                                       type="email" {...field} />
+                                                <Input
+                                                    placeholder="Email"
+                                                    className="rounded-xl border-2"
+                                                    type="email"
+                                                    {...field}
+                                                />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -263,8 +289,11 @@ export default function Help() {
                                     render={({field}) => (
                                         <FormItem>
                                             <FormControl>
-                                                <Input placeholder="Subject/Question"
-                                                       className="rounded-xl border-2" {...field} />
+                                                <Input
+                                                    placeholder="Subject/Question"
+                                                    className="rounded-xl border-2"
+                                                    {...field}
+                                                />
                                             </FormControl>
                                             <FormMessage/>
                                         </FormItem>
@@ -289,7 +318,10 @@ export default function Help() {
                                 <div className="text-center">
                                     <Button
                                         className="bg-primary-color hover:bg-primary-color-hover text-white rounded-full"
-                                        type="submit">Submit Ticket</Button>
+                                        type="submit"
+                                    >
+                                        Submit Ticket
+                                    </Button>
                                 </div>
                             </form>
                         </Form>
@@ -297,5 +329,5 @@ export default function Help() {
                 </div>
             </div>
         </>
-    )
+    );
 }

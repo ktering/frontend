@@ -11,41 +11,41 @@ import Number3Icon from "@/static/shared/number-3-icon.svg";
 import Freedom from "@/static/kterer/freedom.png";
 import SignUpForm from "@/app/sign-up/[[...sign-up]].page";
 
-import {Fragment, useRef, useState} from 'react'
-import {Dialog, Transition} from '@headlessui/react'
+import {Fragment, useRef, useState} from "react";
+import {Dialog, Transition} from "@headlessui/react";
 
 const features = [
     {
-        name: 'Make What You Want',
-        desc: 'You don’t have to be restricted to a set menu. Make whatever you feel like whenever you feel like it!',
-        imgSrc: MakeWhatYouWantIcon
+        name: "Set Your Prices",
+        desc: "Earn what you want! No more bosses dictating what you can earn.",
+        imgSrc: SetYourPricesIcon,
     },
     {
-        name: 'Reach More People',
-        desc: 'Don’t be restricted to the people you know. Reach more people in your community',
+        name: "Reach More People",
+        desc: "Don’t be restricted to the people you know. Reach more people in your community",
         imgSrc: ReachMorePeopleIcon,
     },
     {
-        name: 'Set Your Prices',
-        desc: 'Earn what you want! No more bosses dictating what you can earn.',
-        imgSrc: SetYourPricesIcon,
+        name: "Make What You Want",
+        desc: "You don’t have to be restricted to a set menu. Make whatever you feel like whenever you feel like it!",
+        imgSrc: MakeWhatYouWantIcon,
     },
-]
+];
 
 const ktererSteps = [
     {
-        name: 'Click Sign Up',
+        name: "Click Sign Up",
         imgSrc: Number1Icon,
     },
     {
-        name: 'Fill Out Required Info',
+        name: "Fill Out Required Info",
         imgSrc: Number2Icon,
     },
     {
-        name: 'Enjoy Making More Money as a Kterer',
-        imgSrc: Number3Icon
+        name: "Enjoy Making More Money as a Kterer",
+        imgSrc: Number3Icon,
     },
-]
+];
 
 export default function BecomeKterer() {
     const [open, setOpen] = useState(false);
@@ -57,25 +57,36 @@ export default function BecomeKterer() {
             <section className="bg-primary-color text-white">
                 <div className="max-w-7xl mx-auto">
                     <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:pt-12 lg:pb-24 lg:px-8">
-                        <h1 className="text-3xl font-bold text-center pb-16">Become a Kterer</h1>
+                        <h1 className="text-3xl font-bold text-center pb-16">
+                            Become a Kterer
+                        </h1>
                         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
-
                             <div
                                 className="lg:col-span-2 flex flex-col items-center justify-center align-middle text-center lg:text-left lg:items-start lg:justify-center">
                                 <h2 className="text-3xl font-bold leading-10">
-                                    Make What You Want<br/>Reach More People<br/>Sell More
+                                    Make What You Want
+                                    <br/>
+                                    Reach More People
+                                    <br/>
+                                    Sell More
                                 </h2>
 
                                 <p className="pt-4 pb-6">Make more money doing what you like</p>
 
                                 <button
                                     className="rounded-full w-1/3 lg:w-2/3 bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
-                                    onClick={() => setOpen(true)}>Sign Up
+                                    onClick={() => setOpen(true)}
+                                >
+                                    Sign Up
                                 </button>
 
                                 <Transition.Root show={open} as={Fragment}>
-                                    <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef}
-                                            onClose={setOpen}>
+                                    <Dialog
+                                        as="div"
+                                        className="relative z-10"
+                                        initialFocus={cancelButtonRef}
+                                        onClose={setOpen}
+                                    >
                                         <Transition.Child
                                             as={Fragment}
                                             enter="ease-out duration-300"
@@ -121,7 +132,6 @@ export default function BecomeKterer() {
                                     />
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -130,17 +140,22 @@ export default function BecomeKterer() {
             <section className="max-w-7xl mx-auto">
                 <div className="bg-white py-16">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                        <div className="mx-auto max-w-xl lg:max-w-4xl">
-                            <dl className="grid max-w-xl grid-cols-1 gap-x-48 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
+                        <div className="mx-auto max-w-xl lg:max-w-5xl">
+                            <dl className="grid max-w-xl grid-cols-1 gap-x-24 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
                                 {features.map((feature) => (
-                                    <div key={feature.name} className="relative flex flex-col items-center">
-                                        <Image src={feature.imgSrc} alt="" className="w-20 h-20 sm:w-20 sm:h-20"/>
+                                    <div
+                                        key={feature.name}
+                                        className="relative flex flex-col items-center"
+                                    >
+                                        <Image
+                                            src={feature.imgSrc}
+                                            alt=""
+                                            className="w-20 h-20 sm:w-20 sm:h-20"
+                                        />
                                         <dt className="text-2xl font-bold leading-7 text-center my-4">
                                             {feature.name}
                                         </dt>
-                                        <dt className="text-center max-w-sm">
-                                            {feature.desc}
-                                        </dt>
+                                        <dt className="text-center max-w-sm">{feature.desc}</dt>
                                     </div>
                                 ))}
                             </dl>
@@ -167,11 +182,11 @@ export default function BecomeKterer() {
 
                             <div className="flex items-center justify-center">
                                 <h2 className="text-3xl text-center">
-                                    You shouldn’t have to deal with only catering to the people you know. You deserve to
-                                    be able to reach more people to sell to
+                                    You shouldn’t have to deal with only catering to the people
+                                    you know. You deserve to be able to reach more people to sell
+                                    to
                                 </h2>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -184,16 +199,20 @@ export default function BecomeKterer() {
                             <p className="mt-2 text-3xl font-bold tracking-tight">
                                 Be a Kterer in 3 Easy Steps
                             </p>
-                            <p className="mt-6 text-lg leading-8">
-                                All you have to do is
-                            </p>
+                            <p className="mt-6 text-lg leading-8">All you have to do is</p>
                         </div>
                         <div className="mx-auto mt-16 max-w-xl sm:mt-20 lg:mt-12 lg:max-w-4xl">
                             <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-3 lg:gap-y-16">
                                 {ktererSteps.map((feature) => (
-                                    <div key={feature.name} className="relative flex flex-col items-center">
-                                        <Image src={feature.imgSrc} alt=""
-                                               className="mb-4 w-40 h-40 sm:w-40 sm:h-40"/>
+                                    <div
+                                        key={feature.name}
+                                        className="relative flex flex-col items-center"
+                                    >
+                                        <Image
+                                            src={feature.imgSrc}
+                                            alt=""
+                                            className="mb-4 w-40 h-40 sm:w-40 sm:h-40"
+                                        />
                                         <dt className="text-2xl leading-7 text-center">
                                             {feature.name}
                                         </dt>
@@ -206,7 +225,9 @@ export default function BecomeKterer() {
                     <div className="text-center mt-16">
                         <button
                             className="rounded-full bg-primary-color px-4 py-2.5 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            onClick={() => setOpen(true)}>Sign Up
+                            onClick={() => setOpen(true)}
+                        >
+                            Sign Up
                         </button>
                     </div>
                 </div>
@@ -218,11 +239,13 @@ export default function BecomeKterer() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
                             <div className="flex items-center justify-center order-2 lg:order-1">
                                 <div>
-                                    <h1 className="text-3xl font-bold mb-2 text-center">Freedom!</h1>
+                                    <h1 className="text-3xl font-bold mb-2 text-center">
+                                        Freedom!
+                                    </h1>
                                     <h2 className="text-2xl text-center">
-                                        You shouldn’t have to deal with only catering to the people you know. You
-                                        deserve to
-                                        be able to reach more people to sell to
+                                        You shouldn’t have to deal with only catering to the people
+                                        you know. You deserve to be able to reach more people to
+                                        sell to
                                     </h2>
                                 </div>
                             </div>
@@ -243,5 +266,5 @@ export default function BecomeKterer() {
                 </div>
             </section>
         </>
-    )
+    );
 }
