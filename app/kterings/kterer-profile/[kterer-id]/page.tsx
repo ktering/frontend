@@ -275,6 +275,10 @@ export default function KtererProfile() {
               difference +
               "px";
           }
+
+          if (position.top > 0) {
+            leftDiv.style.paddingTop = "0px";
+          }
         }
       }
 

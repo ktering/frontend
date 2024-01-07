@@ -388,6 +388,10 @@ export default function Food() {
               difference +
               "px";
           }
+
+          if (position.top > 0) {
+            leftDiv.style.paddingTop = "0px";
+          }
         }
       }
 
