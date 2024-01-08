@@ -310,7 +310,7 @@ export default function PostFood() {
     getNotifications().catch((error) => {
       console.error(`Error: ${error}`);
     });
-  });
+  }, []);
 
   return (
     <>
