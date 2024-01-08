@@ -458,7 +458,7 @@ export default function PostFood() {
                             />
                             {/* Size Start */}
                             <div>
-                                <FormLabel>Food Sizes</FormLabel>
+                                <FormLabel>Select the size(s) you are selling</FormLabel>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8 pt-3">
                                     {/* Small Size */}
                                     <div className="space-y-4">
