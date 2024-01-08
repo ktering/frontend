@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
@@ -11,9 +11,11 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/
 import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast";
 import {useRouter} from "next/navigation";
-import {PhotoIcon, TrashIcon} from "@heroicons/react/24/outline";
+import {PhotoIcon, TrashIcon, ExclamationCircleIcon} from "@heroicons/react/24/outline";
 import {useNotifications} from "@/components/notificationContext";
 import {InformationCircleIcon} from "@heroicons/react/24/solid";
+import {KtererInfo} from "@/types/shared/user";
+import {Alert, AlertDescription, AlertTitle,} from "@/components/ui/alert"
 
 const formSchema = z
     .object({
@@ -97,6 +99,38 @@ export default function PostFood() {
     const [isSmallActive, setIsSmallActive] = useState(false);
     const [isMediumActive, setIsMediumActive] = useState(false);
     const [isLargeActive, setIsLargeActive] = useState(false);
+    const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
+
+    useEffect(() => {
+        const getKtererAccountInfo = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            try {
+                const response = await fetch(`${apiURL}/api/user`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setKtererInfo(data.user.kterer.stripe_account_id);
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+        };
+
+        getKtererAccountInfo().catch((error) => {
+            console.error("An error occurred:", error);
+        });
+    }, []);
 
     // Toggle functions for each size
     const toggleSize = (size: string) => {
@@ -846,12 +880,24 @@ export default function PostFood() {
                                 )}
                             />
                             <Button
-                                disabled={selectedFiles.length === 0}
+                                disabled={selectedFiles.length === 0 || !ktererInfo}
                                 className="bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
                                 type="submit"
                             >
                                 Post Food
                             </Button>
+                            {!ktererInfo && (
+                                <>
+                                    <Alert variant="destructive">
+                                        <ExclamationCircleIcon className="h-5 w-5 mr-2"/>
+                                        <AlertTitle>Error</AlertTitle>
+                                        <AlertDescription>
+                                            Please complete your banking information to enable food posting. <Link
+                                            href="/kterer/earnings" className="underline">Click here to complete</Link>
+                                        </AlertDescription>
+                                    </Alert>
+                                </>
+                            )}
                         </form>
                     </Form>
                 </div>
