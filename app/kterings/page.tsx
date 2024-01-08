@@ -98,6 +98,7 @@ export default function Kterings() {
           data.map((not: any) => ({
             id: not.id,
             message: not.data.message,
+            created_at: new Date(not.created_at),
             read_at: not.read_at ? new Date(not.read_at) : null,
           }))
         );

@@ -71,6 +71,62 @@ export default function EditFood() {
     const [deletedImages, setDeletedImages] = useState<string[]>([]);
     const totalImageCount = existingImages.length + newImages.length;
 
+    const [isSmallVisible, setIsSmallVisible] = useState(false);
+    const [isMediumVisible, setIsMediumVisible] = useState(false);
+    const [isLargeVisible, setIsLargeVisible] = useState(false);
+
+    useEffect(() => {
+        if (foodDetails) {
+            // Initialize default size objects
+            const defaultSize = {price: 0, quantity: 0};
+            let small = defaultSize, medium = defaultSize, large = defaultSize;
+
+            // Populate size objects if they exist in foodDetails
+            foodDetails.quantities.forEach(({size, price, quantity}) => {
+                const sizeObj = {price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0};
+                if (size === 'small') small = sizeObj;
+                if (size === 'medium') medium = sizeObj;
+                if (size === 'large') large = sizeObj;
+            });
+
+            // Set visibility based on quantity and price values
+            setIsSmallVisible(small.price > 0 && small.quantity > 0);
+            setIsMediumVisible(medium.price > 0 && medium.quantity > 0);
+            setIsLargeVisible(large.price > 0 && large.quantity > 0);
+        }
+    }, [foodDetails]);
+
+    const toggleSizeVisibility = (size: string) => {
+        switch (size) {
+            case 'small':
+                setIsSmallVisible(!isSmallVisible);
+                if (isSmallVisible) {
+                    form.setValue('small_price', 0);
+                    form.setValue('small_amount', 0);
+                }
+                break;
+            case 'medium':
+                setIsMediumVisible(!isMediumVisible);
+                if (isMediumVisible) {
+                    form.setValue('medium_price', 0);
+                    form.setValue('medium_amount', 0);
+                }
+                break;
+            case 'large':
+                setIsLargeVisible(!isLargeVisible);
+                if (isLargeVisible) {
+                    form.setValue('large_price', 0);
+                    form.setValue('large_amount', 0);
+                }
+                break;
+            default:
+                break;
+        }
+    };
+
+    const getButtonClass = (isActive: boolean) =>
+        `rounded-full px-4 py-2 text-center w-full ${isActive ? 'bg-primary-color text-white' : 'bg-gray-200'}`;
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -132,8 +188,6 @@ export default function EditFood() {
 
     useEffect(() => {
         if (!foodDetails) return;
-
-        console.log('foodDetails', foodDetails);
 
         const initialSizes: SizeMap = {};
 
@@ -279,7 +333,7 @@ export default function EditFood() {
                 </p>
                 <div className="max-w-2xl mx-auto">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {existingImages.map((url, index) => (
                                     <div className="space-y-2" key={index}>
@@ -364,122 +418,161 @@ export default function EditFood() {
                                         <FormControl>
                                             <Input className="rounded-full" {...field} />
                                         </FormControl>
+                                        <FormDescription>Try to keep it short and precise!</FormDescription>
                                         <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                             {/* Size Start */}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8">
-                                <div className="space-y-4">
-                                    <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Small
+                            <div>
+                                <FormLabel>Select the size(s) you are selling</FormLabel>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8 pt-3">
+                                    {/* Small Size */}
+                                    <div className="space-y-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSizeVisibility('small')}
+                                            className={`${getButtonClass(isSmallVisible)} w-full`}
+                                        >
+                                            Small
+                                        </button>
+                                        {isSmallVisible && (
+                                            <>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="small_price"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>Price</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="$" type="number"
+                                                                       className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Price for this size.</FormDescription>
+                                                            <FormMessage/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="small_amount"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>Quantity</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="1, 2, 3..." type="number"
+                                                                       className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Quantity in this size?</FormDescription>
+                                                            <FormMessage/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </>
+                                        )}
                                     </div>
-                                    <FormField
-                                        control={form.control}
-                                        name="small_price"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Small Prices</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="$" type="number"
-                                                           className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
+
+                                    {/* Medium Size */}
+                                    <div className="space-y-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSizeVisibility('medium')}
+                                            className={`${getButtonClass(isMediumVisible)} w-full`}
+                                        >
+                                            Medium
+                                        </button>
+                                        {isMediumVisible && (
+                                            <>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="medium_price"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>Price</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="$" type="number"
+                                                                       className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Price for this size.</FormDescription>
+                                                            <FormMessage/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="medium_amount"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>Quantity</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="1, 2, 3..." type="number"
+                                                                       className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Quantity in this size?</FormDescription>
+                                                            <FormMessage/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </>
                                         )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="small_amount"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Small Amounts</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="1, 2, 3..." type="number"
-                                                           className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
+                                    </div>
+
+                                    {/* Large Size */}
+                                    <div className="space-y-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSizeVisibility('large')}
+                                            className={`${getButtonClass(isLargeVisible)} w-full`}
+                                        >
+                                            Large
+                                        </button>
+                                        {isLargeVisible && (
+                                            <>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="large_price"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>Price</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="$" type="number"
+                                                                       className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Price for this size.</FormDescription>
+                                                            <FormMessage/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="large_amount"
+                                                    render={({field}) => (
+                                                        <FormItem>
+                                                            <FormLabel>Quantity</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="1, 2, 3..."
+                                                                       type="number"
+                                                                       className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Quantity in this size?</FormDescription>
+                                                            <FormMessage/>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </>
                                         )}
-                                    />
+                                    </div>
+                                    {/* No Size price, amount selected error message */}
+                                    {/* @ts-ignore */}
+                                    {form.formState.errors[""]?.message && (
+                                        <div className="col-span-3">
+                                            <p className="text-sm font-medium text-destructive">
+                                                {/* @ts-ignore */}
+                                                {form.formState.errors[""].message}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Medium
-                                    </div>
-                                    <FormField
-                                        control={form.control}
-                                        name="medium_price"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Medium Prices</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="$" type="number"
-                                                           className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="medium_amount"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Medium Amounts</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="1, 2, 3..." type="number"
-                                                           className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Large
-                                    </div>
-                                    <FormField
-                                        control={form.control}
-                                        name="large_price"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Large Prices</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="$" type="number"
-                                                           className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="large_amount"
-                                        render={({field}) => (
-                                            <FormItem>
-                                                <FormLabel>Large Amounts</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="1, 2, 3..."
-                                                           type="number"
-                                                           className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage/>
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                {/* No Size price, amount selected error message */}
-                                {/* @ts-ignore */}
-                                {form.formState.errors[""]?.message && (
-                                    <div className="col-span-3">
-                                        <p className="text-sm font-medium text-destructive">
-                                            {/* @ts-ignore */}
-                                            {form.formState.errors[""].message}
-                                        </p>
-                                    </div>
-                                )}
                             </div>
                             {/* Size End */}
                             <FormField
@@ -490,11 +583,13 @@ export default function EditFood() {
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
                                             <Textarea
-                                                placeholder="Tell us a little bit about the food"
                                                 className="resize-none h-48"
                                                 {...field}
                                             />
                                         </FormControl>
+                                        <FormDescription>Tell us a little bit about your food item. Is
+                                            it perfect for dinner? Lunch? Is it good
+                                            for 3 people? Let customers know!</FormDescription>
                                         <FormMessage/>
                                     </FormItem>
                                 )}
@@ -573,6 +668,8 @@ export default function EditFood() {
                                                 <SelectItem value="0">No</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                        <FormDescription>Kosher is food prepared according to the
+                                            requirements of Jewish law.</FormDescription>
                                         <FormMessage/>
                                     </FormItem>
                                 )}

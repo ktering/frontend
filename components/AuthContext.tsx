@@ -26,7 +26,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    console.log(token, pathname);
     if (!token && !["/fetch-user"].includes(pathname)) {
       signOut().then(() => {
         localStorage.removeItem("cart");

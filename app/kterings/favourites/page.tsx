@@ -76,10 +76,12 @@ export default function Favourites() {
             (not: {
               id: any;
               data: { message: any };
+              created_at: string | number | Date;
               read_at: string | number | Date;
             }) => ({
               id: not.id,
               message: not.data.message,
+              created_at: new Date(not.created_at),
               read_at: not.read_at ? new Date(not.read_at) : null,
             })
           )
