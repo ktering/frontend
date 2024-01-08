@@ -150,7 +150,7 @@ export default function BecomeKterer() {
                                         <Image
                                             src={feature.imgSrc}
                                             alt=""
-                                            className="w-20 h-20 sm:w-20 sm:h-20"
+                                            className="w-22 h-22 sm:w-22 sm:h-22"
                                         />
                                         <dt className="text-2xl font-bold leading-7 text-center my-4">
                                             {feature.name}
