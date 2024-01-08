@@ -120,6 +120,7 @@ export default function ConsumerOrders() {
                     <TableBody>
                         {orders
                             .filter((order) => order.status === "progress")
+                            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{order.id}</TableCell>
@@ -160,6 +161,7 @@ export default function ConsumerOrders() {
                                 order.status !== "cancelled" &&
                                 order.status !== "delivered" &&
                                 order.status !== "progress")
+                            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{order.id}</TableCell>
@@ -206,6 +208,7 @@ export default function ConsumerOrders() {
                         {orders
                             .filter((order) =>
                                 order.status === "cancelled" || order.status === "delivered")
+                            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{order.id}</TableCell>
