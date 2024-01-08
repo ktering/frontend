@@ -333,7 +333,7 @@ export default function EditFood() {
                 </p>
                 <div className="max-w-2xl mx-auto">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {existingImages.map((url, index) => (
                                     <div className="space-y-2" key={index}>
