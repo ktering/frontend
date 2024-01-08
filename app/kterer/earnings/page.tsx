@@ -7,19 +7,20 @@ import {Button} from "@/components/ui/button";
 import {KtererInfo} from "@/types/shared/user";
 import {useNotifications} from "@/components/notificationContext";
 import {ExclamationTriangleIcon,} from "@heroicons/react/24/outline";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 
 export default function Earnings() {
     const user = useUser();
-  if (!user) {
-    return <div>Loading user...</div>;
-  }
-  const [loading, setLoading] = useState(false);
-  const [earnings, setEarnings] = useState<Earnings>({
-    available: [],
-    pending: [],
-  });
-  const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
-  const [ktererOrders, setKtererOrders] = useState<any[]>([]);
+    if (!user) {
+        return <div>Loading user...</div>;
+    }
+    const [loading, setLoading] = useState(false);
+    const [earnings, setEarnings] = useState<Earnings>({
+        available: [],
+        pending: [],
+    });
+    const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
+    const [ktererOrders, setKtererOrders] = useState<any[]>([]);
 
     const {updateNotifications} = useNotifications();
 
@@ -295,49 +296,33 @@ export default function Earnings() {
                 </div>
 
                 <h2 className="my-4 font-bold text-lg">In Progress</h2>
-
                 <div className="my-8">
-                    {ktererOrders
-                        .filter((order) => order.status === "progress")
-                        .map((order, index) => (
-                            <Alert key={index} className="mt-8">
-                                <AlertTitle className="font-bold text-lg border-b pb-2">
-                                    <div className="flex justify-between items-center">
-                                        <p>{order.buyer_name}</p>
-
-                                        <Button
-                                            variant="link"
-                                            onClick={handleCreateDelivery(order.id)}
-                                        >
-                                            Create Delivery
-                                        </Button>
-                                    </div>
-                                </AlertTitle>
-                                <AlertDescription>
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <div className="space-x-8 mt-4">
-                                                <span className="font-bold">Date:</span>{" "}
-                                                {new Date(order.created_at).toLocaleDateString("en-US")}
-                                                <span className="font-bold">Total:</span>{" "}
-                                                {order.total_price}
-                                                <span className="font-bold">Items:</span>{" "}
-                                                {order.total_items}
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center pt-4">
-                                                    {order.items.map((item: any, index: number) => (
-                                                        <div key={index} className="mr-4">
-                                                            <span className="font-bold">{item.name}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {/*<Link href="/help">*/}
-                                            {/*    <Button variant="link">Help</Button>*/}
-                                            {/*</Link>*/}
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-32">Order No.</TableHead>
+                                <TableHead>Customer</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead className="w-72">Status</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {ktererOrders
+                                .filter((order) => order.status === "progress")
+                                .map((order, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{order.buyer_name}</TableCell>
+                                        <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                        <TableCell>${order.total_price}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Button
+                                                variant="link"
+                                                onClick={handleCreateDelivery(order.id)}
+                                            >
+                                                Create Delivery
+                                            </Button>
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
@@ -346,63 +331,47 @@ export default function Earnings() {
                                                     View Receipt
                                                 </Button>
                                             )}
-                                        </div>
-                                    </div>
-                                </AlertDescription>
-                            </Alert>
-                        ))}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
                 </div>
 
                 <h2 className="my-4 font-bold text-lg">Open</h2>
-
                 <div className="my-8">
-                    {ktererOrders
-                        .filter(
-                            (order) =>
-                                order.status !== "cancelled" &&
-                                order.status !== "delivered" &&
-                                order.status !== "progress",
-                        )
-                        .map((order, index) => (
-                            <Alert key={index} className="mt-8">
-                                <AlertTitle className="font-bold text-lg border-b pb-2">
-                                    <div className="flex justify-between items-center">
-                                        <p>{order.buyer_name}</p>
-                                        {order.track_url && (
-                                            <Button
-                                                variant="link"
-                                                onClick={handleLinkClick(order.track_url)}
-                                            >
-                                                Track Delivery
-                                            </Button>
-                                        )}
-                                    </div>
-                                </AlertTitle>
-                                <AlertDescription>
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <div className="space-x-8 mt-4">
-                                                <span className="font-bold">Date:</span>{" "}
-                                                {new Date(order.created_at).toLocaleDateString("en-US")}
-                                                <span className="font-bold">Total:</span>{" "}
-                                                {order.total_price}
-                                                <span className="font-bold">Items:</span>{" "}
-                                                {order.total_items}
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center pt-4">
-                                                    {order.items.map((item: any, index: number) => (
-                                                        <div key={index} className="mr-4">
-                                                            <span className="font-bold">{item.name}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {/*<Link href="/help">*/}
-                                            {/*    <Button variant="link">Help</Button>*/}
-                                            {/*</Link>*/}
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-32">Order No.</TableHead>
+                                <TableHead>Customer</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead className="w-72">Status</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {ktererOrders
+                                .filter((order) =>
+                                    order.status !== "cancelled" &&
+                                    order.status !== "delivered" &&
+                                    order.status !== "progress",
+                                )
+                                .map((order, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{order.buyer_name}</TableCell>
+                                        <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                        <TableCell>${order.total_price}</TableCell>
+                                        <TableCell className="text-right">
+                                            {order.track_url && (
+                                                <Button
+                                                    variant="link"
+                                                    onClick={handleLinkClick(order.track_url)}
+                                                >
+                                                    Track Delivery
+                                                </Button>
+                                            )}
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
@@ -411,61 +380,45 @@ export default function Earnings() {
                                                     View Receipt
                                                 </Button>
                                             )}
-                                        </div>
-                                    </div>
-                                </AlertDescription>
-                            </Alert>
-                        ))}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
                 </div>
 
                 <h2 className="my-4 font-bold text-lg">Completed</h2>
-
                 <div className="my-8">
-                    {ktererOrders
-                        .filter(
-                            (order) =>
-                                order.status === "cancelled" || order.status === "delivered",
-                        )
-                        .map((order, index) => (
-                            <Alert key={index} className="mt-8">
-                                <AlertTitle className="font-bold text-lg border-b pb-2">
-                                    <div className="flex justify-between items-center">
-                                        <p>{order.buyer_name}</p>
-                                        {order.track_url && (
-                                            <Button
-                                                variant="link"
-                                                onClick={handleLinkClick(order.track_url)}
-                                            >
-                                                Track Delivery
-                                            </Button>
-                                        )}
-                                    </div>
-                                </AlertTitle>
-                                <AlertDescription>
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <div className="space-x-8 mt-4">
-                                                <span className="font-bold">Date:</span>{" "}
-                                                {new Date(order.created_at).toLocaleDateString("en-US")}
-                                                <span className="font-bold">Total:</span>{" "}
-                                                {order.total_price}
-                                                <span className="font-bold">Items:</span>{" "}
-                                                {order.total_items}
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center pt-4">
-                                                    {order.items.map((item: any, index: number) => (
-                                                        <div key={index} className="mr-4">
-                                                            <span className="font-bold">{item.name}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {/*<Link href="/help">*/}
-                                            {/*    <Button variant="link">Help</Button>*/}
-                                            {/*</Link>*/}
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-32">Order No.</TableHead>
+                                <TableHead>Customer</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead className="w-72">Status</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {ktererOrders
+                                .filter((order) =>
+                                    order.status === "cancelled" || order.status === "delivered",
+                                )
+                                .map((order, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{order.buyer_name}</TableCell>
+                                        <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                        <TableCell>${order.total_price}</TableCell>
+                                        <TableCell className="text-right">
+                                            {order.track_url && (
+                                                <Button
+                                                    variant="link"
+                                                    onClick={handleLinkClick(order.track_url)}
+                                                >
+                                                    Track Delivery
+                                                </Button>
+                                            )}
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
@@ -474,11 +427,11 @@ export default function Earnings() {
                                                     View Receipt
                                                 </Button>
                                             )}
-                                        </div>
-                                    </div>
-                                </AlertDescription>
-                            </Alert>
-                        ))}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
         </>
