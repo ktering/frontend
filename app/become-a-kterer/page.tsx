@@ -54,7 +54,7 @@ export default function BecomeKterer() {
     return (
         <>
             {/* Section 1 */}
-            <section className="text-white relative">
+            <section className="text-white relative border-2 border-primary-color">
                 <div className="max-w-7xl mx-auto ">
                     <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:pt-12 lg:pb-24 lg:px-8">
                         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16 bg-primary-color-angled-wrapper">

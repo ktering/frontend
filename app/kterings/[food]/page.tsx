@@ -360,6 +360,7 @@ export default function Food() {
   useEffect(() => {
     let prevY = window.scrollY;
     const handleScroll = () => {
+      if (window.innerWidth <= 767) return;
       let currentY = window.scrollY;
       let difference = currentY - prevY;
       const leftDiv = document.getElementById("left-side-image");

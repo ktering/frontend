@@ -11,7 +11,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/
 import Link from "next/link";
 import {useToast} from "@/components/ui/use-toast";
 import {useRouter} from "next/navigation";
-import {PhotoIcon, TrashIcon, ExclamationCircleIcon} from "@heroicons/react/24/outline";
+import {ExclamationCircleIcon, PhotoIcon, TrashIcon} from "@heroicons/react/24/outline";
 import {useNotifications} from "@/components/notificationContext";
 import {InformationCircleIcon} from "@heroicons/react/24/solid";
 import {KtererInfo} from "@/types/shared/user";
@@ -324,49 +324,51 @@ export default function PostFood() {
         }
     }
 
-    // useEffect(() => {
-    //     const getNotifications = async () => {
-    //         const accessToken = localStorage.getItem("accessToken");
-    //         const apiURL = process.env.NEXT_PUBLIC_API_URL;
-    //
-    //         try {
-    //             const response = await fetch(`${apiURL}/api/notifications`, {
-    //                 method: "GET",
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                     Authorization: `Bearer ${accessToken}`,
-    //                 },
-    //             });
-    //
-    //             if (!response.ok) {
-    //                 console.error(`Error: ${response.statusText}`);
-    //                 return;
-    //             }
-    //
-    //             const data = await response.json();
-    //
-    //             updateNotifications(
-    //                 data.map(
-    //                     (not: {
-    //                         id: any;
-    //                         data: { message: any };
-    //                         read_at: string | number | Date;
-    //                     }) => ({
-    //                         id: not.id,
-    //                         message: not.data.message,
-    //                         read_at: not.read_at ? new Date(not.read_at) : null,
-    //                     })
-    //                 )
-    //             );
-    //         } catch (error) {
-    //             console.error(`Error: ${error}`);
-    //         }
-    //     };
-    //
-    //     getNotifications().catch((error) => {
-    //         console.error(`Error: ${error}`);
-    //     });
-    // });
+    useEffect(() => {
+        const getNotifications = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            try {
+                const response = await fetch(`${apiURL}/api/notifications`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+
+                updateNotifications(
+                    data.map(
+                        (not: {
+                            id: any;
+                            data: { message: any };
+                            created_at: string | number | Date;
+                            read_at: string | number | Date;
+                        }) => ({
+                            id: not.id,
+                            message: not.data.message,
+                            created_at: new Date(not.created_at),
+                            read_at: not.read_at ? new Date(not.read_at) : null,
+                        })
+                    )
+                );
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            }
+        };
+
+        getNotifications().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
+    }, []);
 
     return (
         <>
