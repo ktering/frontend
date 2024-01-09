@@ -26,11 +26,11 @@ import {
   ChevronDownIcon,
   HeartIcon as HeartIconOutline,
 } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import { FoodItem } from "@/types/shared/food";
 import { SearchContext } from "@/app/context/searchContext";
 import { toast } from "@/components/ui/use-toast";
 import { useNotifications } from "@/components/notificationContext";
+import {X} from "lucide-react";
 
 export default function Kterings() {
   const [nearYouFood, setNearYouFood] = useState<FoodItem[]>([]);
@@ -42,8 +42,6 @@ export default function Kterings() {
   }
   const { searchInput } = contextValue;
   const isSearching = searchInput.trim().length > 0;
-  const tryNewFood = nearYouFood;
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [currentFilter, setCurrentFilter] = useState("Near You");
 
   const { updateNotifications } = useNotifications();
@@ -114,10 +112,6 @@ export default function Kterings() {
       console.error(`Error: ${error}`);
     });
   }, []);
-  //
-  // const filteredFood = nearYouFood.filter(item =>
-  //     item.name.toLowerCase().includes(searchInput.toLowerCase())
-  // );
 
   const filteredFood = isSearching
     ? nearYouFood.filter((item) =>
@@ -136,20 +130,25 @@ export default function Kterings() {
       },
     });
 
+    if (response.status === 403) {
+      toast({
+        description: (
+            <>
+              <div className="flex items-center">
+                <X className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                You cannot favourite yourself!
+              </div>
+            </>
+        ),
+        duration: 5000,
+      });
+      return;
+    }
+
     if (!response.ok) {
       console.error(`Error: ${response.statusText}`);
       return;
     }
-
-    setFavorites((prev) => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(foodId)) {
-        newFavorites.delete(foodId);
-      } else {
-        newFavorites.add(foodId);
-      }
-      return newFavorites;
-    });
 
     toast({
       description: (
@@ -188,11 +187,6 @@ export default function Kterings() {
         return nearYouFood;
     }
   };
-
-  // const handleIconClick = (category: string) => {
-  //     const filtered = filterFood(category);
-  //     setDisplayedFood(filtered);
-  // };
 
   const handleIconClick = (category: string) => {
     let filtered;
@@ -347,11 +341,7 @@ export default function Kterings() {
                     </div>
 
                     <span onClick={() => toggleFavorite(item.id)}>
-                      {favorites.has(item.id) ? (
-                        <HeartIconSolid className="h-6 w-6 cursor-pointer text-primary-color" />
-                      ) : (
                         <HeartIconOutline className="h-6 w-6 cursor-pointer" />
-                      )}
                     </span>
                   </div>
                 </div>
@@ -400,11 +390,7 @@ export default function Kterings() {
                       </div>
 
                       <span onClick={() => toggleFavorite(item.id)}>
-                        {favorites.has(item.id) ? (
-                          <HeartIconSolid className="h-6 w-6 cursor-pointer text-primary-color" />
-                        ) : (
                           <HeartIconOutline className="h-6 w-6 cursor-pointer" />
-                        )}
                       </span>
                     </div>
                   </div>
