@@ -246,6 +246,7 @@ export default function KtererProfile() {
   useEffect(() => {
     let prevY = window.scrollY;
     const handleScroll = () => {
+      if (window.innerWidth <= 767) return;
       let currentY = window.scrollY;
       let difference = currentY - prevY;
       const leftDiv = document.getElementById("left-side-image");
@@ -254,8 +255,6 @@ export default function KtererProfile() {
       if (leftDiv && rightDiv) {
         var position = leftDiv.getBoundingClientRect();
         const longDivBottomPosition = rightDiv.getBoundingClientRect().bottom;
-
-        console.log(position, longDivBottomPosition);
 
         if (
           difference >= 0 &&
@@ -297,7 +296,7 @@ export default function KtererProfile() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {ktererInfo ? (
           <div className="grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 gap-16 pb-12 border-b">
-            <div className="col-span-1 sticky top-0">
+            <div className="col-span-1">
               <div id="left-side-image" className="pt-0">
                 <Card>
                   <CardContent>
