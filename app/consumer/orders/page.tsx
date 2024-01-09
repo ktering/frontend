@@ -144,10 +144,11 @@ export default function ConsumerOrders() {
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-left">
                                         {order.receipt_url && (
                                             <Button
                                                 variant="link"
+                                                className="pl-0"
                                                 onClick={handleLinkClick(order.receipt_url)}
                                             >
                                                 View Receipt
@@ -185,10 +186,11 @@ export default function ConsumerOrders() {
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-left md:space-x-4">
                                         {order.track_url && (
                                             <Button
                                                 variant="link"
+                                                className="pl-0"
                                                 onClick={handleLinkClick(order.track_url)}
                                             >
                                                 Track Delivery
@@ -197,6 +199,7 @@ export default function ConsumerOrders() {
                                         {order.receipt_url && (
                                             <Button
                                                 variant="link"
+                                                className="pl-0"
                                                 onClick={handleLinkClick(order.receipt_url)}
                                             >
                                                 View Receipt
@@ -232,10 +235,11 @@ export default function ConsumerOrders() {
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-left md:space-x-4">
                                         {order.track_url && (
                                             <Button
                                                 variant="link"
+                                                className="pl-0"
                                                 onClick={handleLinkClick(order.track_url)}
                                             >
                                                 Track Delivery
@@ -244,6 +248,7 @@ export default function ConsumerOrders() {
                                         {order.receipt_url && (
                                             <Button
                                                 variant="link"
+                                                className="pl-0"
                                                 onClick={handleLinkClick(order.receipt_url)}
                                             >
                                                 View Receipt
