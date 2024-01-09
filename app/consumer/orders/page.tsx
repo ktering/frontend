@@ -10,6 +10,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/
 export default function ConsumerOrders() {
     const searchParams = useSearchParams();
     const orderSuccess = searchParams.get("success");
+    const [isLoading, setIsLoading] = useState(true);
 
     const {clearCart} = useCart();
     const [orders, setOrders] = useState<any[]>([]);
@@ -32,6 +33,8 @@ export default function ConsumerOrders() {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
+            setIsLoading(true);
+
             try {
                 const response = await fetch(`${apiURL}/api/orders`, {
                     method: "GET",
@@ -50,6 +53,8 @@ export default function ConsumerOrders() {
                 setOrders(data.orders);
             } catch (error) {
                 console.error(`Error: ${error}`);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -98,6 +103,18 @@ export default function ConsumerOrders() {
     const handleLinkClick = (url: string) => () => {
         window.open(url);
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                {/* Example loading spinner */}
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-color"></div>
+                <div>
+                    <p className="text-primary-color mt-4">Please wait while we load your data...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
