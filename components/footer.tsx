@@ -44,7 +44,7 @@ export default function Footer() {
                                         className="text-gray-700 transition hover:opacity-75"
                                     >
                                         <span className="sr-only">Facebook</span>
-                                        <Image src={FBLogo} className="h-6 w-6" alt="Facebook Logo"/>
+                                        <Image src={FBLogo} className="h-5 w-5" alt="Facebook Logo"/>
                                     </a>
                                 </li>
 
@@ -56,7 +56,7 @@ export default function Footer() {
                                         className="text-gray-700 transition hover:opacity-75"
                                     >
                                         <span className="sr-only">Instagram</span>
-                                        <Image src={IGLogo} className="h-6 w-6" alt="Instagram Logo"/>
+                                        <Image src={IGLogo} className="h-5 w-5" alt="Instagram Logo"/>
                                     </a>
                                 </li>
                             </ul>
