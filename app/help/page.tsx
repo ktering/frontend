@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import HelpPageBackground from "@/static/help/help-page-bg.png";
+import SearchIcon from "@/static/search-icon.svg";
 import * as z from "zod";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useForm} from "react-hook-form";
@@ -193,9 +194,12 @@ export default function Help() {
                             </div>
                         </section>
                     ) : (
-                        <div className="mt-8 max-w-3xl mx-auto text-center space-y-4">
+                        <div className="my-8 max-w-3xl mx-auto text-center space-y-4">
                             <h1 className="font-bold text-xl">No Results Found</h1>
-                            <p>Try a different search term or submit a ticket below.</p>
+                            <div className="flex justify-center items-center space-x-4">
+                                <Image src={SearchIcon} alt="Search Icon" width={50} height={50}/>
+                                <p>Try a different search term or submit a ticket below.</p>
+                            </div>
                         </div>
                     )
                 ) : (
