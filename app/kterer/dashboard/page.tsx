@@ -217,7 +217,7 @@ export default function Dashboard() {
                     </AlertDialog>
                 </div>
             ) : (
-                <div className="flex justify-center py-10 space-x-8 items-center">
+                <div className="flex justify-center py-48 space-x-8 items-center">
                     <Image src={NoFoodIcon} alt="No Food Icon" width={125} height={125}/>
                     <div className="space-y-3">
                         <div>
