@@ -335,7 +335,7 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
-                                        <TableCell className="text-left md:space-x-4">
+                                        <TableCell className="text-left md:space-x-8">
                                             <Button
                                                 variant="link"
                                                 className="pl-0"
@@ -385,7 +385,7 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
-                                        <TableCell className="text-left md:space-x-4">
+                                        <TableCell className="text-left md:space-x-8">
                                             {order.track_url && (
                                                 <Button
                                                     variant="link"
@@ -435,7 +435,7 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
-                                        <TableCell className="text-left md:space-x-4">
+                                        <TableCell className="text-left md:space-x-8">
                                             {order.track_url && (
                                                 <Button
                                                     variant="link"
