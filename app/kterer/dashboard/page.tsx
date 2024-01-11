@@ -25,7 +25,6 @@ import {Button} from "@/components/ui/button";
 
 export default function Dashboard() {
     const {user} = useUser();
-    console.log(user);
     if (!user) {
         return null;
     }
@@ -217,7 +216,7 @@ export default function Dashboard() {
                     </AlertDialog>
                 </div>
             ) : (
-                <div className="flex justify-center pb-48 pt-36  space-x-8 items-center">
+                <div className="flex justify-center pb-48 pt-28 space-x-8 items-center">
                     <Image src={NoFoodIcon} alt="No Food Icon" width={125} height={125}/>
                     <div className="space-y-3">
                         <div>
