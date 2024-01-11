@@ -235,7 +235,7 @@ export default function ConsumerOrders() {
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
-                                    <TableCell className="text-left md:space-x-4">
+                                    <TableCell className="text-left md:space-x-8">
                                         {order.track_url && (
                                             <Button
                                                 variant="link"
