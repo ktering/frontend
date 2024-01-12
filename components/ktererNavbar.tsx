@@ -1,7 +1,7 @@
 "use client";
 import {Dialog, Disclosure, Transition} from "@headlessui/react";
 import {Bars3Icon, MagnifyingGlassIcon, XMarkIcon} from '@heroicons/react/24/outline'
-import Logo from "@/static/newlogo.svg"
+import Logo from "@/static/red-logo.svg"
 import Image from "next/image";
 import {usePathname, useRouter} from "next/navigation";
 import Link from "next/link";

@@ -17,7 +17,7 @@ import {
     TrashIcon,
     UserCircleIcon,
 } from "@heroicons/react/24/outline";
-import Logo from "@/static/newlogo.svg";
+import Logo from "@/static/red-logo.svg";
 import Image from "next/image";
 import Link from "next/link";
 import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";

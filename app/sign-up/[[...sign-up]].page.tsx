@@ -2,7 +2,7 @@
 import {useState} from "react";
 import {useSignUp} from "@clerk/nextjs";
 import {useRouter} from "next/navigation";
-import RedLogo from "@/static/newlogo.svg"
+import RedLogo from "@/static/red-logo.svg"
 import Image from "next/image";
 
 export default function SignUpForm() {
