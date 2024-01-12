@@ -1,9 +1,11 @@
 "use client";
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import KtererFAQ from "@/app/help/kterer_faq.json";
 import CustomerFAQ from "@/app/help/customer_faq.json";
 import {Button} from "@/components/ui/button";
 import {useRouter, useSearchParams} from "next/navigation";
+import Link from "next/link";
+import {ArrowLeftIcon} from "@heroicons/react/20/solid";
 
 export default function HelpQuestion({params}: { params: { id: string } }) {
     const router = useRouter();
@@ -38,9 +40,15 @@ export default function HelpQuestion({params}: { params: { id: string } }) {
 
     return (
         <>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <p className="font-bold text-xl mb-12 flex items-center">
+                    <Link href="/help" className="flex spcae-x-4">
+                        <ArrowLeftIcon className="h-6 w-6 text-primary-color mr-2"/>
+                        Help Page
+                    </Link>
+                </p>
                 <h1 className="font-bold text-xl flex items-center">{faq.question}</h1>
-                <p className="max-w-3xl mx-auto" dangerouslySetInnerHTML={{__html: formattedText}}></p>
+                <p className="max-w-3xl mx-auto py-16" dangerouslySetInnerHTML={{__html: formattedText}}></p>
                 <div className="text-center">
                     <Button
                         className="bg-primary-color hover:bg-primary-color-hover text-white rounded-full"
