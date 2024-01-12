@@ -882,7 +882,9 @@ export default function PostFood() {
                                 )}
                             />
                             <Button
-                                disabled={selectedFiles.length === 0 || !ktererInfo}
+                                // disabled={selectedFiles.length === 0 || !ktererInfo}
+                                //Added this for sarim to test wihtout adding the stripe info
+                                disabled={selectedFiles.length === 0}
                                 className="bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
                                 type="submit"
                             >
