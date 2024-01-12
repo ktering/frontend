@@ -160,7 +160,10 @@ export default function Kterings() {
             console.error(`Error: ${response.statusText}`);
             return;
         }
-        // setIsFavorited(!isFavorited);
+        setFavoritedItems(prevState => ({
+            ...prevState,
+            [foodId]: !prevState[foodId]
+        }));
         toast({
             description: (
                 <>
