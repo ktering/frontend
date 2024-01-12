@@ -292,6 +292,7 @@ export default function Kterings() {
                                     width={48}
                                     height={48}
                                     className="h-12"
+                                    priority={true}
                                 />
                                 <p>{icon.iconName}</p>
                             </div>
@@ -357,6 +358,7 @@ export default function Kterings() {
                                                 height={100}
                                                 alt={item.name}
                                                 className="mx-auto rounded-lg w-full h-full object-cover object-center"
+                                                priority={true}
                                             />
                                         </div>
                                     </Link>

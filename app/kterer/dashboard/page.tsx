@@ -178,6 +178,7 @@ export default function Dashboard() {
                                             alt="Food Image"
                                             fill
                                             className="object-cover object-center"
+                                            priority={true}
                                         />
                                     </div>
                                 </Link>
