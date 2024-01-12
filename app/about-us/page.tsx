@@ -6,7 +6,7 @@ export default function AboutUs() {
     return (
         <>
             <div className="flex flex-col lg:flex-row-reverse items-center">
-                <Image src={AboutUsImage} alt="picture of a woman"
+                <Image src={AboutUsImage} alt="picture of a woman" priority={true}
                        className="w-full lg:w-1/3 lg:order-2 object-cover object-bottom max-h-[620px] lg:max-h-[920px]"/>
                 <div className="max-w-5xl mx-auto px-6 md:px-12 py-12 lg:w-2/3">
                     <p className="font-bold text-xl mb-4">Our Mission</p>
