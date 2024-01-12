@@ -40,6 +40,7 @@ export default function Kterings() {
     const {searchInput} = contextValue;
     const isSearching = searchInput.trim().length > 0;
     const [currentFilter, setCurrentFilter] = useState("Near You");
+    const [isLoading, setIsLoading] = useState(true);
 
     const {updateNotifications} = useNotifications();
 
@@ -47,6 +48,8 @@ export default function Kterings() {
         const getNearYouFood = async () => {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            setIsLoading(true);
 
             try {
                 const response = await fetch(`${apiURL}/api/food`, {
@@ -67,6 +70,8 @@ export default function Kterings() {
                 setDisplayedFood(data.data);
             } catch (error) {
                 console.error(`Error: ${error}`);
+            } finally {
+                setIsLoading(false);
             }
         };
         const getNotifications = async () => {
@@ -244,6 +249,17 @@ export default function Kterings() {
             onClick: () => handleIconClick("Drinks"),
         },
     ];
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-color"></div>
+                <div>
+                    <p className="text-primary-color mt-4">Loading food...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>

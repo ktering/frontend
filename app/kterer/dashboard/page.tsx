@@ -32,6 +32,7 @@ export default function Dashboard() {
     const [ktererFood, setKtererFood] = useState<FoodItem[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [postToDelete, setPostToDelete] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const {updateNotifications} = useNotifications();
 
@@ -39,6 +40,9 @@ export default function Dashboard() {
         const getKtererFood = async () => {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            setIsLoading(true);
+
             try {
                 const params = new URLSearchParams({kterer: user.id.toString()});
                 const response = await fetch(`${apiURL}/api/food?${params}`, {
@@ -58,6 +62,8 @@ export default function Dashboard() {
                 setKtererFood(data.data);
             } catch (error) {
                 console.error(`Error: ${error}`);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -135,6 +141,18 @@ export default function Dashboard() {
         setPostToDelete(foodId);
         setIsDialogOpen(true);
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                {/* Example loading spinner */}
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-color"></div>
+                <div>
+                    <p className="text-primary-color mt-4">Please wait while we load your data...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

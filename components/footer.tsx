@@ -1,4 +1,4 @@
-import RedLogo from "@/static/red-logo.svg"
+import RedLogo from "@/static/logo-png.png";
 import Image from "next/image";
 import Link from "next/link";
 import FBLogo from "@/static/fb-logo.svg";
