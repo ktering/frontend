@@ -17,7 +17,7 @@ import {
     TrashIcon,
     UserCircleIcon,
 } from "@heroicons/react/24/outline";
-import Logo from "@/static/red-logo.svg";
+import Logo from "@/static/red-logo2.svg";
 import Image from "next/image";
 import Link from "next/link";
 import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
@@ -53,6 +53,7 @@ export default function UserNavbar() {
     const [addressChanged, setAddressChanged] = useState(false);
     const {cartCount} = useCartCount();
     const {notifications, updateNotifications} = useNotifications();
+    const isMobile = window.innerWidth <= 768;
 
     const contextValue = useContext(SearchContext);
     const {searchInput, setSearchInput} = contextValue || {
@@ -136,6 +137,17 @@ export default function UserNavbar() {
             href: "/kterings",
         },
     ];
+
+    if (isMobile) {
+        const addressItem = {
+            name: "Address",
+            href: "#",
+            icon: <MapPinIcon className="h-6 w-6"/>,
+            onClick: toggleAddressPopup // Function to open the address popup
+        };
+
+        USER_SIDEBAR_ITEMS.splice(1, 0, addressItem);
+    }
 
     // render search input if contextValue is not null
     const renderSearchInput = () => {
@@ -292,7 +304,7 @@ export default function UserNavbar() {
                             {/*</button>*/}
 
                             <button onClick={toggleAddressPopup}>
-                                <div className="flex sm:space-x-2 ml-8">
+                                <div className="hidden sm:flex sm:space-x-2 ml-8">
                                     <MapPinIcon className="w-6 h-6 text-primary-color"/>
                                     <div className="hidden md:block">
                                         {savedAddress || "Saved Address"}
@@ -318,7 +330,7 @@ export default function UserNavbar() {
                         </div>
                         <div className="flex items-center">
                             {/* Search bar */}
-                            <div className="relative w:40 md:w:60 lg:w-80 mr-4">
+                            <div className="relative w:40 md:w:60 lg:w-80 mr-4 ml-8">
                                 {/* Icon */}
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <MagnifyingGlassIcon className="w-5 h-5"/>
@@ -424,7 +436,17 @@ export default function UserNavbar() {
                             <Link key={item.name} href={item.href}>
                                 <div
                                     className="flex items-center space-x-5 hover:bg-gray-100 rounded py-4 border-b"
-                                    onClick={item.name === "Sign Out" ? signOutF : toggleSideBar}
+                                    onClick={() => {
+                                        if (item.name === "Sign Out") {
+                                            signOutF();
+                                        } else if (item.name === "Address") {
+                                            toggleAddressPopup();
+                                        } else {
+                                            toggleSideBar();
+                                        }
+                                        setIsSideBarOpen(false);
+
+                                    }}
                                 >
                                     {item.icon}
                                     <span className="font-bold">{item.name}</span>
