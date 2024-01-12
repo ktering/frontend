@@ -41,8 +41,13 @@ export default function Kterings() {
     const isSearching = searchInput.trim().length > 0;
     const [currentFilter, setCurrentFilter] = useState("Near You");
     const [isLoading, setIsLoading] = useState(true);
+    const [favoritedItems, setFavoritedItems] = useState<FavoritedItems>({});
 
     const {updateNotifications} = useNotifications();
+
+    interface FavoritedItems {
+        [key: string]: boolean;
+    }
 
     useEffect(() => {
         const getNearYouFood = async () => {
@@ -133,6 +138,10 @@ export default function Kterings() {
         });
 
         if (response.status === 403) {
+            setFavoritedItems(prevState => ({
+                ...prevState,
+                [foodId]: !prevState[foodId]
+            }));
             toast({
                 description: (
                     <>
@@ -151,7 +160,7 @@ export default function Kterings() {
             console.error(`Error: ${response.statusText}`);
             return;
         }
-
+        // setIsFavorited(!isFavorited);
         toast({
             description: (
                 <>
@@ -329,6 +338,7 @@ export default function Kterings() {
                                 food_id: item.id,
                             }).toString();
 
+                            // @ts-ignore
                             return (
                                 <div key={index} className="relative">
                                     <Link href={`/kterings/${item.name}?${food_id}`}>
@@ -356,7 +366,8 @@ export default function Kterings() {
                                         </div>
 
                                         <span onClick={() => toggleFavorite(item.id)}>
-                        <HeartIconOutline className="h-6 w-6 cursor-pointer"/>
+                        <HeartIconOutline
+                            className={`h-6 w-6 cursor-pointer ${favoritedItems[item.id] ? 'splash-animation' : ''}`}/>
                     </span>
                                     </div>
                                 </div>
