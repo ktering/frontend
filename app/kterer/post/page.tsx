@@ -34,22 +34,28 @@ const formSchema = z
             .max(50, "Food name can't be longer than 50 characters"),
         small_price: z.coerce
             .number()
-            .nonnegative("Price must be a positive number"),
+            .nonnegative("Price must be a positive number")
+            .optional(),
         small_amount: z.coerce
             .number()
-            .nonnegative("Amount must be a positive number"),
+            .nonnegative("Amount must be a positive number")
+            .optional(),
         medium_price: z.coerce
             .number()
-            .nonnegative("Price must be a positive number"),
+            .nonnegative("Price must be a positive number")
+            .optional(),
         medium_amount: z.coerce
             .number()
-            .nonnegative("Amount must be a positive number"),
+            .nonnegative("Amount must be a positive number")
+            .optional(),
         large_price: z.coerce
             .number()
-            .nonnegative("Price must be a positive number"),
+            .nonnegative("Price must be a positive number")
+            .optional(),
         large_amount: z.coerce
             .number()
-            .nonnegative("Amount must be a positive number"),
+            .nonnegative("Amount must be a positive number")
+            .optional(),
         description: z
             .string()
             .min(25, "Description must be at least 25 characters"),
@@ -179,12 +185,12 @@ export default function PostFood() {
         defaultValues: {
             images: [],
             name: "",
-            small_price: 0,
-            small_amount: 0,
-            medium_price: 0,
-            medium_amount: 0,
-            large_price: 0,
-            large_amount: 0,
+            small_price: undefined,
+            small_amount: undefined,
+            medium_price: undefined,
+            medium_amount: undefined,
+            large_price: undefined,
+            large_amount: undefined,
             description: "",
             ingredients: "",
             halal: "",
@@ -270,7 +276,7 @@ export default function PostFood() {
                 ) {
                     formData.append(key, JSON.stringify(value));
                 } else {
-                    formData.append(key, value.toString());
+                    formData.append(key, value?.toString() || "");
                 }
             }
         }
@@ -281,18 +287,18 @@ export default function PostFood() {
                 [
                     {
                         size: "small",
-                        price: values.small_price,
-                        quantity: values.small_amount,
+                        price: values.small_price || 0,
+                        quantity: values.small_amount || 0,
                     },
                     {
                         size: "medium",
-                        price: values.medium_price,
-                        quantity: values.medium_amount,
+                        price: values.medium_price || 0,
+                        quantity: values.medium_amount || 0,
                     },
                     {
                         size: "large",
-                        price: values.large_price,
-                        quantity: values.large_amount,
+                        price: values.large_price || 0,
+                        quantity: values.large_amount || 0,
                     },
                 ].filter((size) => size.price > 0 && size.quantity > 0)
             )
