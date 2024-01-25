@@ -50,9 +50,9 @@ const formSchema = z.object({
         message: "Ethnic Type is required, please select an option",
     }),
 }).refine(data => {
-    return (data.small_price > 0 && data.small_amount > 0) ||
-        (data.medium_price > 0 && data.medium_amount > 0) ||
-        (data.large_price > 0 && data.large_amount > 0);
+    return ((data.small_price || 0) > 0 && (data.small_amount || 0) > 0) ||
+        ((data.medium_price || 0) > 0 && (data.medium_amount || 0) > 0) ||
+        ((data.large_price || 0) > 0 && (data.large_amount || 0) > 0);
 
 }, {
     message: "At least one price and amount must be provided",
