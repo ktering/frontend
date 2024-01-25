@@ -86,9 +86,9 @@ const formSchema = z
     .refine(
         (data) => {
             return (
-                (data.small_price > 0 && data.small_amount > 0) ||
-                (data.medium_price > 0 && data.medium_amount > 0) ||
-                (data.large_price > 0 && data.large_amount > 0)
+                ((data.small_price || 0) > 0 && (data.small_amount || 0) > 0) ||
+                ((data.medium_price || 0) > 0 && (data.medium_amount || 0) > 0) ||
+                ((data.large_price || 0) > 0 && (data.large_amount || 0) > 0)
             );
         },
         {
