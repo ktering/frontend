@@ -4,21 +4,21 @@ import Link from "next/link";
 
 const footerLinks = {
     GetToKnowUs: [
-        {title: "About Us", href: "/about-us"}
+        { title: "About Us", href: "/about-us" }
     ],
     DoingBusiness: [
-        {title: "Become a Kterer", href: "/become-a-kterer"}
+        { title: "Become a Kterer", href: "/become-a-kterer" }
     ],
     HelpfulLinks: [
-        {title: "Submit a Ticket", href: "/help#submit-ticket"},
-        {title: "Report a Bug", href: "/help#submit-ticket"},
-        {title: "FAQs", href: "/help"}
+        { title: "Submit a Ticket", href: "/help#submit-ticket" },
+        { title: "Report a Bug", href: "/help#submit-bug-report" },
+        { title: "FAQs", href: "/help" }
     ],
     Legal: [
-        {title: "Terms and Conditions", href: "/legal/terms-and-conditions"},
-        {title: "Vendor Terms and Conditions", href: "/legal/vendor-terms-and-conditions"},
-        {title: "Privacy Policy", href: "/legal/privacy-policy"},
-        {title: "Delivery Policy", href: "/legal/delivery-policy"}
+        { title: "Terms and Conditions", href: "/legal/terms-and-conditions" },
+        { title: "Vendor Terms and Conditions", href: "/legal/vendor-terms-and-conditions" },
+        { title: "Privacy Policy", href: "/legal/privacy-policy" },
+        { title: "Delivery Policy", href: "/legal/delivery-policy" }
     ]
 };
 
@@ -30,7 +30,7 @@ export default function Footer() {
                     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                         <div>
                             <div className="text-teal-600">
-                                <Image src={RedLogo} alt="Kterings Logo"/>
+                                <Image src={RedLogo} alt="Kterings Logo" />
                             </div>
 
                             <ul className="mt-8 flex gap-6">
@@ -92,7 +92,7 @@ export default function Footer() {
                                         {links.map(link => (
                                             <li key={link.href}>
                                                 <Link href={link.href}
-                                                      className="text-gray-700 transition hover:opacity-75">
+                                                    className="text-gray-700 transition hover:opacity-75">
                                                     {link.title}
                                                 </Link>
                                             </li>
