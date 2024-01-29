@@ -1,17 +1,17 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import * as z from "zod";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Button} from "@/components/ui/button"
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
-import {Input} from "@/components/ui/input"
-import {useRouter} from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {useToast} from "@/components/ui/use-toast"
-import {useClerk} from "@clerk/nextjs";
-import {UserInfo} from "@/types/shared/user";
-import {CheckCircleIcon} from "@heroicons/react/24/outline";
+import { useToast } from "@/components/ui/use-toast"
+import { useClerk } from "@clerk/nextjs";
+import { UserInfo } from "@/types/shared/user";
+import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import {
     AlertDialog,
     AlertDialogCancel,
@@ -21,6 +21,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/ui/alert-dialog";
+import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
     first_name: z.string().min(2, "First name must be at least 2 characters").max(20, "First name can't be longer than 20 characters"),
@@ -35,10 +36,11 @@ const formSchema = z.object({
             }
         ),
     country: z.string(),
+    email_notification: z.boolean(),
 })
 
 export default function ConsumerAccount() {
-    const {user, signOut,} = useClerk();
+    const { user, signOut, } = useClerk();
     const [isPasswordResetOpen, setIsPasswordResetOpen] = useState(false);
     const [currentPassword, setCurrentPassword] = useState('');
     const [signOutOfOtherSessions, setSignOutOfOtherSessions] = useState(true);
@@ -48,7 +50,7 @@ export default function ConsumerAccount() {
 
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const router = useRouter();
-    const {toast} = useToast();
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -58,6 +60,7 @@ export default function ConsumerAccount() {
             email: "",
             phone: "",
             country: "",
+            email_notification: false,
         }
     });
 
@@ -92,12 +95,13 @@ export default function ConsumerAccount() {
 
     useEffect(() => {
         if (userInfo) {
-            const {first_name, last_name, email, phone, country} = userInfo;
+            const { first_name, last_name, email, phone, country, email_notification } = userInfo;
             form.setValue("first_name", first_name || "");
             form.setValue("last_name", last_name || "");
             form.setValue("email", email || "");
             form.setValue("phone", phone || "");
             form.setValue("country", country || "");
+            form.setValue("email_notification", email_notification || false);
         }
     }, [userInfo, form]);
 
@@ -139,7 +143,7 @@ export default function ConsumerAccount() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({userId: userInfo.client_id}),
+                body: JSON.stringify({ userId: userInfo.client_id }),
             });
 
             if (!clerkResponse.ok) {
@@ -183,7 +187,7 @@ export default function ConsumerAccount() {
                     <>
                         <div className="flex items-center">
                             <CheckCircleIcon
-                                className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400"/>
+                                className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400" />
                             Account Info Successfully Updated!
                         </div>
                     </>
@@ -228,13 +232,13 @@ export default function ConsumerAccount() {
                                 <FormField
                                     control={form.control}
                                     name="first_name"
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>First Name</FormLabel>
                                             <FormControl>
                                                 <Input className="rounded-full" {...field} />
                                             </FormControl>
-                                            <FormMessage/>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
@@ -243,13 +247,13 @@ export default function ConsumerAccount() {
                                 <FormField
                                     control={form.control}
                                     name="last_name"
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Last Name</FormLabel>
                                             <FormControl>
                                                 <Input className="rounded-full" {...field} />
                                             </FormControl>
-                                            <FormMessage/>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
@@ -258,13 +262,13 @@ export default function ConsumerAccount() {
                                 <FormField
                                     control={form.control}
                                     name="email"
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Email</FormLabel>
                                             <FormControl>
                                                 <Input disabled className="rounded-full" {...field} />
                                             </FormControl>
-                                            <FormMessage/>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
@@ -273,13 +277,13 @@ export default function ConsumerAccount() {
                                 <FormField
                                     control={form.control}
                                     name="phone"
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Phone Number</FormLabel>
                                             <FormControl>
                                                 <Input className="rounded-full" {...field} />
                                             </FormControl>
-                                            <FormMessage/>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
@@ -288,19 +292,35 @@ export default function ConsumerAccount() {
                                 <FormField
                                     control={form.control}
                                     name="country"
-                                    render={({field}) => (
+                                    render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Country</FormLabel>
                                             <FormControl>
                                                 <Input className="rounded-full" disabled {...field} />
                                             </FormControl>
-                                            <FormMessage/>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+
+                            <div className="col-span-2">
+                                <FormField
+                                    control={form.control}
+                                    name="email_notification"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="mt-4">Email Notification</FormLabel>
+                                            <FormControl>
+                                                <Switch className="rounded-full" checked={field.value} onCheckedChange={(checked) => field.onChange(checked)} />
+                                            </FormControl>
+                                            <FormMessage />
                                         </FormItem>
                                     )}
                                 />
                             </div>
                             <Button type="submit"
-                                    className="col-span-2 bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full">Save</Button>
+                                className="col-span-2 bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full">Save</Button>
                         </div>
                     </form>
                 </Form>
