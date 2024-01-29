@@ -4,6 +4,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Form,
   FormControl,
@@ -36,6 +37,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useNotifications } from "@/components/notificationContext";
+import { UserInfo } from "@/types/shared/user";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = [
@@ -75,6 +77,7 @@ const formSchema = z.object({
     path: [],
   }),
   country: z.string(),
+  email_notification: z.boolean(),
   bio: z.string().max(500, "Bio can't be longer than 500 characters"),
   ethnicity: z.string(),
   experienceUnit: z.coerce.number(),
@@ -107,6 +110,7 @@ export default function KtererAccount() {
       email: "",
       phone: "",
       country: "",
+      email_notification: false,
       bio: "",
       ethnicity: "",
       experienceUnit: 0,
@@ -187,35 +191,42 @@ export default function KtererAccount() {
   }, []);
 
   useEffect(() => {
-    if (!ktererInfo) return;
+    if (ktererInfo) {
 
-    const {
-      first_name = "",
-      last_name = "",
-      email = "",
-      phone = "",
-      country = "",
-      kterer = {},
-    } = ktererInfo;
+      let {
+        first_name = "",
+        last_name = "",
+        email = "",
+        phone = "",
+        country = "",
+        email_notification = false,
+        kterer = {},
+      } = ktererInfo;
 
-    const formValues = {
-      first_name,
-      last_name,
-      email,
-      phone,
-      country,
-      profile_image_url: kterer?.profile_image_url || "",
-      bio: kterer?.bio || "",
-      ethnicity: kterer?.ethnicity || "",
-      experienceUnit: kterer?.experienceUnit || 0,
-      experienceValue: kterer?.experienceValue || "Days",
-    };
+      email_notification = Boolean(email_notification);
 
-    (Object.keys(formValues) as Array<keyof typeof formValues>).forEach(
-      (key) => {
-        form.setValue(key, formValues[key], { shouldValidate: true });
-      }
-    );
+      const formValues = {
+        first_name,
+        last_name,
+        email,
+        phone,
+        country,
+        email_notification,
+        profile_image_url: kterer?.profile_image_url || "",
+        bio: kterer?.bio || "",
+        ethnicity: kterer?.ethnicity || "",
+        experienceUnit: kterer?.experienceUnit || 0,
+        experienceValue: kterer?.experienceValue || "Days",
+      };
+
+
+      (Object.keys(formValues) as Array<keyof typeof formValues>).forEach(
+        (key) => {
+          form.setValue(key, formValues[key], { shouldValidate: true });
+        }
+      );
+    }
+
   }, [ktererInfo, form]);
 
   useEffect(() => {
@@ -283,6 +294,7 @@ export default function KtererAccount() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+
     const formData = new FormData();
 
     formData.append("bio", values.bio);
@@ -290,7 +302,11 @@ export default function KtererAccount() {
     formData.append("experienceUnit", values.experienceUnit.toString());
     formData.append("experienceValue", values.experienceValue);
 
-    console.log(values);
+    formData.append("first_name", values.first_name);
+    formData.append("last_name", values.last_name);
+    formData.append("phone", values.phone);
+    formData.append("email_notification", String(Number(values.email_notification)));
+
     if (values.profile_image_url instanceof File) {
       formData.append(
         "profile_image_url",
@@ -387,7 +403,7 @@ export default function KtererAccount() {
         </div>
         <div className="max-w-2xl mx-auto">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" id="kterer_acount_form">
               <div className="my-10 grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-2">
                 <div className="col-span-2 text-center">
                   <h1 className="text-xl font-bold mb-2">Profile Picture</h1>
@@ -509,6 +525,23 @@ export default function KtererAccount() {
                     )}
                   />
                 </div>
+                <div className="col-span-2">
+                  <FormField
+                    control={form.control}
+                    name="email_notification"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="mt-4">Email Notification</FormLabel>
+                        <FormControl>
+                          <Switch className="rounded-full" checked={field.value} onCheckedChange={(checked) => field.onChange(checked)} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+
 
                 <div className="col-span-2">
                   <FormField
