@@ -35,9 +35,10 @@ import useCart from "@/app/hooks/useCart";
 import AddressPopup from "@/components/addressPopup";
 import { CartItem } from "@/types/hooks/useCart";
 import { fetchHomeAddress } from "@/app/hooks/fetchAddress";
-import { SearchContext } from "@/app/context/searchContext";
-import { useCartCount } from "@/components/cartContext";
+import { SearchContext } from "@/contexts/SearchContext";
+import { useCartCount } from "@/contexts/CartContext";
 import { useNotifications } from "./notificationContext";
+import { StatusContext } from "@/contexts/StatusContext";
 
 export default function UserNavbar() {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -58,11 +59,12 @@ export default function UserNavbar() {
   const [addressChanged, setAddressChanged] = useState(false);
   const { cartCount } = useCartCount();
   const { notifications, updateNotifications } = useNotifications();
+  const globalStatus = useContext(StatusContext);
 
   const contextValue = useContext(SearchContext);
   const { searchInput, setSearchInput } = contextValue || {
     searchInput: "",
-    setSearchInput: () => {},
+    setSearchInput: () => { },
   };
 
   const handleSearchInputChange = (
@@ -320,6 +322,10 @@ export default function UserNavbar() {
               {/*</div>*/}
             </div>
             <div className="flex items-center">
+              {!globalStatus?.is_serving_time && <div className="text-primary-color mr-4 font-bold">
+                Open from <span className="underline-offset-1">8am to 8pm</span> daily!
+              </div>}
+
               {/* Search bar */}
               <div className="relative w:40 md:w:60 lg:w-80 mr-4">
                 {/* Icon */}

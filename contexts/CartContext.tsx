@@ -1,6 +1,6 @@
 "use client";
 
-import React, {createContext, useState, ReactNode} from 'react';
+import React, { createContext, useState, ReactNode } from 'react';
 
 interface CartContextType {
     cartCount: number;
@@ -21,7 +21,7 @@ export const useCartCount = () => {
     return context;
 }
 
-export const CartProvider: React.FC<CartProviderProps> = ({children}) => {
+export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const [cartCount, setCartCount] = useState<number>(() => {
         const cart = localStorage.getItem('cart');
         if (cart) {
@@ -35,7 +35,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({children}) => {
     };
 
     return (
-        <CartContext.Provider value={{cartCount, updateCartCount}}>
+        <CartContext.Provider value={{ cartCount, updateCartCount }}>
             {children}
         </CartContext.Provider>
     );

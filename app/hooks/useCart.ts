@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CartItem } from "@/types/hooks/useCart";
-import { useCartCount } from "@/components/cartContext";
+import { useCartCount } from "@/contexts/CartContext";
 
 function useCart() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);

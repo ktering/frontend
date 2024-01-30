@@ -2,7 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import KtererDashboardNavbar from "@/components/ktererDashboardNavbar";
 import UserNavbar from "@/components/userNavbar";
-import { CartProvider } from "@/components/cartContext";
+import { CartProvider } from "@/contexts/CartContext";
 import { NotificationProvider } from "@/components/notificationContext";
 
 export const metadata: Metadata = {

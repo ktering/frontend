@@ -1,0 +1,15 @@
+"use client";
+import { ReactNode, useState } from 'react';
+import { SearchContext } from "./SearchContext";
+
+export const SearchProvider = ({ children }: {
+    children: ReactNode
+}) => {
+    const [searchInput, setSearchInput] = useState('');
+
+    return (
+        <SearchContext.Provider value={{ searchInput, setSearchInput }}>
+            {children}
+        </SearchContext.Provider>
+    );
+}

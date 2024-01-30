@@ -43,7 +43,7 @@ import { CartItem } from "@/types/hooks/useCart";
 import { KtererInfo } from "@/types/shared/user";
 
 import { useUser } from "@clerk/nextjs";
-import { useCartCount } from "@/components/cartContext";
+import { useCartCount } from "@/contexts/CartContext";
 
 const formSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -267,19 +267,19 @@ export default function Food() {
     updateCartCount(cartCount + 1);
   };
 
-  const renderSizeButton = (size: string) => {
+  const renderSizeButton = (size: string, index: number) => {
     const isSelected = selectedSize === size;
     const isAvailable = foodDetails?.quantities.some((q) => q.size === size);
     const capitalizedSize = size.charAt(0).toUpperCase() + size.slice(1);
 
     return isAvailable ? (
       <button
+        key={index}
         onClick={() => selectSize(size)}
-        className={`border rounded-full px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color ${
-          isSelected
-            ? "bg-primary-color text-white hover:bg-primary-color-hover"
-            : "bg-white hover:bg-gray-50"
-        }`}
+        className={`border rounded-full px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color ${isSelected
+          ? "bg-primary-color text-white hover:bg-primary-color-hover"
+          : "bg-white hover:bg-gray-50"
+          }`}
       >
         {capitalizedSize}
       </button>
@@ -490,15 +490,15 @@ export default function Food() {
               $
               {selectedSize && foodDetails
                 ? foodDetails.quantities.find(
-                    (q: { size: string }) => q.size === selectedSize
-                  )?.price
+                  (q: { size: string }) => q.size === selectedSize
+                )?.price
                 : "Loading..."}
             </p>
             <div className="flex flex-col space-y-2">
               {!isOutOfStock ? <p>Size</p> : <p>No Sizes Available</p>}
               <div className="my-2 space-x-2">
-                {["small", "medium", "large"].map((size) =>
-                  renderSizeButton(size)
+                {["small", "medium", "large"].map((size, index) =>
+                  renderSizeButton(size, index)
                 )}
               </div>
             </div>
@@ -638,11 +638,10 @@ export default function Food() {
                               key={starValue}
                               type="button"
                               onClick={() => onChange(starValue)}
-                              className={`rounded-lg border px-4 py-2.5 font-semibold ${
-                                value === starValue
-                                  ? "bg-primary-color text-white"
-                                  : "bg-white text-primary-color"
-                              } shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
+                              className={`rounded-lg border px-4 py-2.5 font-semibold ${value === starValue
+                                ? "bg-primary-color text-white"
+                                : "bg-white text-primary-color"
+                                } shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
                             >
                               <div className="flex items-center justify-center">
                                 {starValue}

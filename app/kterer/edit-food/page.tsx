@@ -1,21 +1,21 @@
 "use client";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import * as z from 'zod'
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useForm} from "react-hook-form";
-import {Button} from "@/components/ui/button"
-import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form"
-import {Input} from "@/components/ui/input"
-import {Textarea} from "@/components/ui/textarea";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
-import {useToast} from "@/components/ui/use-toast"
-import {useRouter, useSearchParams} from "next/navigation";
-import {ArrowLeftIcon} from "@heroicons/react/20/solid";
-import {FoodItem} from "@/types/shared/food";
-import {PhotoIcon, TrashIcon} from "@heroicons/react/24/outline";
-import {SizeMap} from "@/types/pages/kterer/edit-food";
-import {InformationCircleIcon} from "@heroicons/react/24/solid";
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowLeftIcon } from "@heroicons/react/20/solid";
+import { FoodItem } from "@/types/shared/food";
+import { PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { SizeMap } from "@/types/pages/kterer/edit-food";
+import { InformationCircleIcon } from "@heroicons/react/24/solid";
 
 const formSchema = z.object({
     images: z.array(z.object({
@@ -49,6 +49,7 @@ const formSchema = z.object({
     ethnic_type: z.string().refine(value => value !== "", {
         message: "Ethnic Type is required, please select an option",
     }),
+    auto_delivery_time: z.string(),
 }).refine(data => {
     return (data.small_price > 0 && data.small_amount > 0) ||
         (data.medium_price > 0 && data.medium_amount > 0) ||
@@ -62,7 +63,7 @@ export default function EditFood() {
     const searchParams = useSearchParams();
     const foodId = searchParams.get('food_id');
     const [foodDetails, setFoodDetails] = useState<FoodItem | null>(null);
-    const {toast} = useToast();
+    const { toast } = useToast();
     const router = useRouter();
     const [ingredientsList, setIngredientsList] = useState<string[]>([]);
 
@@ -91,6 +92,7 @@ export default function EditFood() {
             contains_nuts: false,
             meat_type: "",
             ethnic_type: "",
+            auto_delivery_time: "15",
         },
     })
 
@@ -132,13 +134,10 @@ export default function EditFood() {
 
     useEffect(() => {
         if (!foodDetails) return;
-
-        console.log('foodDetails', foodDetails);
-
         const initialSizes: SizeMap = {};
 
-        const {small, medium, large} = foodDetails.quantities.reduce((sizes, {size, price, quantity}) => {
-            sizes[size as keyof SizeMap] = {price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0};
+        const { small, medium, large } = foodDetails.quantities.reduce((sizes, { size, price, quantity }) => {
+            sizes[size as keyof SizeMap] = { price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0 };
             return sizes;
         }, initialSizes);
 
@@ -173,6 +172,7 @@ export default function EditFood() {
             contains_nuts: foodDetails.contains_nuts,
             meat_type: foodDetails.meat_type,
             ethnic_type: foodDetails.ethnic_type,
+            auto_delivery_time: String(foodDetails.auto_delivery_time),
         });
     }, [foodDetails, form]);
 
@@ -237,9 +237,9 @@ export default function EditFood() {
         });
 
         const quantities = [
-            {size: 'small', price: values.small_price, quantity: values.small_amount},
-            {size: 'medium', price: values.medium_price, quantity: values.medium_amount},
-            {size: 'large', price: values.large_price, quantity: values.large_amount},
+            { size: 'small', price: values.small_price, quantity: values.small_amount },
+            { size: 'medium', price: values.medium_price, quantity: values.medium_amount },
+            { size: 'large', price: values.large_price, quantity: values.large_amount },
         ].filter(size => size.price > 0 && size.quantity > 0);
 
         formData.append('quantities', JSON.stringify(quantities));
@@ -273,7 +273,7 @@ export default function EditFood() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <p className="font-bold text-xl mb-12 flex items-center">
                     <Link href="/kterer/dashboard">
-                        <ArrowLeftIcon className="h-6 w-6 text-primary-color mr-2"/>
+                        <ArrowLeftIcon className="h-6 w-6 text-primary-color mr-2" />
                     </Link>
                     Edit Food
                 </p>
@@ -295,7 +295,7 @@ export default function EditFood() {
                                             onClick={() => removeExistingImage(index)}
                                             className="p-1 rounded-lg hover:bg-gray-50"
                                         >
-                                            <TrashIcon className="h-6 w-6"/>
+                                            <TrashIcon className="h-6 w-6" />
                                         </button>
                                     </div>
                                 ))}
@@ -313,14 +313,14 @@ export default function EditFood() {
                                             onClick={() => removeNewImage(index)}
                                             className="p-1 rounded-lg hover:bg-gray-50"
                                         >
-                                            <TrashIcon className="h-6 w-6"/>
+                                            <TrashIcon className="h-6 w-6" />
                                         </button>
                                     </div>
                                 ))}
                             </div>
                             {totalImageCount < 1 ? (
                                 <div className="bg-yellow-50 px-3.5 py-2 flex justify-center items-center">
-                                    <InformationCircleIcon className="h-6 w-6 text-primary-color mr-2"/>
+                                    <InformationCircleIcon className="h-6 w-6 text-primary-color mr-2" />
                                     <p className="text-sm font-semibold text-primary-color">Please upload at least one
                                         (1)
                                         photo of your item.</p>
@@ -342,8 +342,8 @@ export default function EditFood() {
                                                     disabled={totalImageCount >= 3}
                                                 />
                                                 <label htmlFor="foodImagesInput"
-                                                       className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">
-                                                    <PhotoIcon className="mx-auto h-12 w-12 text-gray-400"/>
+                                                    className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">
+                                                    <PhotoIcon className="mx-auto h-12 w-12 text-gray-400" />
                                                     <span
                                                         className="mt-2 block text-sm font-semibold text-gray-900"> {totalImageCount < 3 ? 'Upload Food Images' : 'Max Food Images Uploaded'}</span>
                                                     <span
@@ -351,20 +351,20 @@ export default function EditFood() {
                                                 </label>
                                             </div>
                                         </FormControl>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="name"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Name of Food</FormLabel>
                                         <FormControl>
                                             <Input className="rounded-full" {...field} />
                                         </FormControl>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -377,28 +377,28 @@ export default function EditFood() {
                                     <FormField
                                         control={form.control}
                                         name="small_price"
-                                        render={({field}) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Small Prices</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="$" type="number"
-                                                           className="rounded-full" {...field} />
+                                                        className="rounded-full" {...field} />
                                                 </FormControl>
-                                                <FormMessage/>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
                                         control={form.control}
                                         name="small_amount"
-                                        render={({field}) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Small Amounts</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="1, 2, 3..." type="number"
-                                                           className="rounded-full" {...field} />
+                                                        className="rounded-full" {...field} />
                                                 </FormControl>
-                                                <FormMessage/>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
@@ -410,28 +410,28 @@ export default function EditFood() {
                                     <FormField
                                         control={form.control}
                                         name="medium_price"
-                                        render={({field}) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Medium Prices</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="$" type="number"
-                                                           className="rounded-full" {...field} />
+                                                        className="rounded-full" {...field} />
                                                 </FormControl>
-                                                <FormMessage/>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
                                         control={form.control}
                                         name="medium_amount"
-                                        render={({field}) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Medium Amounts</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="1, 2, 3..." type="number"
-                                                           className="rounded-full" {...field} />
+                                                        className="rounded-full" {...field} />
                                                 </FormControl>
-                                                <FormMessage/>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
@@ -443,29 +443,29 @@ export default function EditFood() {
                                     <FormField
                                         control={form.control}
                                         name="large_price"
-                                        render={({field}) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Large Prices</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="$" type="number"
-                                                           className="rounded-full" {...field} />
+                                                        className="rounded-full" {...field} />
                                                 </FormControl>
-                                                <FormMessage/>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
                                         control={form.control}
                                         name="large_amount"
-                                        render={({field}) => (
+                                        render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Large Amounts</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="1, 2, 3..."
-                                                           type="number"
-                                                           className="rounded-full" {...field} />
+                                                        type="number"
+                                                        className="rounded-full" {...field} />
                                                 </FormControl>
-                                                <FormMessage/>
+                                                <FormMessage />
                                             </FormItem>
                                         )}
                                     />
@@ -485,7 +485,7 @@ export default function EditFood() {
                             <FormField
                                 control={form.control}
                                 name="description"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Description</FormLabel>
                                         <FormControl>
@@ -495,14 +495,14 @@ export default function EditFood() {
                                                 {...field}
                                             />
                                         </FormControl>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="ingredients"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Ingredients</FormLabel>
                                         <FormControl>
@@ -517,20 +517,20 @@ export default function EditFood() {
                                         </FormControl>
                                         <FormDescription>Please include all ingredients and enter each ingredient on a
                                             new line.</FormDescription>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="halal"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Halal?</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
-                                                    <SelectValue/>
+                                                    <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -549,14 +549,14 @@ export default function EditFood() {
                                             visit
                                             <Link href="/examples/forms">Your Website Link</Link>.
                                         </FormDescription>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="kosher"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Kosher?</FormLabel>
                                         <Select
@@ -565,7 +565,7 @@ export default function EditFood() {
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
-                                                    <SelectValue/>
+                                                    <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -573,20 +573,20 @@ export default function EditFood() {
                                                 <SelectItem value="0">No</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="vegetarian"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Vegetarian/Vegan?</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
-                                                    <SelectValue/>
+                                                    <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -595,20 +595,20 @@ export default function EditFood() {
                                                 <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="desserts"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Desserts/Drinks?</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
-                                                    <SelectValue/>
+                                                    <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -617,21 +617,21 @@ export default function EditFood() {
                                                 <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="contains_nuts"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>May Contain Nuts?</FormLabel>
                                         <Select onValueChange={(value) => field.onChange(value === '1')}
-                                                value={field.value ? '1' : '0'}>
+                                            value={field.value ? '1' : '0'}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
-                                                    <SelectValue/>
+                                                    <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -639,20 +639,20 @@ export default function EditFood() {
                                                 <SelectItem value="0">No</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="meat_type"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Meat Type</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
-                                                    <SelectValue placeholder="Chicken/Beef..."/>
+                                                    <SelectValue placeholder="Chicken/Beef..." />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -666,20 +666,20 @@ export default function EditFood() {
                                                 <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="ethnic_type"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Ethnic Type</FormLabel>
                                         <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className="rounded-full">
-                                                    <SelectValue placeholder="Pakistani/Indian/Chinese..."/>
+                                                    <SelectValue placeholder="Pakistani/Indian/Chinese..." />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
@@ -696,8 +696,45 @@ export default function EditFood() {
                                                 <SelectItem value="None">None</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
+                                )}
+                            />
+
+
+                            <FormField
+                                control={form.control}
+                                name="auto_delivery_time"
+                                render={({ field }) => (
+                                    <div className="bg-primary-color px-3.5 py-2  text-white">
+                                        <h3 className="font-medium">Preparation & Delivery Time</h3>
+                                        <h3 className="font-light italic mb-2" >Important! This will help determine when your food will be picked up for delivery so make
+                                            it as accurate as you can!</h3>
+                                        <div className="flex justify-center items-center mb-1">
+                                            <h3 className="inline-block grow font-medium">How long do you need to prepare/make this item?</h3>
+                                            <FormItem
+                                                className="inline-block text-black">
+                                                <Select
+                                                    onValueChange={field.onChange}
+                                                    defaultValue={String(field.value)}
+                                                >
+                                                    <FormControl>
+                                                        <SelectTrigger className="rounded-full">
+                                                            <SelectValue placeholder="Select Auto Delivery Time" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="15">15 minutes</SelectItem>
+                                                        <SelectItem value="25">25 minutes</SelectItem>
+                                                        <SelectItem value="35">35 minutes</SelectItem>
+                                                        <SelectItem value="45">45 minutes</SelectItem>
+                                                        <SelectItem value="60">1 hour</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        </div>
+                                    </div>
                                 )}
                             />
                             <Button

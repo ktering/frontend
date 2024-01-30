@@ -28,9 +28,10 @@ import {
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import { FoodItem } from "@/types/shared/food";
-import { SearchContext } from "@/app/context/searchContext";
+import { SearchContext } from "@/contexts/SearchContext";
 import { toast } from "@/components/ui/use-toast";
 import { useNotifications } from "@/components/notificationContext";
+import { StatusContext } from "../../contexts/StatusContext";
 
 export default function Kterings() {
   const [nearYouFood, setNearYouFood] = useState<FoodItem[]>([]);
@@ -45,6 +46,7 @@ export default function Kterings() {
   const tryNewFood = nearYouFood;
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [currentFilter, setCurrentFilter] = useState("Near You");
+  const globalStatus = useContext(StatusContext);
 
   const { updateNotifications } = useNotifications();
 
@@ -120,8 +122,8 @@ export default function Kterings() {
 
   const filteredFood = isSearching
     ? nearYouFood.filter((item) =>
-        item.name.toLowerCase().includes(searchInput.toLowerCase())
-      )
+      item.name.toLowerCase().includes(searchInput.toLowerCase())
+    )
     : displayedFood;
 
   const toggleFavorite = async (foodId: string) => {
@@ -253,120 +255,70 @@ export default function Kterings() {
     },
   ];
 
-  return (
-    <>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex justify-between space-x-8 scrollbar overflow-x-auto md:overflow-visible md:flex-nowrap mb-4">
-          {icons.map((icon, index) => (
-            <button
-              key={index}
-              onClick={icon.onClick}
-              className="flex-none flex flex-col justify-center items-center font-bold text-sm min-w-0"
-              style={{ minWidth: `calc(100% / ${icons.length} - (16px * 2))` }}
-            >
-              <div className="w-full px-2 h-full flex flex-col justify-center items-center">
-                <Image
-                  src={icon.src}
-                  alt="Navigation Icon"
-                  width={48}
-                  height={48}
-                  className="h-12"
-                />
-                <p>{icon.iconName}</p>
-              </div>
-            </button>
-          ))}
-        </div>
-
-        {/* Filters */}
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            asChild
-            className="rounded-full text-primary-color"
-          >
-            <Button variant="outline">
-              <div className="flex gap-2 items-center">
-                Over 4 <div className="fa fa-star text-yellow-400" />
-                <ChevronDownIcon className="w-6 h-6" />
-              </div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuRadioGroup
-              value={position}
-              onValueChange={setPosition}
-            >
-              <DropdownMenuRadioItem value="over2">
-                Over 2
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="over3">
-                Over 3
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="over4">
-                Over 4
-              </DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Near You */}
-        <p className="font-bold text-xl my-12">
-          {searchInput.trim().length > 0 ? "SEARCHED FOOD" : currentFilter}
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-          {filteredFood.length > 0 ? (
-            filteredFood.map((item, index) => {
-              const food_id = new URLSearchParams({
-                food_id: item.id,
-              }).toString();
-
-              return (
-                <div key={index} className="relative">
-                  <Link href={`/kterings/${item.name}?${food_id}`}>
-                    <div className="w-full bg-gray-200 rounded-lg overflow-hidden h-72 sm:h-64 object-cover object-center">
-                      <Image
-                        src={
-                          item.images && item.images.length > 0
-                            ? item.images[0].image_url
-                            : Biryani
-                        }
-                        width={300}
-                        height={100}
-                        alt={item.name}
-                        className="mx-auto rounded-lg w-full h-full object-cover object-center"
-                      />
-                    </div>
-                  </Link>
-                  <div className="flex justify-between items-center mt-2">
-                    <div className="text-left">
-                      <p className="text-lg">{item.name}</p>
-                      {item.rating !== 0 && <StarRating rating={item.rating} />}
-                      {/* TODO: update the distance from the endpoint */}
-                      <p className="text-sm mt-1">00 min away</p>
-                    </div>
-
-                    <span onClick={() => toggleFavorite(item.id)}>
-                      {favorites.has(item.id) ? (
-                        <HeartIconSolid className="h-6 w-6 cursor-pointer text-primary-color" />
-                      ) : (
-                        <HeartIconOutline className="h-6 w-6 cursor-pointer" />
-                      )}
-                    </span>
-                  </div>
+  if (globalStatus?.is_serving_time) {
+    return (
+      <>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex justify-between space-x-8 scrollbar overflow-x-auto md:overflow-visible md:flex-nowrap mb-4">
+            {icons.map((icon, index) => (
+              <button
+                key={index}
+                onClick={icon.onClick}
+                className="flex-none flex flex-col justify-center items-center font-bold text-sm min-w-0"
+                style={{ minWidth: `calc(100% / ${icons.length} - (16px * 2))` }}
+              >
+                <div className="w-full px-2 h-full flex flex-col justify-center items-center">
+                  <Image
+                    src={icon.src}
+                    alt="Navigation Icon"
+                    width={48}
+                    height={48}
+                    className="h-12"
+                  />
+                  <p>{icon.iconName}</p>
                 </div>
-              );
-            })
-          ) : (
-            <p>No search results found</p>
-          )}
-        </div>
+              </button>
+            ))}
+          </div>
 
-        {/* TRY SOMETHING NEW */}
-        {!isSearching && currentFilter === "Near You" && (
-          <>
-            <p className="font-bold text-xl my-12">TRY SOMETHING NEW</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-              {nearYouFood.map((item, index) => {
+          {/* Filters */}
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              asChild
+              className="rounded-full text-primary-color"
+            >
+              <Button variant="outline">
+                <div className="flex gap-2 items-center">
+                  Over 4 <div className="fa fa-star text-yellow-400" />
+                  <ChevronDownIcon className="w-6 h-6" />
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuRadioGroup
+                value={position}
+                onValueChange={setPosition}
+              >
+                <DropdownMenuRadioItem value="over2">
+                  Over 2
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="over3">
+                  Over 3
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="over4">
+                  Over 4
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Near You */}
+          <p className="font-bold text-xl my-12">
+            {searchInput.trim().length > 0 ? "SEARCHED FOOD" : currentFilter}
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+            {filteredFood.length > 0 ? (
+              filteredFood.map((item, index) => {
                 const food_id = new URLSearchParams({
                   food_id: item.id,
                 }).toString();
@@ -391,9 +343,7 @@ export default function Kterings() {
                     <div className="flex justify-between items-center mt-2">
                       <div className="text-left">
                         <p className="text-lg">{item.name}</p>
-                        {item.rating !== 0 && (
-                          <StarRating rating={item.rating} />
-                        )}
+                        {item.rating !== 0 && <StarRating rating={item.rating} />}
                         {/* TODO: update the distance from the endpoint */}
                         <p className="text-sm mt-1">00 min away</p>
                       </div>
@@ -408,11 +358,79 @@ export default function Kterings() {
                     </div>
                   </div>
                 );
-              })}
-            </div>
-          </>
-        )}
+              })
+            ) : (
+              <p>No search results found</p>
+            )}
+          </div>
+
+          {/* TRY SOMETHING NEW */}
+          {!isSearching && currentFilter === "Near You" && (
+            <>
+              <p className="font-bold text-xl my-12">TRY SOMETHING NEW</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                {nearYouFood.map((item, index) => {
+                  const food_id = new URLSearchParams({
+                    food_id: item.id,
+                  }).toString();
+
+                  return (
+                    <div key={index} className="relative">
+                      <Link href={`/kterings/${item.name}?${food_id}`}>
+                        <div className="w-full bg-gray-200 rounded-lg overflow-hidden h-72 sm:h-64 object-cover object-center">
+                          <Image
+                            src={
+                              item.images && item.images.length > 0
+                                ? item.images[0].image_url
+                                : Biryani
+                            }
+                            width={300}
+                            height={100}
+                            alt={item.name}
+                            className="mx-auto rounded-lg w-full h-full object-cover object-center"
+                          />
+                        </div>
+                      </Link>
+                      <div className="flex justify-between items-center mt-2">
+                        <div className="text-left">
+                          <p className="text-lg">{item.name}</p>
+                          {item.rating !== 0 && (
+                            <StarRating rating={item.rating} />
+                          )}
+                          {/* TODO: update the distance from the endpoint */}
+                          <p className="text-sm mt-1">00 min away</p>
+                        </div>
+
+                        <span onClick={() => toggleFavorite(item.id)}>
+                          {favorites.has(item.id) ? (
+                            <HeartIconSolid className="h-6 w-6 cursor-pointer text-primary-color" />
+                          ) : (
+                            <HeartIconOutline className="h-6 w-6 cursor-pointer" />
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </div>
+      </>
+    );
+  }
+  else {
+    return (<>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-red-200 px-3.5 py-5  text-red-700 text-center">
+            <h3 className="font-bold mb-4 center">Kterings is currently closed!</h3>
+            <h3 className="m-0 font-medium italic">Services end at 8pm daily. Come back tomorrow</h3>
+            <h3 className="m-0 font-medium italic">to order more of your favorites!</h3>
+          </div>
+
+        </div>
       </div>
-    </>
-  );
+    </>)
+  }
 }
