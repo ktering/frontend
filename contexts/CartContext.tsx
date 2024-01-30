@@ -23,7 +23,7 @@ export const useCartCount = () => {
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const [cartCount, setCartCount] = useState<number>(() => {
-        const cart = localStorage.getItem('cart');
+        const cart = (typeof window !== 'undefined') ? localStorage.getItem('cart') : null;
         if (cart) {
             return JSON.parse(cart).length;
         }

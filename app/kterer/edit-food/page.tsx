@@ -717,6 +717,7 @@ export default function EditFood() {
                                                 <Select
                                                     onValueChange={field.onChange}
                                                     defaultValue={String(field.value)}
+                                                    value={String(field.value)}
                                                 >
                                                     <FormControl>
                                                         <SelectTrigger className="rounded-full">

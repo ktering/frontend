@@ -35,6 +35,8 @@ import {
   PlusSmallIcon,
   StarIcon,
   ExclamationTriangleIcon,
+  PhotoIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
 import { toast } from "@/components/ui/use-toast";
 import { FoodItem } from "@/types/shared/food";
@@ -52,14 +54,12 @@ const formSchema = z.object({
 
 export default function Food() {
   const { user } = useUser();
-  if (!user) {
-    return null;
-  }
   // TODO: fix this default image
   const searchParams = useSearchParams();
   const foodIdMainPage = searchParams.get("food_id");
   const [foodDetails, setFoodDetails] = useState<FoodItem>();
   const [reviews, setReviews] = useState<Reviews[]>();
+  const [reviewImages, setReviewImages] = useState<File[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("small");
   // TODO: fix this main image
@@ -301,6 +301,25 @@ export default function Food() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    const formData = new FormData();
+
+    function isKeyOfValues(key: string): key is keyof typeof values {
+      return key in values;
+    }
+
+    for (const key in values) {
+      if (!isKeyOfValues(key)) continue;
+      formData.append(key, values[key].toString());
+    }
+
+
+    reviewImages.forEach((image, index) => {
+      formData.append(`image_${index + 1}`, image);
+    });
+
+    formData.append('_method', 'POST');
+
     const accessToken = localStorage.getItem("accessToken");
     const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -309,10 +328,10 @@ export default function Food() {
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(values),
+        // body: JSON.stringify(values),
+        body: formData,
       }
     );
 
@@ -331,17 +350,21 @@ export default function Food() {
       setIsReviewModalOpen(false);
       // if (reviews && reviews.length > 0) {
       // TODO: add the names from the database, for now its from clerk
-      const newReview: Reviews = {
-        ...values,
-        user: {
-          first_name: user?.firstName,
-          // first_name: reviews[0].user.first_name,
-          last_name: user?.lastName,
-          // last_name: reviews[0].user.last_name,
-        },
-        created_at: new Date().toISOString(),
-      };
-      setReviews((currentReviews) => [...(currentReviews || []), newReview]);
+      // const newReview: Reviews = {
+      //   ...values,
+      //   user: {
+      //     first_name: user?.firstName,
+      //     // first_name: reviews[0].user.first_name,
+      //     last_name: user?.lastName,
+      //     // last_name: reviews[0].user.last_name,
+      //   },
+      //   images: [
+
+      //   ],
+      //   created_at: new Date().toISOString(),
+      // };
+      const newData = await response.json();
+      setReviews((currentReviews) => [...(currentReviews || []), newData?.review_data]);
       form.reset();
       toast({
         description: (
@@ -356,6 +379,25 @@ export default function Food() {
       // }
     }
   }
+
+  const removeNewImage = (index: number) => {
+    const updatedNewImages = reviewImages.filter((_, i) => i !== index);
+    setReviewImages(updatedNewImages);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadedFiles = Array.from(event.target.files || []);
+    const totalFiles = reviewImages.length;
+    if (totalFiles > 3) {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "You can only upload up to 3 images.",
+      });
+      return;
+    }
+    setReviewImages(prev => [...reviewImages, ...uploadedFiles]);
+  };
 
   useEffect(() => {
     let prevY = window.scrollY;
@@ -589,9 +631,9 @@ export default function Food() {
             reviews?.map((review) => (
               <div
                 key={review.id}
-                className="my-2 flex items-start border-b pb-4"
+                className="my-2 flex items-start border-b pb-4 flex-col"
               >
-                <div>
+                <div >
                   <div className="flex items-center my-2 font-bold">
                     <p>
                       {review?.user?.first_name} {review?.user?.last_name}
@@ -605,6 +647,19 @@ export default function Food() {
                     </p>
                   </div>
                   <p>{review.review}</p>
+                </div>
+                <div >
+                  <div className="flex mt-4 space-x-2">
+                    {review?.images.map((image, index) => (
+                      <img
+                        key={image.id}
+                        src={image.image_url}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="hover:grayscale transition duration-1000 w-24 h-24 object-cover cursor-pointer rounded-lg"
+                      />
+                    ))}
+                  </div>
+
                 </div>
               </div>
             ))
@@ -670,6 +725,51 @@ export default function Food() {
                         This review will be public and will be shown to other
                         users.
                       </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {reviewImages.map((file, index) => (
+                    <div className="space-y-2" key={index}>
+                      <div className="h-48 overflow-hidden rounded-lg relative">
+                        <img
+                          src={URL.createObjectURL(file)}
+                          alt={`New Image ${index + 1}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeNewImage(index)}
+                        className="p-1 rounded-lg hover:bg-gray-50"
+                      >
+                        <TrashIcon className="h-6 w-6" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <FormField
+                  control={form.control}
+                  name="images"
+                  render={() => (
+                    <FormItem>
+                      <FormControl>
+                        <div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            id="foodImagesInput"
+                            className="hidden"
+                            multiple
+                            onChange={(event) => handleFileChange(event)}
+                          />
+                          <label htmlFor="foodImagesInput"
+                            className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">
+                            <PhotoIcon className="mx-auto h-12 w-12 text-gray-400" />
+                          </label>
+                        </div>
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

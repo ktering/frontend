@@ -21,14 +21,19 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useNotifications } from "@/components/notificationContext";
 import { StatusContext } from "@/contexts/StatusContext";
+import Food from "@/app/kterings/[food]/page";
+import { Filter } from "lucide-react";
 
 export default function Dashboard() {
     const { user } = useUser();
 
     const router = useRouter();
     const [ktererFood, setKtererFood] = useState<FoodItem[]>([]);
+    const [pastFood, setPastFood] = useState<FoodItem[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [postToDelete, setPostToDelete] = useState<string | null>(null);
+    const [deleteMode, setDeleteMode] = useState(0);
+    const [deleteDialogContent, setDeleteDialogContent] = useState('This action cannot be undone. This will permanently delete the post.');
 
     const { updateNotifications } = useNotifications();
     const globalStatus = useContext(StatusContext);
@@ -56,6 +61,31 @@ export default function Dashboard() {
 
                 const data = await response.json();
                 setKtererFood(data.data);
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            }
+        };
+
+        const getKtererPastFood = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            try {
+                const params = new URLSearchParams({ kterer: user.id.toString() });
+                const response = await fetch(`${apiURL}/api/past_food?${params}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setPastFood(data.data);
             } catch (error) {
                 console.error(`Error: ${error}`);
             }
@@ -102,6 +132,9 @@ export default function Dashboard() {
         getKtererFood().catch((error) => {
             console.error(`Error: ${error}`);
         });
+        getKtererPastFood().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
         getNotifications().catch((error) => {
             console.error(`Error: ${error}`);
         });
@@ -114,54 +147,175 @@ export default function Dashboard() {
         router.push(`/kterer/edit-food?${food_id}`);
     };
 
+    const handleRepostFood = (foodId: string, index: number) => {
+        const repostFood = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            try {
+                const response = await fetch(`${apiURL}/api/food/${foodId}/repost`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+                else {
+                    setKtererFood([...ktererFood, pastFood[index]]);
+                    setPastFood((pastFoods) => pastFoods.filter((food) => food.id !== foodId));
+                }
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            }
+        };
+
+        repostFood().catch((error) => {
+            console.error(`Error: ${error}`);
+        });
+    };
     const handleDeletePost = async (foodId: string) => {
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
         const accessToken = localStorage.getItem("accessToken");
-        await fetch(`${apiURL}/api/food/${foodId}`, {
+        await fetch(`${apiURL}/api/food/${foodId}?deleteMode=${deleteMode}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
+        if (!deleteMode) { // not permanently delete
+            setPastFood([...pastFood, ...(ktererFood.filter(food => food.id === foodId))]);
+        }
         setKtererFood((currentFoods) =>
             currentFoods.filter((food) => food.id !== foodId)
         );
         setIsDialogOpen(false);
     };
 
-    const openDeleteDialog = (foodId: string) => {
+    const openDeleteDialog = (foodId: string, deleteMode: number = 0) => {
+        setDeleteMode(deleteMode);
         setPostToDelete(foodId);
         setIsDialogOpen(true);
     };
 
     if (globalStatus?.is_serving_time) {
         return (
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <p className="font-bold text-xl mb-12">Your Posts</p>
-                {ktererFood.length > 0 ? (
+            <>
+                <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                {deleteMode === 1 ? 'This action cannot be undone. This will permanently delete the post.' : 'This will be a past food.'}
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel asChild>
+                                <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
+                            </AlertDialogCancel>
+                            <AlertDialogAction asChild>
+                                <button
+                                    className="bg-red-600 hover:bg-red-700"
+                                    onClick={() =>
+                                        postToDelete && handleDeletePost(postToDelete)
+                                    }
+                                >
+                                    Delete
+                                </button>
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <p className="font-bold text-xl mb-12">Your Posts</p>
+                    {ktererFood.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                            {ktererFood.map((item, index) => {
+                                const food_id = new URLSearchParams({
+                                    food_id: item.id,
+                                }).toString();
+
+                                return (
+                                    <div key={index} className="relative">
+                                        <Link href={`/kterings/${item.name}?${food_id}`}>
+                                            <div
+                                                className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
+                                                <Image
+                                                    src={
+                                                        item.images && item.images.length > 0
+                                                            ? item.images[0].image_url
+                                                            : Biryani
+                                                    }
+                                                    alt="Food Image"
+                                                    fill
+                                                    className="object-cover object-center"
+                                                />
+                                            </div>
+                                        </Link>
+
+                                        <div className="flex justify-between items-center mt-2">
+                                            <div className="text-left">
+                                                <p className="text-lg">{item.name}</p>
+                                                {item.rating !== 0 && <StarRating rating={item.rating} />}
+                                            </div>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger>
+                                                    <EllipsisVerticalIcon className="h-6 w-6" />
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent>
+                                                    <DropdownMenuItem onSelect={() => handleEditPost(item.id)}>
+                                                        Edit Post
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onSelect={() => openDeleteDialog(item.id)}
+                                                    >
+                                                        Delete Post
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+
+                        </div>
+                    ) : (
+                        <div className="text-center py-10">
+                            <p>You have not posted any food items yet</p>
+                            <Link href="/kterer/post">
+                                <p className="text-primary-color hover:underline mt-2 inline-block">
+                                    Post Your Food
+                                </p>
+                            </Link>
+                        </div>
+                    )}
+                </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <p className="font-bold text-xl mb-12">Past Posts</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-                        {ktererFood.map((item, index) => {
+                        {pastFood.map((item, index) => {
                             const food_id = new URLSearchParams({
                                 food_id: item.id,
                             }).toString();
 
                             return (
                                 <div key={index} className="relative">
-                                    <Link href={`/kterings/${item.name}?${food_id}`}>
-                                        <div
-                                            className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
-                                            <Image
-                                                src={
-                                                    item.images && item.images.length > 0
-                                                        ? item.images[0].image_url
-                                                        : Biryani
-                                                }
-                                                alt="Food Image"
-                                                fill
-                                                className="object-cover object-center"
-                                            />
-                                        </div>
-                                    </Link>
+                                    <div
+                                        className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
+                                        <Image
+                                            src={
+                                                item.images && item.images.length > 0
+                                                    ? item.images[0].image_url
+                                                    : Biryani
+                                            }
+                                            alt="Food Image"
+                                            fill
+                                            className="object-cover object-center grayscale"
+                                        />
+                                    </div>
 
                                     <div className="flex justify-between items-center mt-2">
                                         <div className="text-left">
@@ -173,13 +327,13 @@ export default function Dashboard() {
                                                 <EllipsisVerticalIcon className="h-6 w-6" />
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent>
-                                                <DropdownMenuItem onSelect={() => handleEditPost(item.id)}>
-                                                    Edit Post
+                                                <DropdownMenuItem onSelect={() => handleRepostFood(item.id, index)}>
+                                                    Repost
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
-                                                    onSelect={() => openDeleteDialog(item.id)}
+                                                    onSelect={() => openDeleteDialog(item.id, 1)}
                                                 >
-                                                    Delete Post
+                                                    Delete Permanently
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
@@ -187,44 +341,9 @@ export default function Dashboard() {
                                 </div>
                             );
                         })}
-                        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete the
-                                        post.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel asChild>
-                                        <button onClick={() => setIsDialogOpen(false)}>Cancel</button>
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction asChild>
-                                        <button
-                                            className="bg-red-600 hover:bg-red-700"
-                                            onClick={() =>
-                                                postToDelete && handleDeletePost(postToDelete)
-                                            }
-                                        >
-                                            Delete
-                                        </button>
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
                     </div>
-                ) : (
-                    <div className="text-center py-10">
-                        <p>You have not posted any food items yet</p>
-                        <Link href="/kterer/post">
-                            <p className="text-primary-color hover:underline mt-2 inline-block">
-                                Post Your Food
-                            </p>
-                        </Link>
-                    </div>
-                )}
-            </div>
+                </div>
+            </>
         );
     }
     else {
