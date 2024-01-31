@@ -725,6 +725,7 @@ export default function EditFood() {
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
+                                                        <SelectItem value="0">None</SelectItem>
                                                         <SelectItem value="15">15 minutes</SelectItem>
                                                         <SelectItem value="25">25 minutes</SelectItem>
                                                         <SelectItem value="35">35 minutes</SelectItem>
