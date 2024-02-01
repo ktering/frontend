@@ -5,6 +5,7 @@ import React, { createContext, useState, ReactNode } from "react";
 export interface Notification {
   id: string;
   message: string;
+  created_at: Date;
   read_at: null | Date;
 }
 interface NotificationContextType {

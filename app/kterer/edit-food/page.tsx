@@ -51,9 +51,9 @@ const formSchema = z.object({
     }),
     auto_delivery_time: z.string(),
 }).refine(data => {
-    return (data.small_price > 0 && data.small_amount > 0) ||
-        (data.medium_price > 0 && data.medium_amount > 0) ||
-        (data.large_price > 0 && data.large_amount > 0);
+    return ((data.small_price || 0) > 0 && (data.small_amount || 0) > 0) ||
+        ((data.medium_price || 0) > 0 && (data.medium_amount || 0) > 0) ||
+        ((data.large_price || 0) > 0 && (data.large_amount || 0) > 0);
 
 }, {
     message: "At least one price and amount must be provided",
@@ -71,6 +71,62 @@ export default function EditFood() {
     const [newImages, setNewImages] = useState<File[]>([]);
     const [deletedImages, setDeletedImages] = useState<string[]>([]);
     const totalImageCount = existingImages.length + newImages.length;
+
+    const [isSmallVisible, setIsSmallVisible] = useState(false);
+    const [isMediumVisible, setIsMediumVisible] = useState(false);
+    const [isLargeVisible, setIsLargeVisible] = useState(false);
+
+    useEffect(() => {
+        if (foodDetails) {
+            // Initialize default size objects
+            const defaultSize = { price: 0, quantity: 0 };
+            let small = defaultSize, medium = defaultSize, large = defaultSize;
+
+            // Populate size objects if they exist in foodDetails
+            foodDetails.quantities.forEach(({ size, price, quantity }) => {
+                const sizeObj = { price: parseFloat(price) || 0, quantity: parseInt(quantity) || 0 };
+                if (size === 'small') small = sizeObj;
+                if (size === 'medium') medium = sizeObj;
+                if (size === 'large') large = sizeObj;
+            });
+
+            // Set visibility based on quantity and price values
+            setIsSmallVisible(small.price > 0 && small.quantity > 0);
+            setIsMediumVisible(medium.price > 0 && medium.quantity > 0);
+            setIsLargeVisible(large.price > 0 && large.quantity > 0);
+        }
+    }, [foodDetails]);
+
+    const toggleSizeVisibility = (size: string) => {
+        switch (size) {
+            case 'small':
+                setIsSmallVisible(!isSmallVisible);
+                if (isSmallVisible) {
+                    form.setValue('small_price', 0);
+                    form.setValue('small_amount', 0);
+                }
+                break;
+            case 'medium':
+                setIsMediumVisible(!isMediumVisible);
+                if (isMediumVisible) {
+                    form.setValue('medium_price', 0);
+                    form.setValue('medium_amount', 0);
+                }
+                break;
+            case 'large':
+                setIsLargeVisible(!isLargeVisible);
+                if (isLargeVisible) {
+                    form.setValue('large_price', 0);
+                    form.setValue('large_amount', 0);
+                }
+                break;
+            default:
+                break;
+        }
+    };
+
+    const getButtonClass = (isActive: boolean) =>
+        `rounded-full px-4 py-2 text-center w-full ${isActive ? 'bg-primary-color text-white' : 'bg-gray-200'}`;
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -134,6 +190,7 @@ export default function EditFood() {
 
     useEffect(() => {
         if (!foodDetails) return;
+
         const initialSizes: SizeMap = {};
 
         const { small, medium, large } = foodDetails.quantities.reduce((sizes, { size, price, quantity }) => {
@@ -279,7 +336,7 @@ export default function EditFood() {
                 </p>
                 <div className="max-w-2xl mx-auto">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {existingImages.map((url, index) => (
                                     <div className="space-y-2" key={index}>
@@ -365,383 +422,423 @@ export default function EditFood() {
                                             <Input className="rounded-full" {...field} />
                                         </FormControl>
                                         <FormMessage />
+                                        <FormDescription>Try to keep it short and precise!</FormDescription>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             {/* Size Start */}
-                            <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8">
-                                <div className="space-y-4">
-                                    <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Small
-                                    </div>
-                                    <FormField
-                                        control={form.control}
-                                        name="small_price"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Small Prices</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="$" type="number"
-                                                        className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="small_amount"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Small Amounts</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="1, 2, 3..." type="number"
-                                                        className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Medium
-                                    </div>
-                                    <FormField
-                                        control={form.control}
-                                        name="medium_price"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Medium Prices</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="$" type="number"
-                                                        className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="medium_amount"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Medium Amounts</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="1, 2, 3..." type="number"
-                                                        className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                                        Large
-                                    </div>
-                                    <FormField
-                                        control={form.control}
-                                        name="large_price"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Large Prices</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="$" type="number"
-                                                        className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="large_amount"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Large Amounts</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="1, 2, 3..."
-                                                        type="number"
-                                                        className="rounded-full" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-                                {/* No Size price, amount selected error message */}
-                                {/* @ts-ignore */}
-                                {form.formState.errors[""]?.message && (
-                                    <div className="col-span-3">
-                                        <p className="text-sm font-medium text-destructive">
-                                            {/* @ts-ignore */}
-                                            {form.formState.errors[""].message}
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                            {/* Size End */}
-                            <FormField
-                                control={form.control}
-                                name="description"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Description</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                placeholder="Tell us a little bit about the food"
-                                                className="resize-none h-48"
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="ingredients"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Ingredients</FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                className="resize-none h-48"
-                                                {...field}
-                                                onChange={(e) => {
-                                                    handleTextareaChange(e);
-                                                    field.onChange(e);
-                                                }}
-                                            />
-                                        </FormControl>
-                                        <FormDescription>Please include all ingredients and enter each ingredient on a
-                                            new line.</FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="halal"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Halal?</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="rounded-full">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="No">No</SelectItem>
-                                                <SelectItem value="hand-slaughtered">Halal - Hand
-                                                    Slaughtered</SelectItem>
-                                                <SelectItem value="machine-slaughtered">Halal - Machine
-                                                    Slaughtered</SelectItem>
-                                                <SelectItem value="doesnt-have-meat">Halal - Doesn't Have
-                                                    Meat</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormDescription>
-                                            Pork, Alcohol, and Gelatin are NOT halal. For more
-                                            information, please
-                                            visit
-                                            <Link href="/examples/forms">Your Website Link</Link>.
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="kosher"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Kosher?</FormLabel>
-                                        <Select
-                                            onValueChange={(value) => field.onChange(value === '1')}
-                                            value={field.value ? '1' : '0'}
+                            <div>
+                                <FormLabel>Select the size(s) you are selling</FormLabel>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8 pt-3">
+                                    {/* Small Size */}
+                                    <div className="space-y-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSizeVisibility('small')}
+                                            className={`${getButtonClass(isSmallVisible)} w-full`}
                                         >
-                                            <FormControl>
-                                                <SelectTrigger className="rounded-full">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="1">Yes</SelectItem>
-                                                <SelectItem value="0">No</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="vegetarian"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Vegetarian/Vegan?</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="rounded-full">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Vegetarian">Vegetarian</SelectItem>
-                                                <SelectItem value="Vegan">Vegan</SelectItem>
-                                                <SelectItem value="None">None</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="desserts"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Desserts/Drinks?</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="rounded-full">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Desserts">Desserts</SelectItem>
-                                                <SelectItem value="Drinks">Drinks</SelectItem>
-                                                <SelectItem value="None">None</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="contains_nuts"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>May Contain Nuts?</FormLabel>
-                                        <Select onValueChange={(value) => field.onChange(value === '1')}
-                                            value={field.value ? '1' : '0'}>
-                                            <FormControl>
-                                                <SelectTrigger className="rounded-full">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="1">Yes</SelectItem>
-                                                <SelectItem value="0">No</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="meat_type"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Meat Type</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="rounded-full">
-                                                    <SelectValue placeholder="Chicken/Beef..." />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Beef">Beef</SelectItem>
-                                                <SelectItem value="Goat">Goat</SelectItem>
-                                                <SelectItem value="Lamb">Lamb</SelectItem>
-                                                <SelectItem value="Chicken">Chicken</SelectItem>
-                                                <SelectItem value="Pork">Pork</SelectItem>
-                                                <SelectItem value="Fish">Fish</SelectItem>
-                                                <SelectItem value="Other">Other</SelectItem>
-                                                <SelectItem value="None">None</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="ethnic_type"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Ethnic Type</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <FormControl>
-                                                <SelectTrigger className="rounded-full">
-                                                    <SelectValue placeholder="Pakistani/Indian/Chinese..." />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Pakistan">Pakistan</SelectItem>
-                                                <SelectItem value="Indian">Indian</SelectItem>
-                                                <SelectItem value="Chinese">Chinese</SelectItem>
-                                                <SelectItem value="Italian">Italian</SelectItem>
-                                                <SelectItem value="Thai">Thai</SelectItem>
-                                                <SelectItem value="Mexican">Mexican</SelectItem>
-                                                <SelectItem value="Korean">Korean</SelectItem>
-                                                <SelectItem value="Asian">Asian</SelectItem>
-                                                <SelectItem value="Mediterranean">Mediterranean</SelectItem>
-                                                <SelectItem value="Other">Other</SelectItem>
-                                                <SelectItem value="None">None</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-                            <FormField
-                                control={form.control}
-                                name="auto_delivery_time"
-                                render={({ field }) => (
-                                    <div className="bg-primary-color px-3.5 py-2  text-white">
-                                        <h3 className="font-medium">Preparation & Delivery Time</h3>
-                                        <h3 className="font-light italic mb-2" >Important! This will help determine when your food will be picked up for delivery so make
-                                            it as accurate as you can!</h3>
-                                        <div className="flex justify-center items-center mb-1">
-                                            <h3 className="inline-block grow font-medium">How long do you need to prepare/make this item?</h3>
-                                            <FormItem
-                                                className="inline-block text-black">
-                                                <Select
-                                                    onValueChange={field.onChange}
-                                                    defaultValue={String(field.value)}
-                                                    value={String(field.value)}
-                                                >
-                                                    <FormControl>
-                                                        <SelectTrigger className="rounded-full">
-                                                            <SelectValue placeholder="Select Auto Delivery Time" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        <SelectItem value="0">None</SelectItem>
-                                                        <SelectItem value="15">15 minutes</SelectItem>
-                                                        <SelectItem value="25">25 minutes</SelectItem>
-                                                        <SelectItem value="35">35 minutes</SelectItem>
-                                                        <SelectItem value="45">45 minutes</SelectItem>
-                                                        <SelectItem value="60">1 hour</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        </div>
+                                            Small
+                                        </button>
+                                        {isSmallVisible && (
+                                            <>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="small_price"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Price</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="$" type="number"
+                                                                    className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Price for this size.</FormDescription>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="small_amount"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Quantity</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="1, 2, 3..." type="number"
+                                                                    className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Quantity in this size?</FormDescription>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </>
+                                        )}
                                     </div>
-                                )}
-                            />
-                            <Button
-                                className="bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
-                                type="submit">Post Food</Button>
+                                    {/* Medium Size */}
+                                    <div className="space-y-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSizeVisibility('medium')}
+                                            className={`${getButtonClass(isMediumVisible)} w-full`}
+                                        >
+                                            Medium
+                                        </button>
+                                        {isMediumVisible && (
+                                            <>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="medium_price"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Medium Prices</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="$" type="number"
+                                                                    className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Price for this size.</FormDescription>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="medium_amount"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Medium Amounts</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="1, 2, 3..." type="number"
+                                                                    className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </>
+                                        )}
+                                    </div>
+                                    {/* Large Size */}
+                                    <div className="space-y-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSizeVisibility('large')}
+                                            className={`${getButtonClass(isLargeVisible)} w-full`}
+                                        >
+                                            Large
+                                        </button>
+                                        {isLargeVisible && (
+                                            <>
+                                                <FormField
+                                                    control={form.control}
+                                                    name="large_price"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Price</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="$" type="number"
+                                                                    className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Price for this size.</FormDescription>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="large_amount"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Quantity</FormLabel>
+                                                            <FormControl>
+                                                                <Input placeholder="1, 2, 3..."
+                                                                    type="number"
+                                                                    className="rounded-full" {...field} />
+                                                            </FormControl>
+                                                            <FormDescription>Quantity in this size?</FormDescription>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </>
+                                        )}
+                                    </div>
+                                    {/* No Size price, amount selected error message */}
+                                    {/* @ts-ignore */}
+                                    {form.formState.errors[""]?.message && (
+                                        <div className="col-span-3">
+                                            <p className="text-sm font-medium text-destructive">
+                                                {/* @ts-ignore */}
+                                                {form.formState.errors[""].message}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Size End */}
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Description</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    className="resize-none h-48"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>Tell us a little bit about your food item. Is
+                                                it perfect for dinner? Lunch? Is it good
+                                                for 3 people? Let customers know!</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="ingredients"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Ingredients</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    className="resize-none h-48"
+                                                    {...field}
+                                                    onChange={(e) => {
+                                                        handleTextareaChange(e);
+                                                        field.onChange(e);
+                                                    }}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>Please include all ingredients and enter each ingredient on a
+                                                new line.</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="halal"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Halal?</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger className="rounded-full">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="No">No</SelectItem>
+                                                    <SelectItem value="hand-slaughtered">Halal - Hand
+                                                        Slaughtered</SelectItem>
+                                                    <SelectItem value="machine-slaughtered">Halal - Machine
+                                                        Slaughtered</SelectItem>
+                                                    <SelectItem value="doesnt-have-meat">Halal - Doesn't Have
+                                                        Meat</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormDescription>
+                                                Pork, Alcohol, and Gelatin are NOT halal. For more
+                                                information, please
+                                                visit
+                                                <Link href="/examples/forms">Your Website Link</Link>.
+                                            </FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="kosher"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Kosher?</FormLabel>
+                                            <Select
+                                                onValueChange={(value) => field.onChange(value === '1')}
+                                                value={field.value ? '1' : '0'}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger className="rounded-full">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="1">Yes</SelectItem>
+                                                    <SelectItem value="0">No</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormDescription>Kosher is food prepared according to the
+                                                requirements of Jewish law.</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="vegetarian"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Vegetarian/Vegan?</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger className="rounded-full">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="Vegetarian">Vegetarian</SelectItem>
+                                                    <SelectItem value="Vegan">Vegan</SelectItem>
+                                                    <SelectItem value="None">None</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="desserts"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Desserts/Drinks?</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger className="rounded-full">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="Desserts">Desserts</SelectItem>
+                                                    <SelectItem value="Drinks">Drinks</SelectItem>
+                                                    <SelectItem value="None">None</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="contains_nuts"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>May Contain Nuts?</FormLabel>
+                                            <Select onValueChange={(value) => field.onChange(value === '1')}
+                                                value={field.value ? '1' : '0'}>
+                                                <FormControl>
+                                                    <SelectTrigger className="rounded-full">
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="1">Yes</SelectItem>
+                                                    <SelectItem value="0">No</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="meat_type"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Meat Type</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger className="rounded-full">
+                                                        <SelectValue placeholder="Chicken/Beef..." />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="Beef">Beef</SelectItem>
+                                                    <SelectItem value="Goat">Goat</SelectItem>
+                                                    <SelectItem value="Lamb">Lamb</SelectItem>
+                                                    <SelectItem value="Chicken">Chicken</SelectItem>
+                                                    <SelectItem value="Pork">Pork</SelectItem>
+                                                    <SelectItem value="Fish">Fish</SelectItem>
+                                                    <SelectItem value="Other">Other</SelectItem>
+                                                    <SelectItem value="None">None</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="ethnic_type"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Ethnic Type</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <FormControl>
+                                                    <SelectTrigger className="rounded-full">
+                                                        <SelectValue placeholder="Pakistani/Indian/Chinese..." />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="Pakistan">Pakistan</SelectItem>
+                                                    <SelectItem value="Indian">Indian</SelectItem>
+                                                    <SelectItem value="Chinese">Chinese</SelectItem>
+                                                    <SelectItem value="Italian">Italian</SelectItem>
+                                                    <SelectItem value="Thai">Thai</SelectItem>
+                                                    <SelectItem value="Mexican">Mexican</SelectItem>
+                                                    <SelectItem value="Korean">Korean</SelectItem>
+                                                    <SelectItem value="Asian">Asian</SelectItem>
+                                                    <SelectItem value="Mediterranean">Mediterranean</SelectItem>
+                                                    <SelectItem value="Other">Other</SelectItem>
+                                                    <SelectItem value="None">None</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+
+                                <FormField
+                                    control={form.control}
+                                    name="auto_delivery_time"
+                                    render={({ field }) => (
+                                        <div className="bg-primary-color px-3.5 py-2  text-white">
+                                            <h3 className="font-medium">Preparation & Delivery Time</h3>
+                                            <h3 className="font-light italic mb-2" >Important! This will help determine when your food will be picked up for delivery so make
+                                                it as accurate as you can!</h3>
+                                            <div className="flex justify-center items-center mb-1">
+                                                <h3 className="inline-block grow font-medium">How long do you need to prepare/make this item?</h3>
+                                                <FormItem
+                                                    className="inline-block text-black">
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={String(field.value)}
+                                                        value={String(field.value)}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger className="rounded-full">
+                                                                <SelectValue placeholder="Select Auto Delivery Time" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="0">None</SelectItem>
+                                                            <SelectItem value="15">15 minutes</SelectItem>
+                                                            <SelectItem value="25">25 minutes</SelectItem>
+                                                            <SelectItem value="35">35 minutes</SelectItem>
+                                                            <SelectItem value="45">45 minutes</SelectItem>
+                                                            <SelectItem value="60">1 hour</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            </div>
+                                        </div>
+                                    )}
+                                />
+                                <Button
+                                    className="bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
+                                    type="submit">Post Food</Button>
                         </form>
                     </Form>
                 </div>

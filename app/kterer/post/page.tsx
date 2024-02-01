@@ -4,30 +4,18 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
 import Link from "next/link";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon, PhotoIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useNotifications } from "@/components/notificationContext";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
+import { KtererInfo } from "@/types/shared/user";
+import { Alert, AlertDescription, AlertTitle, } from "@/components/ui/alert"
 
 const formSchema = z
   .object({
@@ -46,22 +34,28 @@ const formSchema = z
       .max(50, "Food name can't be longer than 50 characters"),
     small_price: z.coerce
       .number()
-      .nonnegative("Price must be a positive number"),
+      .nonnegative("Price must be a positive number")
+      .optional(),
     small_amount: z.coerce
       .number()
-      .nonnegative("Amount must be a positive number"),
+      .nonnegative("Amount must be a positive number")
+      .optional(),
     medium_price: z.coerce
       .number()
-      .nonnegative("Price must be a positive number"),
+      .nonnegative("Price must be a positive number")
+      .optional(),
     medium_amount: z.coerce
       .number()
-      .nonnegative("Amount must be a positive number"),
+      .nonnegative("Amount must be a positive number")
+      .optional(),
     large_price: z.coerce
       .number()
-      .nonnegative("Price must be a positive number"),
+      .nonnegative("Price must be a positive number")
+      .optional(),
     large_amount: z.coerce
       .number()
-      .nonnegative("Amount must be a positive number"),
+      .nonnegative("Amount must be a positive number")
+      .optional(),
     description: z
       .string()
       .min(25, "Description must be at least 25 characters"),
@@ -93,9 +87,9 @@ const formSchema = z
   .refine(
     (data) => {
       return (
-        (data.small_price > 0 && data.small_amount > 0) ||
-        (data.medium_price > 0 && data.medium_amount > 0) ||
-        (data.large_price > 0 && data.large_amount > 0)
+        ((data.small_price || 0) > 0 && (data.small_amount || 0) > 0) ||
+        ((data.medium_price || 0) > 0 && (data.medium_amount || 0) > 0) ||
+        ((data.large_price || 0) > 0 && (data.large_amount || 0) > 0)
       );
     },
     {
@@ -109,6 +103,74 @@ export default function PostFood() {
   const [ingredientsList, setIngredientsList] = useState<string[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [isSmallActive, setIsSmallActive] = useState(false);
+  const [isMediumActive, setIsMediumActive] = useState(false);
+  const [isLargeActive, setIsLargeActive] = useState(false);
+  const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
+
+  useEffect(() => {
+    const getKtererAccountInfo = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+      try {
+        const response = await fetch(`${apiURL}/api/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`Error: ${response.statusText}`);
+          return;
+        }
+
+        const data = await response.json();
+        setKtererInfo(data.user.kterer.stripe_account_id);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
+
+    getKtererAccountInfo().catch((error) => {
+      console.error("An error occurred:", error);
+    });
+  }, []);
+
+  // Toggle functions for each size
+  const toggleSize = (size: string) => {
+    switch (size) {
+      case 'small':
+        setIsSmallActive(!isSmallActive);
+        if (isSmallActive) {
+          form.resetField('small_price');
+          form.resetField('small_amount');
+        }
+        break;
+      case 'medium':
+        setIsMediumActive(!isMediumActive);
+        if (isMediumActive) {
+          form.resetField('medium_price');
+          form.resetField('medium_amount');
+        }
+        break;
+      case 'large':
+        setIsLargeActive(!isLargeActive);
+        if (isLargeActive) {
+          form.resetField('large_price');
+          form.resetField('large_amount');
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  // Button class based on active state
+  const getButtonClass = (isActive: boolean) =>
+    `rounded-full px-4 py-2 text-center w-full ${isActive ? 'bg-primary-color text-white' : 'bg-gray-200'}`;
 
   const { updateNotifications } = useNotifications();
 
@@ -124,12 +186,12 @@ export default function PostFood() {
     defaultValues: {
       images: [],
       name: "",
-      small_price: 0,
-      small_amount: 0,
-      medium_price: 0,
-      medium_amount: 0,
-      large_price: 0,
-      large_amount: 0,
+      small_price: undefined,
+      small_amount: undefined,
+      medium_price: undefined,
+      medium_amount: undefined,
+      large_price: undefined,
+      large_amount: undefined,
       description: "",
       ingredients: "",
       halal: "",
@@ -216,7 +278,7 @@ export default function PostFood() {
         ) {
           formData.append(key, JSON.stringify(value));
         } else {
-          formData.append(key, value.toString());
+          formData.append(key, value?.toString() || "");
         }
       }
     }
@@ -227,18 +289,18 @@ export default function PostFood() {
         [
           {
             size: "small",
-            price: values.small_price,
-            quantity: values.small_amount,
+            price: values.small_price || 0,
+            quantity: values.small_amount || 0,
           },
           {
             size: "medium",
-            price: values.medium_price,
-            quantity: values.medium_amount,
+            price: values.medium_price || 0,
+            quantity: values.medium_amount || 0,
           },
           {
             size: "large",
-            price: values.large_price,
-            quantity: values.large_amount,
+            price: values.large_price || 0,
+            quantity: values.large_amount || 0,
           },
         ].filter((size) => size.price > 0 && size.quantity > 0)
       )
@@ -296,10 +358,12 @@ export default function PostFood() {
             (not: {
               id: any;
               data: { message: any };
+              created_at: string | number | Date;
               read_at: string | number | Date;
             }) => ({
               id: not.id,
               message: not.data.message,
+              created_at: new Date(not.created_at),
               read_at: not.read_at ? new Date(not.read_at) : null,
             })
           )
@@ -320,7 +384,7 @@ export default function PostFood() {
         <p className="font-bold text-xl mb-12">Post Food</p>
         <div className="max-w-2xl mx-auto">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {previewUrls.map((url, index) => (
                   <div className="space-y-2" key={index}>
@@ -397,144 +461,184 @@ export default function PostFood() {
                     <FormControl>
                       <Input className="rounded-full" {...field} />
                     </FormControl>
+                    <FormDescription>Try to keep it short and precise!</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               {/* Size Start */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8">
-                <div className="space-y-4">
-                  <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                    Quantity (Small)
+              <div>
+                <FormLabel>Select the size(s) you are selling</FormLabel>
+                <div className="grid grid-cols-1 sm:grid-cols-3 col-span-1 gap-8 pt-3">
+                  {/* Small Size */}
+                  <div className="space-y-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSize('small')}
+                      className={getButtonClass(isSmallActive)}
+                    >
+                      Small
+                    </button>
+                    {isSmallActive && (
+                      <>
+                        <FormField
+                          control={form.control}
+                          name="small_price"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Price</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="$"
+                                  type="number"
+                                  className="rounded-full"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>Price for this size.</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="small_amount"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Quantity</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="1, 2, 3..."
+                                  type="number"
+                                  className="rounded-full"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>Quantity in this size?</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
+                    )}
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="small_price"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Small Prices</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="$"
-                            type="number"
-                            className="rounded-full"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+
+                  {/* Medium Size */}
+                  <div className="space-y-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSize('medium')}
+                      className={getButtonClass(isMediumActive)}
+                    >
+                      Medium
+                    </button>
+                    {isMediumActive && (
+                      <>
+                        <FormField
+                          control={form.control}
+                          name="medium_price"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Price</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="$"
+                                  type="number"
+                                  className="rounded-full"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>Price for this size.</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="medium_amount"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Quantity</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="1, 2, 3..."
+                                  type="number"
+                                  className="rounded-full"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>Quantity in this size?</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
                     )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="small_amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Small Amounts</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="1, 2, 3..."
-                            type="number"
-                            className="rounded-full"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                  </div>
+
+                  {/* Large Size */}
+                  <div className="space-y-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleSize('large')}
+                      className={getButtonClass(isLargeActive)}
+                    >
+                      Large
+                    </button>
+                    {isLargeActive && (
+                      <>
+                        <FormField
+                          control={form.control}
+                          name="large_price"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Price</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="$"
+                                  type="number"
+                                  className="rounded-full"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>Price for this size.</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="large_amount"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Quantity</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="1, 2, 3..."
+                                  type="number"
+                                  className="rounded-full"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>Quantity in this size?</FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
                     )}
-                  />
+                  </div>
+
+                  {/* @ts-ignore */}
+                  {form.formState.errors[""] && (
+                    <div className="col-span-3">
+                      <p className="text-sm font-medium text-destructive">
+                        {/* @ts-ignore */}
+                        {form.formState.errors[""].message}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <div className="space-y-4">
-                  <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                    Quantity (Medium)
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="medium_price"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Medium Prices</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="$"
-                            type="number"
-                            className="rounded-full"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="medium_amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Medium Amounts</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="1, 2, 3..."
-                            type="number"
-                            className="rounded-full"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="space-y-4">
-                  <div className="bg-primary-color rounded-full p-2 text-white text-center">
-                    Quantity (Large)
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="large_price"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Large Prices</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="$"
-                            type="number"
-                            className="rounded-full"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="large_amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Large Amounts</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="1, 2, 3..."
-                            type="number"
-                            className="rounded-full"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                {/* @ts-ignore */}
-                {form.formState.errors[""] && (
-                  <div className="col-span-3">
-                    <p className="text-sm font-medium text-destructive">
-                      {/* @ts-ignore */}
-                      {form.formState.errors[""].message}
-                    </p>
-                  </div>
-                )}
               </div>
               {/* Size End */}
               <FormField
@@ -545,11 +649,13 @@ export default function PostFood() {
                     <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Add adescription for your food item. Describe the flavors & what buyers can expect"
                         className="resize-none h-48"
                         {...field}
                       />
                     </FormControl>
+                    <FormDescription>Tell us a little bit about your food item. Is
+                      it perfect for dinner? Lunch? Is it good
+                      for 3 people? Let customers know!</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -638,6 +744,8 @@ export default function PostFood() {
                         <SelectItem value="0">No</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormDescription>Kosher is food prepared according to the
+                      requirements of Jewish law.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -746,7 +854,6 @@ export default function PostFood() {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="ethnic_type"
@@ -782,7 +889,6 @@ export default function PostFood() {
                   </FormItem>
                 )}
               />
-
 
               <FormField
                 control={form.control}
@@ -828,10 +934,22 @@ export default function PostFood() {
               >
                 Post Food
               </Button>
+              {!ktererInfo && (
+                <>
+                  <Alert variant="destructive">
+                    <ExclamationCircleIcon className="h-5 w-5 mr-2" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>
+                      Please complete your banking information to enable food posting. <Link
+                        href="/kterer/earnings" className="underline">Click here to complete</Link>
+                    </AlertDescription>
+                  </Alert>
+                </>
+              )}
             </form>
           </Form>
         </div>
-      </div >
+      </div>
     </>
   );
 }

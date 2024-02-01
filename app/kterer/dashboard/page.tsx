@@ -3,6 +3,7 @@ import { useUser } from "@clerk/nextjs";
 import { useContext, useEffect, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import Biryani from "@/static/landing-page/biryani.png";
+import NoFoodIcon from "@/static/dashboard/no-item-post-food-icon.svg";
 import Image from "next/image";
 import StarRating from "@/components/starRating";
 import {
@@ -23,15 +24,20 @@ import { useNotifications } from "@/components/notificationContext";
 import { StatusContext } from "@/contexts/StatusContext";
 import Food from "@/app/kterings/[food]/page";
 import { Filter } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
     const { user } = useUser();
-
+    console.log(user);
+    if (!user) {
+        return null;
+    }
     const router = useRouter();
     const [ktererFood, setKtererFood] = useState<FoodItem[]>([]);
     const [pastFood, setPastFood] = useState<FoodItem[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [postToDelete, setPostToDelete] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [deleteMode, setDeleteMode] = useState(0);
 
     const { updateNotifications } = useNotifications();
@@ -43,6 +49,9 @@ export default function Dashboard() {
         const getKtererFood = async () => {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            setIsLoading(true);
+
             try {
                 const params = new URLSearchParams({ kterer: user.id.toString() });
                 const response = await fetch(`${apiURL}/api/food?${params}`, {
@@ -62,6 +71,8 @@ export default function Dashboard() {
                 setKtererFood(data.data);
             } catch (error) {
                 console.error(`Error: ${error}`);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -115,10 +126,12 @@ export default function Dashboard() {
                         (not: {
                             id: any;
                             data: { message: any };
+                            created_at: string | number | Date;
                             read_at: string | number | Date;
                         }) => ({
                             id: not.id,
                             message: not.data.message,
+                            created_at: new Date(not.created_at),
                             read_at: not.read_at ? new Date(not.read_at) : null,
                         })
                     )
@@ -199,6 +212,18 @@ export default function Dashboard() {
         setPostToDelete(foodId);
         setIsDialogOpen(true);
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                {/* Example loading spinner */}
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-color"></div>
+                <div>
+                    <p className="text-primary-color mt-4">Please wait while we load your data...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (globalStatus?.is_serving_time) {
         return (
@@ -282,13 +307,20 @@ export default function Dashboard() {
 
                         </div>
                     ) : (
-                        <div className="text-center py-10">
-                            <p>You have not posted any food items yet</p>
-                            <Link href="/kterer/post">
-                                <p className="text-primary-color hover:underline mt-2 inline-block">
-                                    Post Your Food
-                                </p>
-                            </Link>
+                        <div className="flex justify-center pb-48 pt-28 space-x-8 items-center">
+                            <Image src={NoFoodIcon} alt="No Food Icon" width={125} height={125} />
+                            <div className="space-y-3">
+                                <div>
+                                    <p>Looks a little empty here...</p>
+                                    <p>Why not try posting a food item?</p>
+                                </div>
+                                <Button
+                                    className="bg-primary-color text-white w-full sm:w-auto hover:bg-primary-color-hover rounded-full">
+                                    <Link href="/kterer/post">
+                                        Post Food
+                                    </Link>
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -359,4 +391,5 @@ export default function Dashboard() {
             </div>
         </>);
     }
+
 }

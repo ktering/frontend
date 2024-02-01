@@ -6,7 +6,10 @@ import { Earnings } from "@/types/pages/earnings/earnings";
 import { Button } from "@/components/ui/button";
 import { KtererInfo } from "@/types/shared/user";
 import { useNotifications } from "@/components/notificationContext";
+import { toast } from "@/components/ui/use-toast";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 import { ExclamationTriangleIcon, } from "@heroicons/react/24/outline";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -30,6 +33,7 @@ export default function Earnings() {
     });
     const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
     const [ktererOrders, setKtererOrders] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [orderIdToCancel, setOrderIdToCancel] = useState<number | 0>(0);
 
@@ -138,6 +142,9 @@ export default function Earnings() {
         const getKtererAccountInfo = async () => {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+            setIsLoading(true);
+
             try {
                 const response = await fetch(`${apiURL}/api/user`, {
                     method: "GET",
@@ -156,6 +163,8 @@ export default function Earnings() {
                 setKtererInfo(data.user.kterer.stripe_account_id);
             } catch (error) {
                 console.error("An error occurred:", error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -177,7 +186,22 @@ export default function Earnings() {
     const displayEarnings = (totalEarnings / 100).toFixed(2);
 
     const handleLinkClick = (url: string) => () => {
-        window.open(url);
+        if (!url) {
+            toast({
+                description: (
+                    <>
+                        <div className="flex items-center">
+                            <XMarkIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                            Tracking Url is empty.
+                        </div>
+                    </>
+                ),
+                duration: 5000,
+            });
+        }
+        else {
+            window.open(url);
+        }
     };
 
     const cancelOrder = async (id: number) => {
@@ -264,10 +288,12 @@ export default function Earnings() {
                     (not: {
                         id: any;
                         data: { message: any };
+                        created_at: string | number | Date;
                         read_at: string | number | Date;
                     }) => ({
                         id: not.id,
                         message: not.data.message,
+                        created_at: new Date(not.created_at),
                         read_at: not.read_at ? new Date(not.read_at) : null,
                     }),
                 ),
@@ -291,6 +317,18 @@ export default function Earnings() {
                 });
             });
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                {/* Example loading spinner */}
+                <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-color"></div>
+                <div>
+                    <p className="text-primary-color mt-4">Please wait while we load your data...</p>
+                </div>
+            </div>
+        );
+    }
 
     const handleCancelOrder = (id: number) => {
         cancelOrder(id)
@@ -332,7 +370,7 @@ export default function Earnings() {
                                 onClick={() => handleCancelOrder(orderIdToCancel)
                                 }
                             >
-                                Cancel Delivery
+                                Cancel Order
                             </button>
                         </AlertDialogAction>
                     </AlertDialogFooter>
@@ -375,208 +413,214 @@ export default function Earnings() {
                 </div>
 
                 <h2 className="my-4 font-bold text-lg">In Progress</h2>
-
                 <div className="my-8">
-                    {ktererOrders
-                        .filter((order) => order.status === "progress")
-                        .map((order, index) => (
-                            <Alert key={index} className="mt-8">
-                                <AlertTitle className="font-bold text-lg border-b pb-2">
-                                    <div className="flex justify-between items-center">
-                                        <p>{order.buyer_name}</p>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-32">Order No.</TableHead>
+                                <TableHead>Customer</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead className="w-72">Status</TableHead>
+                                <TableHead className="w-72">Actions</TableHead>
+                                <TableHead className="w-72"></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {ktererOrders
+                                .filter((order) => order.status === "progress")
+                                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                .map((order, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{order.buyer_name}</TableCell>
+                                        <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                        <TableCell>${order.total_price}</TableCell>
+                                        <TableCell>{order.status}</TableCell>
+                                        <TableCell className="text-left md:space-x-8">
+                                            <Button
+                                                variant="link"
+                                                onClick={handleLinkClick(order.track_url)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Track Order
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell className="text-left md:space-x-8">
+                                            <Button
+                                                variant="link"
+                                                onClick={openCancelOrderDialog(order.id)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Cancel Order
+                                            </Button>
+                                        </TableCell>
 
-
-                                        <Button
-                                            variant="link"
-                                            onClick={openCancelOrderDialog(order.id)}
-                                        >
-                                            Cancel Order
-                                        </Button>
-
-                                        <Button
+                                        {/* <Button
                                             variant="link"
                                             onClick={handleCreateDelivery(order.id)}
                                         >
                                             Create Delivery
-                                        </Button>
-                                    </div>
-                                </AlertTitle>
-                                <AlertDescription>
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <div className="space-x-8 mt-4">
-                                                <span className="font-bold">Date:</span>{" "}
-                                                {new Date(order.created_at).toLocaleDateString("en-US")}
-                                                <span className="font-bold">Total:</span>{" "}
-                                                {order.total_price}
-                                                <span className="font-bold">Items:</span>{" "}
-                                                {order.total_items}
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center pt-4">
-                                                    {order.items.map((item: any, index: number) => (
-                                                        <div key={index} className="mr-4">
-                                                            <span className="font-bold">{item.name}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {/*<Link href="/help">*/}
-                                            {/*    <Button variant="link">Help</Button>*/}
-                                            {/*</Link>*/}
-                                            {order.track_url && (
-                                                <Button
-                                                    variant="link"
-                                                    onClick={handleLinkClick(order.track_url)}
-                                                >
-                                                    Track Order
-                                                </Button>
-                                            )}
+                                        </Button> */}
+                                        <TableCell className="text-left md:space-x-8">
+
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
+                                                    className="pl-0"
                                                     onClick={handleLinkClick(order.receipt_url)}
                                                 >
                                                     View Receipt
                                                 </Button>
                                             )}
-                                        </div>
-                                    </div>
-                                </AlertDescription>
-                            </Alert>
-                        ))}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
                 </div>
 
                 <h2 className="my-4 font-bold text-lg">Open</h2>
-
                 <div className="my-8">
-                    {ktererOrders
-                        .filter(
-                            (order) =>
-                                order.status !== "cancelled" &&
-                                order.status !== "delivered" &&
-                                order.status !== "progress",
-                        )
-                        .map((order, index) => (
-                            <Alert key={index} className="mt-8">
-                                <AlertTitle className="font-bold text-lg border-b pb-2">
-                                    <div className="flex justify-between items-center">
-                                        <p>{order.buyer_name}</p>
-                                        {order.track_url && (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-32">Order No.</TableHead>
+                                <TableHead>Customer</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead className="w-72">Status</TableHead>
+                                <TableHead className="w-72">Actions</TableHead>
+                                <TableHead className="w-72"></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {ktererOrders
+                                .filter((order) =>
+                                    order.status !== "cancelled" &&
+                                    order.status !== "delivered" &&
+                                    order.status !== "progress",
+                                )
+                                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                .map((order, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{order.buyer_name}</TableCell>
+                                        <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                        <TableCell>${order.total_price}</TableCell>
+                                        <TableCell>{order.status}</TableCell>
+                                        <TableCell className="text-left md:space-x-8">
                                             <Button
+                                                disabled={!!order.track_url}
                                                 variant="link"
                                                 onClick={handleLinkClick(order.track_url)}
+                                                className="p-0 text-primary-color underline-offset-auto"
                                             >
-                                                Track Delivery
+                                                Track Order
                                             </Button>
-                                        )}
-                                    </div>
-                                </AlertTitle>
-                                <AlertDescription>
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <div className="space-x-8 mt-4">
-                                                <span className="font-bold">Date:</span>{" "}
-                                                {new Date(order.created_at).toLocaleDateString("en-US")}
-                                                <span className="font-bold">Total:</span>{" "}
-                                                {order.total_price}
-                                                <span className="font-bold">Items:</span>{" "}
-                                                {order.total_items}
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center pt-4">
-                                                    {order.items.map((item: any, index: number) => (
-                                                        <div key={index} className="mr-4">
-                                                            <span className="font-bold">{item.name}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {/*<Link href="/help">*/}
-                                            {/*    <Button variant="link">Help</Button>*/}
-                                            {/*</Link>*/}
+                                        </TableCell>
+                                        <TableCell className="text-left md:space-x-8">
+                                            <Button
+                                                variant="link"
+                                                onClick={openCancelOrderDialog(order.id)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Cancel Order
+                                            </Button>
+                                        </TableCell>
+
+                                        <TableCell className="text-left md:space-x-8">
+
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
+                                                    className="pl-0"
                                                     onClick={handleLinkClick(order.receipt_url)}
                                                 >
                                                     View Receipt
                                                 </Button>
                                             )}
-                                        </div>
-                                    </div>
-                                </AlertDescription>
-                            </Alert>
-                        ))}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
                 </div>
 
                 <h2 className="my-4 font-bold text-lg">Completed</h2>
-
                 <div className="my-8">
-                    {ktererOrders
-                        .filter(
-                            (order) =>
-                                order.status === "cancelled" || order.status === "delivered",
-                        )
-                        .map((order, index) => (
-                            <Alert key={index} className="mt-8">
-                                <AlertTitle className="font-bold text-lg border-b pb-2">
-                                    <div className="flex justify-between items-center">
-                                        <p>{order.buyer_name}</p>
-                                        {order.track_url && (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-32">Order No.</TableHead>
+                                <TableHead>Customer</TableHead>
+                                <TableHead>Date</TableHead>
+                                <TableHead>Amount</TableHead>
+                                <TableHead>Type</TableHead>
+                                <TableHead className="w-72">Status</TableHead>
+                                <TableHead className="w-72">Actions</TableHead>
+                                <TableHead className="w-72"></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {ktererOrders
+                                .filter((order) =>
+                                    order.status === "cancelled" || order.status === "delivered",
+                                )
+                                .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                .map((order, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{order.buyer_name}</TableCell>
+                                        <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                        <TableCell>${order.total_price}</TableCell>
+                                        <TableCell>{order.status}</TableCell>
+                                        <TableCell className="text-left md:space-x-8">
                                             <Button
+                                                disabled={!!order.track_url}
                                                 variant="link"
                                                 onClick={handleLinkClick(order.track_url)}
+                                                className="p-0 text-primary-color underline-offset-auto"
                                             >
-                                                Track Delivery
+                                                Track Order
                                             </Button>
-                                        )}
-                                    </div>
-                                </AlertTitle>
-                                <AlertDescription>
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <div className="space-x-8 mt-4">
-                                                <span className="font-bold">Date:</span>{" "}
-                                                {new Date(order.created_at).toLocaleDateString("en-US")}
-                                                <span className="font-bold">Total:</span>{" "}
-                                                {order.total_price}
-                                                <span className="font-bold">Items:</span>{" "}
-                                                {order.total_items}
-                                            </div>
-                                            <div>
-                                                <div className="flex items-center pt-4">
-                                                    {order.items.map((item: any, index: number) => (
-                                                        <div key={index} className="mr-4">
-                                                            <span className="font-bold">{item.name}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {/*<Link href="/help">*/}
-                                            {/*    <Button variant="link">Help</Button>*/}
-                                            {/*</Link>*/}
+                                        </TableCell>
+                                        <TableCell className="text-left md:space-x-8">
+                                            <Button
+                                                variant="link"
+                                                onClick={openCancelOrderDialog(order.id)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Cancel Order
+                                            </Button>
+                                        </TableCell>
+
+                                        {/* <Button
+                                            variant="link"
+                                            onClick={handleCreateDelivery(order.id)}
+                                        >
+                                            Create Delivery
+                                        </Button> */}
+                                        <TableCell className="text-left md:space-x-8">
+
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
+                                                    className="pl-0"
                                                     onClick={handleLinkClick(order.receipt_url)}
                                                 >
                                                     View Receipt
                                                 </Button>
                                             )}
-                                        </div>
-                                    </div>
-                                </AlertDescription>
-                            </Alert>
-                        ))}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
                 </div>
-            </div>
+            </div >
         </>
     );
 }

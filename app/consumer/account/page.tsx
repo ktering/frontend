@@ -326,11 +326,45 @@ export default function ConsumerAccount() {
                 </Form>
             </div>
             <div className="flex flex-col my-16 max-w-xs w-full mx-auto items-center">
-                <Link
-                    href="/kterer-onboarding/kterer-setup"
-                    className="rounded-full px-4 py-2.5 font-semibold border bg-primary-color text-white hover:bg-primary-color-hover shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">
+                <button
+                    onClick={async () => {
+                        try {
+                            const accessToken = localStorage.getItem("accessToken");
+                            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+                            const response = await fetch(`${apiURL}/api/convert-to-kterer`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${accessToken}`
+                                }
+                            });
+
+                            if (response.status === 200) {
+                                let userId = user?.id;
+                                const response = await fetch('/api/kterer', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ userId, ktererSignUpCompleted: false }),
+                                });
+
+                                if (response.ok) {
+                                    router.push('/kterer-onboarding/kterer-setup');
+                                }
+
+                            } else {
+                                console.error('Failed to convert account to Kterer');
+                            }
+                        } catch (error) {
+                            console.error('An error occurred:', error);
+                        }
+                    }}
+                    className="rounded-full px-4 py-2.5 font-semibold border bg-primary-color text-white hover:bg-primary-color-hover shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                >
                     Become a Kterer
-                </Link>
+                </button>
                 <button
                     onClick={deleteAccount}
                     className="border mt-4 rounded-full px-4 py-2.5 font-semibold text-primary-color hover:bg-gray-50 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">

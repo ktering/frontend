@@ -54,16 +54,15 @@ export default function BecomeKterer() {
     return (
         <>
             {/* Section 1 */}
-            <section className="bg-primary-color text-white">
-                <div className="max-w-7xl mx-auto">
+            <section className="text-white relative border-t-2 border-primary-color">
+                <div className="max-w-7xl mx-auto ">
                     <div className="mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:pt-12 lg:pb-24 lg:px-8">
-                        <h1 className="text-3xl font-bold text-center pb-16">
-                            Become a Kterer
-                        </h1>
-                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16">
-                            <div
-                                className="lg:col-span-2 flex flex-col items-center justify-center align-middle text-center lg:text-left lg:items-start lg:justify-center">
-                                <h2 className="text-3xl font-bold leading-10">
+                        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-16 bg-primary-color-angled-wrapper">
+                            <div className="lg:col-span-2 flex flex-col items-center justify-center align-middle text-center lg:text-left lg:items-start lg:justify-center z-10">
+                                <h1 className="text-4xl font-bold text-center pb-12">
+                                    Become a Kterer
+                                </h1>
+                                <h2 className="text-2xl font-bold leading-10">
                                     Make What You Want
                                     <br/>
                                     Reach More People
@@ -150,7 +149,7 @@ export default function BecomeKterer() {
                                         <Image
                                             src={feature.imgSrc}
                                             alt=""
-                                            className="w-20 h-20 sm:w-20 sm:h-20"
+                                            className="w-22 h-22 sm:w-22 sm:h-22"
                                         />
                                         <dt className="text-2xl font-bold leading-7 text-center my-4">
                                             {feature.name}

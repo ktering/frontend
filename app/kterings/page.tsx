@@ -10,6 +10,7 @@ import MexicanIcon from "@/static/home/mexican-icon.svg";
 import MiddleEasternIcon from "@/static/home/middle-eastern-icon.svg";
 import TrendingIcon from "@/static/home/trending-icon.svg";
 import VeganIcon from "@/static/home/vegan-icon.svg";
+import SearchIcon from "@/static/search-icon.svg";
 import Image from "next/image";
 import StarRating from "@/components/starRating";
 import { Button } from "@/components/ui/button";
@@ -21,16 +22,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import {
-  CheckCircleIcon,
-  ChevronDownIcon,
-  HeartIcon as HeartIconOutline,
-} from "@heroicons/react/24/outline";
-import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, ChevronDownIcon, HeartIcon as HeartIconOutline, } from "@heroicons/react/24/outline";
 import { FoodItem } from "@/types/shared/food";
 import { SearchContext } from "@/contexts/SearchContext";
 import { toast } from "@/components/ui/use-toast";
 import { useNotifications } from "@/components/notificationContext";
+import { HeartIcon, X } from "lucide-react";
 import { StatusContext } from "../../contexts/StatusContext";
 
 export default function Kterings() {
@@ -46,14 +43,21 @@ export default function Kterings() {
   const tryNewFood = nearYouFood;
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [currentFilter, setCurrentFilter] = useState("Near You");
-  const globalStatus = useContext(StatusContext);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { updateNotifications } = useNotifications();
+  const globalStatus = useContext(StatusContext);
+
+  interface FavoritedItems {
+    [key: string]: boolean;
+  }
 
   useEffect(() => {
     const getNearYouFood = async () => {
       const accessToken = localStorage.getItem("accessToken");
       const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+      setIsLoading(true);
 
       try {
         const response = await fetch(`${apiURL}/api/food`, {
@@ -74,6 +78,8 @@ export default function Kterings() {
         setDisplayedFood(data.data);
       } catch (error) {
         console.error(`Error: ${error}`);
+      } finally {
+        setIsLoading(false);
       }
     };
     const getNotifications = async () => {
@@ -100,6 +106,7 @@ export default function Kterings() {
           data.map((not: any) => ({
             id: not.id,
             message: not.data.message,
+            created_at: new Date(not.created_at),
             read_at: not.read_at ? new Date(not.read_at) : null,
           }))
         );
@@ -115,10 +122,6 @@ export default function Kterings() {
       console.error(`Error: ${error}`);
     });
   }, []);
-  //
-  // const filteredFood = nearYouFood.filter(item =>
-  //     item.name.toLowerCase().includes(searchInput.toLowerCase())
-  // );
 
   const filteredFood = isSearching
     ? nearYouFood.filter((item) =>
@@ -141,7 +144,6 @@ export default function Kterings() {
       console.error(`Error: ${response.statusText}`);
       return;
     }
-
     setFavorites((prev) => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(foodId)) {
@@ -151,7 +153,6 @@ export default function Kterings() {
       }
       return newFavorites;
     });
-
     toast({
       description: (
         <>
@@ -189,11 +190,6 @@ export default function Kterings() {
         return nearYouFood;
     }
   };
-
-  // const handleIconClick = (category: string) => {
-  //     const filtered = filterFood(category);
-  //     setDisplayedFood(filtered);
-  // };
 
   const handleIconClick = (category: string) => {
     let filtered;
@@ -255,11 +251,13 @@ export default function Kterings() {
     },
   ];
 
+
   if (globalStatus?.is_serving_time) {
     return (
       <>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex justify-between space-x-8 scrollbar overflow-x-auto md:overflow-visible md:flex-nowrap mb-4">
+          <div
+            className="flex justify-between space-x-8 scrollbar overflow-x-auto md:overflow-visible md:flex-nowrap mb-4">
             {icons.map((icon, index) => (
               <button
                 key={index}
@@ -274,6 +272,7 @@ export default function Kterings() {
                     width={48}
                     height={48}
                     className="h-12"
+                    priority={true}
                   />
                   <p>{icon.iconName}</p>
                 </div>
@@ -350,7 +349,7 @@ export default function Kterings() {
 
                       <span onClick={() => toggleFavorite(item.id)}>
                         {favorites.has(item.id) ? (
-                          <HeartIconSolid className="h-6 w-6 cursor-pointer text-primary-color" />
+                          <HeartIcon className="h-6 w-6 cursor-pointer text-primary-color" />
                         ) : (
                           <HeartIconOutline className="h-6 w-6 cursor-pointer" />
                         )}
@@ -377,7 +376,8 @@ export default function Kterings() {
                   return (
                     <div key={index} className="relative">
                       <Link href={`/kterings/${item.name}?${food_id}`}>
-                        <div className="w-full bg-gray-200 rounded-lg overflow-hidden h-72 sm:h-64 object-cover object-center">
+                        <div
+                          className="w-full bg-gray-200 rounded-lg overflow-hidden h-72 sm:h-64 object-cover object-center">
                           <Image
                             src={
                               item.images && item.images.length > 0
@@ -403,7 +403,7 @@ export default function Kterings() {
 
                         <span onClick={() => toggleFavorite(item.id)}>
                           {favorites.has(item.id) ? (
-                            <HeartIconSolid className="h-6 w-6 cursor-pointer text-primary-color" />
+                            <HeartIcon className="h-6 w-6 cursor-pointer text-primary-color" />
                           ) : (
                             <HeartIconOutline className="h-6 w-6 cursor-pointer" />
                           )}
@@ -420,17 +420,19 @@ export default function Kterings() {
     );
   }
   else {
-    return (<>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-red-200 px-3.5 py-5  text-red-700 text-center">
-            <h3 className="font-bold mb-4 center">Kterings is currently closed!</h3>
-            <h3 className="m-0 font-medium italic">Services end at 8pm daily. Come back tomorrow</h3>
-            <h3 className="m-0 font-medium italic">to order more of your favorites!</h3>
-          </div>
+    return (
+      <>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-red-200 px-3.5 py-5  text-red-700 text-center">
+              <h3 className="font-bold mb-4 center">Kterings is currently closed!</h3>
+              <h3 className="m-0 font-medium italic">Services end at 8pm daily. Come back tomorrow</h3>
+              <h3 className="m-0 font-medium italic">to order more of your favorites!</h3>
+            </div>
 
+          </div>
         </div>
-      </div>
-    </>)
+      </>
+    );
   }
 }

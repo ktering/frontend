@@ -46,6 +46,8 @@ import { KtererInfo } from "@/types/shared/user";
 
 import { useUser } from "@clerk/nextjs";
 import { useCartCount } from "@/contexts/CartContext";
+import Link from "next/link";
+import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 
 const formSchema = z.object({
   rating: z.number().min(1).max(5),
@@ -223,7 +225,8 @@ export default function Food() {
           description: (
             <>
               <div className="flex items-center">
-                <ExclamationTriangleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                <ExclamationTriangleIcon
+                  className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
                 You are allowed to buy food from only 1 keterer in one session
               </div>
             </>
@@ -274,7 +277,6 @@ export default function Food() {
 
     return isAvailable ? (
       <button
-        key={index}
         onClick={() => selectSize(size)}
         className={`border rounded-full px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color ${isSelected
           ? "bg-primary-color text-white hover:bg-primary-color-hover"
@@ -451,6 +453,12 @@ export default function Food() {
   return (
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <p className="font-bold text-xl mb-12 flex items-center">
+          <Link href="/kterings" className="flex spcae-x-4">
+            <ArrowLeftIcon className="h-6 w-6 text-primary-color mr-2" />
+            Home Page
+          </Link>
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="col-span-1">
             <div id="left-side-image" className="pt-0">
@@ -482,39 +490,46 @@ export default function Food() {
             )}
             <div className="mb-2 mt-2 space-x-2 space-y-2">
               {foodDetails?.halal !== "No" ? (
-                <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                <span
+                  className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
                   Halal - Hand Slaughtered
                 </span>
               ) : (
-                <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
+                <span
+                  className="inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
                   Non-Halal
                 </span>
               )}
               {foodDetails?.contains_nuts && (
-                <span className="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+                <span
+                  className="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
                   Contains Nuts
                 </span>
               )}
               {foodDetails?.kosher && (
-                <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
+                <span
+                  className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
                   Kosher
                 </span>
               )}
               {foodDetails?.vegetarian &&
                 foodDetails?.vegetarian !== "None" && (
-                  <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                  <span
+                    className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
                     {foodDetails.vegetarian}
                   </span>
                 )}
               {foodDetails?.desserts && foodDetails?.desserts !== "None" && (
-                <span className="inline-flex items-center rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-700">
+                <span
+                  className="inline-flex items-center rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-700">
                   {foodDetails.desserts}
                 </span>
               )}
               {foodDetails?.meat_type &&
                 foodDetails?.meat_type !== "None" &&
                 foodDetails?.meat_type !== "Other" && (
-                  <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">
+                  <span
+                    className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">
                     {foodDetails.meat_type}
                   </span>
                 )}
@@ -523,7 +538,8 @@ export default function Food() {
               {foodDetails?.ethnic_type &&
                 foodDetails?.ethnic_type !== "None" &&
                 foodDetails?.ethnic_type !== "Other" && (
-                  <span className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium text-gray-800 border-gray-300">
+                  <span
+                    className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium text-gray-800 border-gray-300">
                     {foodDetails.ethnic_type}
                   </span>
                 )}
@@ -694,8 +710,8 @@ export default function Food() {
                               type="button"
                               onClick={() => onChange(starValue)}
                               className={`rounded-lg border px-4 py-2.5 font-semibold ${value === starValue
-                                ? "bg-primary-color text-white"
-                                : "bg-white text-primary-color"
+                                  ? "bg-primary-color text-white"
+                                  : "bg-white text-primary-color"
                                 } shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
                             >
                               <div className="flex items-center justify-center">
@@ -728,8 +744,7 @@ export default function Food() {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                /><div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {reviewImages.map((file, index) => (
                     <div className="space-y-2" key={index}>
                       <div className="h-48 overflow-hidden rounded-lg relative">

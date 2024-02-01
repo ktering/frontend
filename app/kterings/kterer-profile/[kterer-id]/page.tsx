@@ -8,20 +8,8 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/components/ui/use-toast";
 import { CheckCircleIcon, StarIcon } from "@heroicons/react/24/outline";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormMessage, } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams } from "next/navigation";
 import { KtererInfo } from "@/types/pages/kterings/kterer-profile";
@@ -353,7 +341,8 @@ export default function KtererProfile() {
                   return (
                     <div key={index} className="relative">
                       <Link href={`/kterings/${item.name}?${food_id}`}>
-                        <div className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
+                        <div
+                          className="aspect-w-4 aspect-h-3 w-full bg-gray-200 rounded-lg overflow-hidden">
                           <Image
                             src={item?.images[0]?.image_url || Biryani}
                             alt="Food Image"
@@ -451,11 +440,10 @@ export default function KtererProfile() {
                               key={starValue}
                               type="button"
                               onClick={() => onChange(starValue)}
-                              className={`rounded-lg border px-4 py-2.5 font-semibold ${
-                                value === starValue
-                                  ? "bg-primary-color text-white"
-                                  : "bg-white text-primary-color"
-                              } shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
+                              className={`rounded-lg border px-4 py-2.5 font-semibold ${value === starValue
+                                ? "bg-primary-color text-white"
+                                : "bg-white text-primary-color"
+                                } shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
                             >
                               <div className="flex items-center justify-center">
                                 {starValue}

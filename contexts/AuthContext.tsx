@@ -16,7 +16,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(() => {
-    const token = (typeof window !== 'undefined') ? localStorage.getItem("accessToken") : null;
+    const token = localStorage.getItem("accessToken");
     return token;
   });
 
@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-
+    console.log(token, pathname);
     if (!token && !["/fetch-user"].includes(pathname)) {
       signOut().then(() => {
         localStorage.removeItem("cart");
