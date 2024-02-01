@@ -218,8 +218,7 @@ export default function Earnings() {
             });
 
             if (!response.ok) {
-                console.error(`Error: ${response.statusText}`);
-                return;
+                throw (new Error('cancelling order error'));
             }
 
             const data = await response.json();
@@ -227,6 +226,18 @@ export default function Earnings() {
             setKtererOrders(ktererOrders.filter((order) => order.id !== data.order_id));
 
         } catch (error) {
+
+            toast({
+                description: (
+                    <>
+                        <div className="flex items-center">
+                            <XMarkIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                            This order cannot be cancelled.
+                        </div>
+                    </>
+                ),
+                duration: 5000,
+            });
             console.error(`Error: ${error}`);
         }
     }

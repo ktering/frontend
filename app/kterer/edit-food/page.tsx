@@ -837,12 +837,15 @@ export default function EditFood() {
                                     )}
                                 />
                                 <Button
-                                    className="bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
-                                    type="submit">Post Food</Button>
+                                    className="mt-2 bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
+                                    type="submit">
+                                    Post Food
+                                </Button>
+                            </div>
                         </form>
                     </Form>
                 </div>
             </div>
         </>
-    )
+    );
 }

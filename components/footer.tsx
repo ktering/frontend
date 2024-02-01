@@ -32,7 +32,6 @@ export default function Footer() {
                     <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
                         <div>
                             <div className="text-teal-600">
-                                <Image src={RedLogo} alt="Kterings Logo" />
                                 <Image src={RedLogo} alt="Kterings Logo" height={100} width={100} />
                             </div>
 
