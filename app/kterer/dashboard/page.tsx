@@ -33,7 +33,6 @@ export default function Dashboard() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [postToDelete, setPostToDelete] = useState<string | null>(null);
     const [deleteMode, setDeleteMode] = useState(0);
-    const [deleteDialogContent, setDeleteDialogContent] = useState('This action cannot be undone. This will permanently delete the post.');
 
     const { updateNotifications } = useNotifications();
     const globalStatus = useContext(StatusContext);

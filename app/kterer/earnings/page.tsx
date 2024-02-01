@@ -1,27 +1,39 @@
 "use client";
-import {useEffect, useState} from "react";
-import {useUser} from "@clerk/nextjs";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
-import {Earnings} from "@/types/pages/earnings/earnings";
-import {Button} from "@/components/ui/button";
-import {KtererInfo} from "@/types/shared/user";
-import {useNotifications} from "@/components/notificationContext";
-import {ExclamationTriangleIcon,} from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Earnings } from "@/types/pages/earnings/earnings";
+import { Button } from "@/components/ui/button";
+import { KtererInfo } from "@/types/shared/user";
+import { useNotifications } from "@/components/notificationContext";
+import { ExclamationTriangleIcon, } from "@heroicons/react/24/outline";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function Earnings() {
     const user = useUser();
-  if (!user) {
-    return <div>Loading user...</div>;
-  }
-  const [loading, setLoading] = useState(false);
-  const [earnings, setEarnings] = useState<Earnings>({
-    available: [],
-    pending: [],
-  });
-  const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
-  const [ktererOrders, setKtererOrders] = useState<any[]>([]);
+    if (!user) {
+        return <div>Loading user...</div>;
+    }
+    const [loading, setLoading] = useState(false);
+    const [earnings, setEarnings] = useState<Earnings>({
+        available: [],
+        pending: [],
+    });
+    const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
+    const [ktererOrders, setKtererOrders] = useState<any[]>([]);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [orderIdToCancel, setOrderIdToCancel] = useState<number | 0>(0);
 
-    const {updateNotifications} = useNotifications();
+    const { updateNotifications } = useNotifications();
 
     useEffect(() => {
         const getKtererOrders = async () => {
@@ -61,7 +73,7 @@ export default function Earnings() {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
             const clientId = user && user.user ? user.user.id : "";
-            const params = new URLSearchParams({client_id: clientId}).toString();
+            const params = new URLSearchParams({ client_id: clientId }).toString();
 
             const response = await fetch(
                 `${apiURL}/api/stripe/onboarding?${params}`,
@@ -93,7 +105,7 @@ export default function Earnings() {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
             const clientId = user && user.user ? user.user.id : "";
-            const params = new URLSearchParams({client_id: clientId}).toString();
+            const params = new URLSearchParams({ client_id: clientId }).toString();
 
             try {
                 const response = await fetch(
@@ -168,6 +180,32 @@ export default function Earnings() {
         window.open(url);
     };
 
+    const cancelOrder = async (id: number) => {
+        const accessToken = localStorage.getItem("accessToken");
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        try {
+            const response = await fetch(`${apiURL}/api/orders/${id}/cancel`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                console.error(`Error: ${response.statusText}`);
+                return;
+            }
+
+            const data = await response.json();
+
+            setKtererOrders(ktererOrders.filter((order) => order.id !== data.order_id));
+
+        } catch (error) {
+            console.error(`Error: ${error}`);
+        }
+    }
     const createDelivery = async (id: number) => {
         const accessToken = localStorage.getItem("accessToken");
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
@@ -254,13 +292,57 @@ export default function Earnings() {
             });
     };
 
+    const handleCancelOrder = (id: number) => {
+        cancelOrder(id)
+            .then(() => {
+                getNotifications().catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
+            })
+            .catch((error) => {
+                console.error(`Error: ${error}`);
+                getNotifications().catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
+            });
+    }
+
+    const openCancelOrderDialog = (id: number) => () => {
+        setOrderIdToCancel(id);
+        setIsDialogOpen(true);
+    }
+
     return (
         <>
+            <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Do you want to cancel the delivery?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel asChild>
+                            <button onClick={() => setIsDialogOpen(false)}>Close</button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <button
+                                className="bg-red-600 hover:bg-red-700"
+                                onClick={() => handleCancelOrder(orderIdToCancel)
+                                }
+                            >
+                                Cancel Delivery
+                            </button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {!ktererInfo && (
                     <Alert className="mt-8 bg-amber-300 flex items-center">
                         <div>
-                            <ExclamationTriangleIcon className="h-8 w-8"/>
+                            <ExclamationTriangleIcon className="h-8 w-8" />
                         </div>
                         <div className="ml-4">
                             <AlertTitle>Heads up!</AlertTitle>
@@ -303,6 +385,14 @@ export default function Earnings() {
                                     <div className="flex justify-between items-center">
                                         <p>{order.buyer_name}</p>
 
+
+                                        <Button
+                                            variant="link"
+                                            onClick={openCancelOrderDialog(order.id)}
+                                        >
+                                            Cancel Order
+                                        </Button>
+
                                         <Button
                                             variant="link"
                                             onClick={handleCreateDelivery(order.id)}
@@ -336,6 +426,14 @@ export default function Earnings() {
                                             {/*<Link href="/help">*/}
                                             {/*    <Button variant="link">Help</Button>*/}
                                             {/*</Link>*/}
+                                            {order.track_url && (
+                                                <Button
+                                                    variant="link"
+                                                    onClick={handleLinkClick(order.track_url)}
+                                                >
+                                                    Track Order
+                                                </Button>
+                                            )}
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
