@@ -464,22 +464,23 @@ export default function Earnings() {
                                                 Track Order
                                             </Button>
                                         </TableCell>
+
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
+                                                variant="link"
+                                                onClick={handleCreateDelivery(order.id)}
+                                            >
+                                                Create Delivery
+                                            </Button>
+                                            {/* <Button
                                                 variant="link"
                                                 onClick={openCancelOrderDialog(order.id)}
                                                 className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Cancel Order
-                                            </Button>
+                                            </Button> */}
                                         </TableCell>
 
-                                        {/* <Button
-                                            variant="link"
-                                            onClick={handleCreateDelivery(order.id)}
-                                        >
-                                            Create Delivery
-                                        </Button> */}
                                         <TableCell className="text-left md:space-x-8">
 
                                             {order.receipt_url && (
