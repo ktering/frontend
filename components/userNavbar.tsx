@@ -1,5 +1,5 @@
 "use client";
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     ArrowLeftOnRectangleIcon,
     Bars3Icon,
@@ -20,25 +20,26 @@ import {
 import Logo from "@/static/red-logo.svg";
 import Image from "next/image";
 import Link from "next/link";
-import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet";
-import {useClerk} from "@clerk/clerk-react";
-import {useRouter} from "next/navigation";
-import {Input} from "@/components/ui/input";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useClerk } from "@clerk/clerk-react";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu";
 import useCart from "@/app/hooks/useCart";
 import AddressPopup from "@/components/addressPopup";
-import {CartItem} from "@/types/hooks/useCart";
-import {fetchHomeAddress} from "@/app/hooks/fetchAddress";
-import {SearchContext} from "@/app/context/searchContext";
-import {useCartCount} from "@/components/cartContext";
-import {useNotifications} from "./notificationContext";
-import {formatDistanceToNow} from 'date-fns';
+import { CartItem } from "@/types/hooks/useCart";
+import { fetchHomeAddress } from "@/app/hooks/fetchAddress";
+import { SearchContext } from "@/contexts/SearchContext";
+import { useCartCount } from "@/contexts/CartContext";
+import { useNotifications } from "./notificationContext";
+import { StatusContext } from "@/contexts/StatusContext";
+import { formatDistanceToNow } from 'date-fns';
 
 export default function UserNavbar() {
     const [isSideBarOpen, setIsSideBarOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isAddressPopupOpen, setIsAddressPopupOpen] = useState(false);
-    const {signOut, user} = useClerk();
+    const { signOut, user } = useClerk();
     const router = useRouter();
     const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
     let {
@@ -51,15 +52,15 @@ export default function UserNavbar() {
     const cartLength = useLocalStorageCart();
     const [savedAddress, setSavedAddress] = useState("");
     const [addressChanged, setAddressChanged] = useState(false);
-    const {cartCount} = useCartCount();
-    const {notifications, updateNotifications} = useNotifications();
+    const { cartCount } = useCartCount();
+    const { notifications, updateNotifications } = useNotifications();
     const isMobile = window.innerWidth <= 768;
+    const globalStatus = useContext(StatusContext);
 
     const contextValue = useContext(SearchContext);
-    const {searchInput, setSearchInput} = contextValue || {
+    const { searchInput, setSearchInput } = contextValue || {
         searchInput: "",
-        setSearchInput: () => {
-        },
+        setSearchInput: () => { },
     };
 
     const handleSearchInputChange = (
@@ -110,30 +111,30 @@ export default function UserNavbar() {
     };
 
     const USER_SIDEBAR_ITEMS = [
-        {name: "Home", icon: <HomeIcon className="h-6 w-6"/>, href: "/kterings"},
+        { name: "Home", icon: <HomeIcon className="h-6 w-6" />, href: "/kterings" },
         {
             name: "Orders",
-            icon: <ShoppingBagIcon className="h-6 w-6"/>,
+            icon: <ShoppingBagIcon className="h-6 w-6" />,
             href: "/consumer/orders",
         },
         {
             name: "Account",
-            icon: <UserCircleIcon className="h-6 w-6"/>,
+            icon: <UserCircleIcon className="h-6 w-6" />,
             href: isKterer ? "/kterer/account" : "/consumer/account",
         },
         {
             name: "Saved Kterers",
-            icon: <HeartIcon className="h-6 w-6"/>,
+            icon: <HeartIcon className="h-6 w-6" />,
             href: "/kterings/favourites",
         },
         {
             name: "Help",
-            icon: <QuestionMarkCircleIcon className="h-6 w-6"/>,
+            icon: <QuestionMarkCircleIcon className="h-6 w-6" />,
             href: "/help",
         },
         {
             name: "Sign Out",
-            icon: <ArrowLeftOnRectangleIcon className="h-6 w-6"/>,
+            icon: <ArrowLeftOnRectangleIcon className="h-6 w-6" />,
             href: "/kterings",
         },
     ];
@@ -142,7 +143,7 @@ export default function UserNavbar() {
         const addressItem = {
             name: "Address",
             href: "#",
-            icon: <MapPinIcon className="h-6 w-6"/>,
+            icon: <MapPinIcon className="h-6 w-6" />,
             onClick: toggleAddressPopup // Function to open the address popup
         };
 
@@ -193,12 +194,12 @@ export default function UserNavbar() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`,
                 },
-                body: JSON.stringify({cart: cartForBackend}),
+                body: JSON.stringify({ cart: cartForBackend }),
             });
 
             console.log("Checkout response:", response);
 
-            const {url} = await response.json();
+            const { url } = await response.json();
 
             console.log("Checkout URL:", url);
 
@@ -279,7 +280,7 @@ export default function UserNavbar() {
                                 <SheetTrigger onClick={toggleSideBar}>
                                     <div
                                         className="relative inline-flex items-center justify-center rounded-md p-2 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-color md:mr-4">
-                                        <Bars3Icon className="w-6 h-6"/>
+                                        <Bars3Icon className="w-6 h-6" />
                                     </div>
                                 </SheetTrigger>
                             </Sheet>
@@ -305,11 +306,11 @@ export default function UserNavbar() {
 
                             <button onClick={toggleAddressPopup}>
                                 <div className="hidden sm:flex sm:space-x-2 ml-8">
-                                    <MapPinIcon className="w-6 h-6 text-primary-color"/>
+                                    <MapPinIcon className="w-6 h-6 text-primary-color" />
                                     <div className="hidden md:block">
                                         {savedAddress || "Saved Address"}
                                     </div>
-                                    <ChevronDownIcon className="w-6 h-6 text-primary-color hidden md:block"/>
+                                    <ChevronDownIcon className="w-6 h-6 text-primary-color hidden md:block" />
                                 </div>
                             </button>
 
@@ -329,11 +330,14 @@ export default function UserNavbar() {
                             {/*</div>*/}
                         </div>
                         <div className="flex items-center">
+                            {!globalStatus?.is_serving_time && <div className="text-primary-color mr-4 font-bold">
+                                Open from <span className="underline-offset-1">8am to 8pm</span> daily!
+                            </div>}
                             {/* Search bar */}
-                            <div className="relative w:40 md:w:60 lg:w-80 mr-4 ml-8">
+                            <div className="relative w:40 md:w:60 lg:w-80 mr-4">
                                 {/* Icon */}
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <MagnifyingGlassIcon className="w-5 h-5"/>
+                                    <MagnifyingGlassIcon className="w-5 h-5" />
                                 </div>
                                 {/* Input */}
                                 <Input
@@ -353,16 +357,16 @@ export default function UserNavbar() {
                                     <DropdownMenu>
                                         <DropdownMenuTrigger>
                                             {" "}
-                                            <BellIcon className="h-6 w-6" aria-hidden="true"/>
+                                            <BellIcon className="h-6 w-6" aria-hidden="true" />
                                             {notifications.filter((not) => not.read_at === null)
                                                 .length ? (
                                                 <span
                                                     className="flex items-center justify-center absolute -top-3 -right-2 h-6 w-6 text-xs font-semibold rounded-full bg-primary-color text-white">
-                          {
-                              notifications.filter((not) => not.read_at === null)
-                                  .length
-                          }
-                        </span>
+                                                    {
+                                                        notifications.filter((not) => not.read_at === null)
+                                                            .length
+                                                    }
+                                                </span>
                                             ) : (
                                                 <></>
                                             )}
@@ -375,9 +379,8 @@ export default function UserNavbar() {
                                                     onClick={handleNotificationClick(index)}
                                                 >
                                                     <div
-                                                        className={`rounded-full w-2 h-2 mt-2 mr-3 ${
-                                                            notification.read_at ? 'bg-gray-500' : 'bg-primary-color'
-                                                        }`}
+                                                        className={`rounded-full w-2 h-2 mt-2 mr-3 ${notification.read_at ? 'bg-gray-500' : 'bg-primary-color'
+                                                            }`}
                                                         style={{
                                                             minWidth: '0.5rem',
                                                             minHeight: '0.5rem'
@@ -388,7 +391,7 @@ export default function UserNavbar() {
                                                             {notification.message}
                                                         </p>
                                                         <p className="text-sm text-gray-500 mt-1">
-                                                            {formatDistanceToNow(new Date(notification.created_at), {addSuffix: true})}
+                                                            {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true })}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -407,7 +410,7 @@ export default function UserNavbar() {
                                     <SheetTrigger onClick={toggleCart}>
                                         <div
                                             className="relative rounded-full bg-white p-1 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-color focus:ring-offset-2">
-                                            <span className="absolute -inset-1.5"/>
+                                            <span className="absolute -inset-1.5" />
                                             <span className="sr-only">Check Shopping Cart</span>
                                             <ShoppingCartIcon
                                                 className="h-6 w-6 z-100"
@@ -417,8 +420,8 @@ export default function UserNavbar() {
                                             {cartCount > 0 && (
                                                 <span
                                                     className="flex items-center justify-center absolute -top-2 -right-2 h-6 w-6 text-xs font-semibold rounded-full bg-primary-color text-white">
-                          {cartCount}
-                        </span>
+                                                    {cartCount}
+                                                </span>
                                             )}
                                         </div>
                                     </SheetTrigger>
@@ -500,9 +503,9 @@ export default function UserNavbar() {
                                                 className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
                                             >
                                                 {item.quantity > 1 ? (
-                                                    <MinusSmallIcon className="w-6 h-6"/>
+                                                    <MinusSmallIcon className="w-6 h-6" />
                                                 ) : (
-                                                    <TrashIcon className="w-5 h-5"/>
+                                                    <TrashIcon className="w-5 h-5" />
                                                 )}
                                             </button>
                                             <input
@@ -517,7 +520,7 @@ export default function UserNavbar() {
                                                 type="button"
                                                 className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
                                             >
-                                                <PlusSmallIcon className="h-6 w-6"/>
+                                                <PlusSmallIcon className="h-6 w-6" />
                                             </button>
                                         </div>
                                     </div>

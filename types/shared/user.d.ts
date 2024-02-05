@@ -5,6 +5,7 @@ export interface UserInfo {
   email: string;
   phone: string;
   country?: string;
+  email_notification?: boolean;
 }
 
 export interface KtererSpecificInfo {

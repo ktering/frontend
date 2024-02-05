@@ -6,21 +6,21 @@ import IGLogo from "@/static/ig-logo.svg";
 
 const footerLinks = {
     GetToKnowUs: [
-        {title: "About Us", href: "/about-us"}
+        { title: "About Us", href: "/about-us" }
     ],
     DoingBusiness: [
-        {title: "Become a Kterer", href: "/become-a-kterer"}
+        { title: "Become a Kterer", href: "/become-a-kterer" }
     ],
     HelpfulLinks: [
-        {title: "Submit a Ticket", href: "/help#submit-ticket"},
-        {title: "Report a Bug", href: "/help#submit-ticket"},
-        {title: "FAQs", href: "/help"}
+        { title: "Submit a Ticket", href: "/help#submit-ticket" },
+        { title: "Report a Bug", href: "/help#submit-bug-report" },
+        { title: "FAQs", href: "/help" }
     ],
     Legal: [
-        {title: "Terms and Conditions", href: "/legal/terms-and-conditions"},
-        {title: "Vendor Terms and Conditions", href: "/legal/vendor-terms-and-conditions"},
-        {title: "Privacy Policy", href: "/legal/privacy-policy"},
-        {title: "Delivery Policy", href: "/legal/delivery-policy"}
+        { title: "Terms and Conditions", href: "/legal/terms-and-conditions" },
+        { title: "Vendor Terms and Conditions", href: "/legal/vendor-terms-and-conditions" },
+        { title: "Privacy Policy", href: "/legal/privacy-policy" },
+        { title: "Delivery Policy", href: "/legal/delivery-policy" }
     ]
 };
 
@@ -44,7 +44,7 @@ export default function Footer() {
                                         className="text-gray-700 transition hover:opacity-75"
                                     >
                                         <span className="sr-only">Facebook</span>
-                                        <Image src={FBLogo} className="h-5 w-5" alt="Facebook Logo"/>
+                                        <Image src={FBLogo} className="h-5 w-5" alt="Facebook Logo" />
                                     </a>
                                 </li>
 
@@ -56,7 +56,7 @@ export default function Footer() {
                                         className="text-gray-700 transition hover:opacity-75"
                                     >
                                         <span className="sr-only">Instagram</span>
-                                        <Image src={IGLogo} className="h-5 w-5" alt="Instagram Logo"/>
+                                        <Image src={IGLogo} className="h-5 w-5" alt="Instagram Logo" />
                                     </a>
                                 </li>
                             </ul>
@@ -70,7 +70,7 @@ export default function Footer() {
                                         {links.map(link => (
                                             <li key={link.href}>
                                                 <Link href={link.href}
-                                                      className="text-gray-700 transition hover:opacity-75">
+                                                    className="text-gray-700 transition hover:opacity-75">
                                                     {link.title}
                                                 </Link>
                                             </li>

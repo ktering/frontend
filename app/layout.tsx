@@ -10,7 +10,8 @@ import {
 } from "@clerk/nextjs";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/components/AuthContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { StatusContextProvider } from "@/contexts/StatusProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -52,7 +53,12 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={inter.className}>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <StatusContextProvider>
+              {children}
+
+            </StatusContextProvider>
+          </AuthProvider>
           <Toaster />
           <Footer />
         </body>

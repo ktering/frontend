@@ -1,12 +1,12 @@
 "use client"
-import {useState} from "react";
-import {useSignUp} from "@clerk/nextjs";
-import {useRouter} from "next/navigation";
+import { useState } from "react";
+import { useSignUp } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 import RedLogo from "@/static/red-logo.svg"
 import Image from "next/image";
 
 export default function SignUpForm() {
-    const {isLoaded, signUp, setActive} = useSignUp();
+    const { isLoaded, signUp, setActive } = useSignUp();
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -33,7 +33,7 @@ export default function SignUpForm() {
             });
 
             // send the email.
-            await signUp.prepareEmailAddressVerification({strategy: "email_code"});
+            await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
 
             // change the UI to our pending section.
             setPendingVerification(true);
@@ -66,7 +66,7 @@ export default function SignUpForm() {
                 console.log(JSON.stringify(completeSignUp, null, 2));
             }
             if (completeSignUp.status === "complete") {
-                await setActive({session: completeSignUp.createdSessionId})
+                await setActive({ session: completeSignUp.createdSessionId })
                 const userId = completeSignUp.createdUserId;
 
                 // Update the metadata
@@ -75,7 +75,7 @@ export default function SignUpForm() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({userId, ktererSignUpCompleted: false}),
+                    body: JSON.stringify({ userId, ktererSignUpCompleted: false }),
                 });
 
                 const apiURL = process.env.NEXT_PUBLIC_API_URL;
@@ -125,7 +125,7 @@ export default function SignUpForm() {
             {!pendingVerification && (
                 <div>
                     <div className="mt-3">
-                        <Image src={RedLogo} width={75} alt="logo" className="mb-4"/>
+                        <Image src={RedLogo} width={75} alt="logo" className="mb-4" />
                         <p className="text-xl font-bold mb-1">Create your Kterer account</p>
                         <p>to continue to Kterings</p>
 
@@ -255,7 +255,7 @@ export default function SignUpForm() {
             {pendingVerification && (
                 <div>
                     <div className="mt-3">
-                        <Image src={RedLogo} width={75} alt="logo" className="mb-4"/>
+                        <Image src={RedLogo} width={75} alt="logo" className="mb-4" />
                         <p className="text-xl font-bold mb-1">Create your Kterer account</p>
                         <p>to continue to Kterings</p>
 

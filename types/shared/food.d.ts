@@ -28,4 +28,5 @@ export interface FoodItem {
     images: Image[];
     quantities: Quantity[];
     rating: number;
+    auto_delivery_time: number;
 }

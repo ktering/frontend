@@ -1,11 +1,13 @@
-import React from "react";
+
+import React, { useContext, useEffect, useState } from "react";
 import type { Metadata } from "next";
 import UserNavbar from "@/components/userNavbar";
 import KtererDashboardNavbar from "@/components/ktererDashboardNavbar";
 import { currentUser } from "@clerk/nextjs";
-import { SearchProvider } from "@/app/context/searchProvider";
-import { CartProvider } from "@/components/cartContext";
+import { SearchProvider } from "@/contexts/SearchProvider";
+import { CartProvider } from "@/contexts/CartContext";
 import { NotificationProvider } from "@/components/notificationContext";
+import { StatusContextProvider } from "../../contexts/StatusProvider";
 
 export const metadata: Metadata = {
   title: "Kterings",
@@ -22,19 +24,20 @@ export default async function KteringsLayout({
     return null;
   }
   const isKterer = user?.publicMetadata?.ktererSignUpCompleted === true;
-
   return (
     <section>
       <CartProvider>
-        <NotificationProvider>
-          <SearchProvider>
-            <div>
-              <UserNavbar />
-              {isKterer ? <KtererDashboardNavbar /> : null}
-              {children}
-            </div>
-          </SearchProvider>
-        </NotificationProvider>
+        <StatusContextProvider>
+          <NotificationProvider>
+            <SearchProvider>
+              <div>
+                <UserNavbar />
+                {isKterer ? <KtererDashboardNavbar /> : null}
+                {children}
+              </div>
+            </SearchProvider>
+          </NotificationProvider>
+        </StatusContextProvider>
       </CartProvider>
     </section>
   );

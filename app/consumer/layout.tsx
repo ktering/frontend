@@ -1,9 +1,9 @@
 import React from "react";
-import type {Metadata} from "next";
+import type { Metadata } from "next";
 import UserNavbar from "@/components/userNavbar";
-import {CartProvider} from "@/components/cartContext";
-import {NotificationProvider} from "@/components/notificationContext";
-import {currentUser} from "@clerk/nextjs";
+import { CartProvider } from "@/contexts/CartContext";
+import { NotificationProvider } from "@/components/notificationContext";
+import { currentUser } from "@clerk/nextjs";
 import KtererDashboardNavbar from "@/components/ktererDashboardNavbar";
 
 export const metadata: Metadata = {
@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default async function ConsumerLayout({
-                                           children,
-                                       }: {
+    children,
+}: {
     children: React.ReactNode;
 }) {
     const user = await currentUser();
@@ -26,8 +26,8 @@ export default async function ConsumerLayout({
         <CartProvider>
             <NotificationProvider>
                 <div>
-                    <UserNavbar/>
-                    {isKterer ? <KtererDashboardNavbar/> : null}
+                    <UserNavbar />
+                    {isKterer ? <KtererDashboardNavbar /> : null}
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         {children}
                     </div>

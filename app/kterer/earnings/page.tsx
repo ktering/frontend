@@ -1,13 +1,25 @@
 "use client";
-import {useEffect, useState} from "react";
-import {useUser} from "@clerk/nextjs";
-import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert";
-import {Earnings} from "@/types/pages/earnings/earnings";
-import {Button} from "@/components/ui/button";
-import {KtererInfo} from "@/types/shared/user";
-import {useNotifications} from "@/components/notificationContext";
-import {ExclamationTriangleIcon,} from "@heroicons/react/24/outline";
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Earnings } from "@/types/pages/earnings/earnings";
+import { Button } from "@/components/ui/button";
+import { KtererInfo } from "@/types/shared/user";
+import { useNotifications } from "@/components/notificationContext";
+import { toast } from "@/components/ui/use-toast";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { ExclamationTriangleIcon, } from "@heroicons/react/24/outline";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function Earnings() {
     const user = useUser();
@@ -22,8 +34,10 @@ export default function Earnings() {
     const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
     const [ktererOrders, setKtererOrders] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [orderIdToCancel, setOrderIdToCancel] = useState<number | 0>(0);
 
-    const {updateNotifications} = useNotifications();
+    const { updateNotifications } = useNotifications();
 
     useEffect(() => {
         const getKtererOrders = async () => {
@@ -63,7 +77,7 @@ export default function Earnings() {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
             const clientId = user && user.user ? user.user.id : "";
-            const params = new URLSearchParams({client_id: clientId}).toString();
+            const params = new URLSearchParams({ client_id: clientId }).toString();
 
             const response = await fetch(
                 `${apiURL}/api/stripe/onboarding?${params}`,
@@ -95,7 +109,7 @@ export default function Earnings() {
             const accessToken = localStorage.getItem("accessToken");
             const apiURL = process.env.NEXT_PUBLIC_API_URL;
             const clientId = user && user.user ? user.user.id : "";
-            const params = new URLSearchParams({client_id: clientId}).toString();
+            const params = new URLSearchParams({ client_id: clientId }).toString();
 
             try {
                 const response = await fetch(
@@ -172,9 +186,61 @@ export default function Earnings() {
     const displayEarnings = (totalEarnings / 100).toFixed(2);
 
     const handleLinkClick = (url: string) => () => {
-        window.open(url);
+        if (!url) {
+            toast({
+                description: (
+                    <>
+                        <div className="flex items-center">
+                            <XMarkIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                            Tracking Url is empty.
+                        </div>
+                    </>
+                ),
+                duration: 5000,
+            });
+        }
+        else {
+            window.open(url);
+        }
     };
 
+    const cancelOrder = async (id: number) => {
+        const accessToken = localStorage.getItem("accessToken");
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        try {
+            const response = await fetch(`${apiURL}/api/orders/${id}/cancel`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw (new Error('cancelling order error'));
+            }
+
+            const data = await response.json();
+
+            setKtererOrders(ktererOrders.filter((order) => order.id !== data.order_id));
+
+        } catch (error) {
+
+            toast({
+                description: (
+                    <>
+                        <div className="flex items-center">
+                            <XMarkIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                            This order cannot be cancelled.
+                        </div>
+                    </>
+                ),
+                duration: 5000,
+            });
+            console.error(`Error: ${error}`);
+        }
+    }
     const createDelivery = async (id: number) => {
         const accessToken = localStorage.getItem("accessToken");
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
@@ -275,13 +341,57 @@ export default function Earnings() {
         );
     }
 
+    const handleCancelOrder = (id: number) => {
+        cancelOrder(id)
+            .then(() => {
+                getNotifications().catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
+            })
+            .catch((error) => {
+                console.error(`Error: ${error}`);
+                getNotifications().catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
+            });
+    }
+
+    const openCancelOrderDialog = (id: number) => () => {
+        setOrderIdToCancel(id);
+        setIsDialogOpen(true);
+    }
+
     return (
         <>
+            <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Do you want to cancel the delivery?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel asChild>
+                            <button onClick={() => setIsDialogOpen(false)}>Close</button>
+                        </AlertDialogCancel>
+                        <AlertDialogAction asChild>
+                            <button
+                                className="bg-red-600 hover:bg-red-700"
+                                onClick={() => handleCancelOrder(orderIdToCancel)
+                                }
+                            >
+                                Cancel Order
+                            </button>
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {!ktererInfo && (
                     <Alert className="mt-8 bg-amber-300 flex items-center">
                         <div>
-                            <ExclamationTriangleIcon className="h-8 w-8"/>
+                            <ExclamationTriangleIcon className="h-8 w-8" />
                         </div>
                         <div className="ml-4">
                             <AlertTitle>Heads up!</AlertTitle>
@@ -322,7 +432,10 @@ export default function Earnings() {
                                 <TableHead>Customer</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead>Amount</TableHead>
+                                <TableHead>Type</TableHead>
                                 <TableHead className="w-72">Status</TableHead>
+                                <TableHead className="w-72">Actions</TableHead>
+                                <TableHead className="w-72"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -335,14 +448,34 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
+                                        <TableCell>{order.status}</TableCell>
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
                                                 variant="link"
-                                                className="pl-0"
-                                                onClick={handleCreateDelivery(order.id)}
+                                                onClick={handleLinkClick(order.track_url)}
+                                                className="p-0 text-primary-color underline-offset-auto"
                                             >
-                                                Create Delivery
+                                                Track Order
                                             </Button>
+                                        </TableCell>
+                                        <TableCell className="text-left md:space-x-8">
+                                            <Button
+                                                variant="link"
+                                                onClick={openCancelOrderDialog(order.id)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Cancel Order
+                                            </Button>
+                                        </TableCell>
+
+                                        {/* <Button
+                                            variant="link"
+                                            onClick={handleCreateDelivery(order.id)}
+                                        >
+                                            Create Delivery
+                                        </Button> */}
+                                        <TableCell className="text-left md:space-x-8">
+
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
@@ -368,7 +501,10 @@ export default function Earnings() {
                                 <TableHead>Customer</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead>Amount</TableHead>
+                                <TableHead>Type</TableHead>
                                 <TableHead className="w-72">Status</TableHead>
+                                <TableHead className="w-72">Actions</TableHead>
+                                <TableHead className="w-72"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -385,16 +521,29 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
+                                        <TableCell>{order.status}</TableCell>
                                         <TableCell className="text-left md:space-x-8">
-                                            {order.track_url && (
-                                                <Button
-                                                    variant="link"
-                                                    className="pl-0"
-                                                    onClick={handleLinkClick(order.track_url)}
-                                                >
-                                                    Track Delivery
-                                                </Button>
-                                            )}
+                                            <Button
+                                                disabled={!!order.track_url}
+                                                variant="link"
+                                                onClick={handleLinkClick(order.track_url)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Track Order
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell className="text-left md:space-x-8">
+                                            <Button
+                                                variant="link"
+                                                onClick={openCancelOrderDialog(order.id)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Cancel Order
+                                            </Button>
+                                        </TableCell>
+
+                                        <TableCell className="text-left md:space-x-8">
+
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
@@ -420,7 +569,10 @@ export default function Earnings() {
                                 <TableHead>Customer</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead>Amount</TableHead>
+                                <TableHead>Type</TableHead>
                                 <TableHead className="w-72">Status</TableHead>
+                                <TableHead className="w-72">Actions</TableHead>
+                                <TableHead className="w-72"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -435,16 +587,35 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
+                                        <TableCell>{order.status}</TableCell>
                                         <TableCell className="text-left md:space-x-8">
-                                            {order.track_url && (
-                                                <Button
-                                                    variant="link"
-                                                    className="pl-0"
-                                                    onClick={handleLinkClick(order.track_url)}
-                                                >
-                                                    Track Delivery
-                                                </Button>
-                                            )}
+                                            <Button
+                                                disabled={!!order.track_url}
+                                                variant="link"
+                                                onClick={handleLinkClick(order.track_url)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Track Order
+                                            </Button>
+                                        </TableCell>
+                                        <TableCell className="text-left md:space-x-8">
+                                            <Button
+                                                variant="link"
+                                                onClick={openCancelOrderDialog(order.id)}
+                                                className="p-0 text-primary-color underline-offset-auto"
+                                            >
+                                                Cancel Order
+                                            </Button>
+                                        </TableCell>
+
+                                        {/* <Button
+                                            variant="link"
+                                            onClick={handleCreateDelivery(order.id)}
+                                        >
+                                            Create Delivery
+                                        </Button> */}
+                                        <TableCell className="text-left md:space-x-8">
+
                                             {order.receipt_url && (
                                                 <Button
                                                     variant="link"
@@ -460,7 +631,7 @@ export default function Earnings() {
                         </TableBody>
                     </Table>
                 </div>
-            </div>
+            </div >
         </>
     );
 }
