@@ -803,7 +803,7 @@ export default function EditFood() {
                                     control={form.control}
                                     name="auto_delivery_time"
                                     render={({ field }) => (
-                                        <div className="bg-primary-color px-3.5 py-2  text-white  mt-1">
+                                        <div className="bg-primary-color px-3.5 py-2 mt-1 text-white">
                                             <h3 className="font-medium">Preparation & Delivery Time</h3>
                                             <h3 className="font-light italic mb-2" >Important! This will help determine when your food will be picked up for delivery so make
                                                 it as accurate as you can!</h3>
