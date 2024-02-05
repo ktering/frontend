@@ -12,5 +12,5 @@ export interface Reviews {
     rating: number;
     review: string;
     user: UserInfo;
-    images: Image[];
+    images?: Image[];
 }

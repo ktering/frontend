@@ -52,6 +52,11 @@ import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 const formSchema = z.object({
   rating: z.number().min(1).max(5),
   review: z.string().min(10).max(300),
+  images: z.array(z.object({
+    path: z.string(),
+    size: z.number(),
+    type: z.string(),
+  })),
 });
 
 export default function Food() {
@@ -299,6 +304,7 @@ export default function Food() {
     defaultValues: {
       rating: 3,
       review: "",
+      images: [],
     },
   });
 
@@ -347,26 +353,10 @@ export default function Food() {
       });
       return;
     }
-
-    if (response.ok) {
+    else {
       setIsReviewModalOpen(false);
-      // if (reviews && reviews.length > 0) {
-      // TODO: add the names from the database, for now its from clerk
-      // const newReview: Reviews = {
-      //   ...values,
-      //   user: {
-      //     first_name: user?.firstName,
-      //     // first_name: reviews[0].user.first_name,
-      //     last_name: user?.lastName,
-      //     // last_name: reviews[0].user.last_name,
-      //   },
-      //   images: [
-
-      //   ],
-      //   created_at: new Date().toISOString(),
-      // };
       const newData = await response.json();
-      setReviews((currentReviews) => [...(currentReviews || []), newData?.review_data]);
+      setReviews((reviews) => [...(reviews || []), newData?.review_data]);
       form.reset();
       toast({
         description: (
@@ -378,7 +368,6 @@ export default function Food() {
           </>
         ),
       });
-      // }
     }
   }
 
@@ -666,7 +655,7 @@ export default function Food() {
                 </div>
                 <div >
                   <div className="flex mt-4 space-x-2">
-                    {review?.images.map((image, index) => (
+                    {review?.images?.map((image, index) => (
                       <img
                         key={image.id}
                         src={image.image_url}
@@ -710,8 +699,8 @@ export default function Food() {
                               type="button"
                               onClick={() => onChange(starValue)}
                               className={`rounded-lg border px-4 py-2.5 font-semibold ${value === starValue
-                                  ? "bg-primary-color text-white"
-                                  : "bg-white text-primary-color"
+                                ? "bg-primary-color text-white"
+                                : "bg-white text-primary-color"
                                 } shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
                             >
                               <div className="flex items-center justify-center">
