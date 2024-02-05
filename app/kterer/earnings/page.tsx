@@ -605,7 +605,7 @@ export default function Earnings() {
                                         </TableCell>
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
-                                                disabled
+                                                disabled={true}
                                                 variant="link"
                                                 onClick={openCancelOrderDialog(order.id)}
                                                 className="p-0 text-primary-color underline-offset-auto"
