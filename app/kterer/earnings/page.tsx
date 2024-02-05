@@ -469,6 +469,7 @@ export default function Earnings() {
                                             <Button
                                                 variant="link"
                                                 onClick={handleCreateDelivery(order.id)}
+                                                className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Create Delivery
                                             </Button>
