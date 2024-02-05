@@ -223,7 +223,12 @@ export default function Earnings() {
 
             const data = await response.json();
 
-            setKtererOrders(ktererOrders.filter((order) => order.id !== data.order_id));
+            if (data) {
+                let cancelled_orders = ktererOrders.filter((order) => order.id === data.order_id);
+                cancelled_orders.map((order) => ({ ...order, status: 'cancelled' }));
+                setKtererOrders([...ktererOrders, ...cancelled_orders]);
+            }
+
 
         } catch (error) {
 
