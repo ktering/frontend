@@ -223,7 +223,12 @@ export default function Earnings() {
 
             const data = await response.json();
 
-            setKtererOrders(ktererOrders.filter((order) => order.id !== data.order_id));
+            if (data) {
+                let cancelled_orders = ktererOrders.filter((order) => order.id === data.order_id);
+                cancelled_orders.map((order) => ({ ...order, status: 'cancelled' }));
+                setKtererOrders([...ktererOrders, ...cancelled_orders]);
+            }
+
 
         } catch (error) {
 
@@ -524,7 +529,7 @@ export default function Earnings() {
                                         <TableCell>{order.status}</TableCell>
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
-                                                disabled={!!order.track_url}
+                                                disabled={!order.track_url}
                                                 variant="link"
                                                 onClick={handleLinkClick(order.track_url)}
                                                 className="p-0 text-primary-color underline-offset-auto"
@@ -590,7 +595,7 @@ export default function Earnings() {
                                         <TableCell>{order.status}</TableCell>
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
-                                                disabled={!!order.track_url}
+                                                disabled={!order.track_url}
                                                 variant="link"
                                                 onClick={handleLinkClick(order.track_url)}
                                                 className="p-0 text-primary-color underline-offset-auto"
@@ -600,6 +605,7 @@ export default function Earnings() {
                                         </TableCell>
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
+                                                disabled={true}
                                                 variant="link"
                                                 onClick={openCancelOrderDialog(order.id)}
                                                 className="p-0 text-primary-color underline-offset-auto"
