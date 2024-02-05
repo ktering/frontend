@@ -456,6 +456,7 @@ export default function Earnings() {
                                         <TableCell>{order.status}</TableCell>
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
+                                                disabled={!order.track_url}
                                                 variant="link"
                                                 onClick={handleLinkClick(order.track_url)}
                                                 className="p-0 text-primary-color underline-offset-auto"
