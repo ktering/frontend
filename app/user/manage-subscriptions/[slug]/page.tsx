@@ -17,7 +17,6 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 import { KtererInfo } from "@/types/shared/user";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
-import bcrypt from 'bcryptjs';
 import { AlertTitle } from "@/components/ui/alert";
 
 
