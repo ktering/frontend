@@ -15,10 +15,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(() => {
-    const token = localStorage.getItem("accessToken");
-    return token;
-  });
+  const [token, setToken] = useState<string | null>(null);
 
   const router = useRouter();
   const pathname = usePathname();
