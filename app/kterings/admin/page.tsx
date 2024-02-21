@@ -67,6 +67,7 @@ export default function Admin() {
                 console.error("An error occurred:", error);
             }
         };
+        getKtererAccountInfo();
         fetchUnverifiedKterers();
     }, []);
 
