@@ -2,12 +2,17 @@
 
 import {useEffect, useState} from "react";
 import {format} from "date-fns";
+import {useUser} from "@clerk/nextjs";
 
 export default function Admin() {
 
     const [unverifiedK, setUnverifiedK] = useState<any[]>();
     const [verifiedK, setVerifiedK] = useState<any[]>();
     const [rejectedK, setRejectedK] = useState<any[]>();
+
+    const {user} = useUser();
+
+    const [allowed, setAllowed] = useState<boolean>(false);
 
     const fetchUnverifiedKterers = async () => {
         const accessToken = localStorage.getItem("accessToken");
@@ -37,6 +42,31 @@ export default function Admin() {
     }
 
     useEffect(() => {
+        const getKtererAccountInfo = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            try {
+                const response = await fetch(`${apiURL}/api/user`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.user.email === 'info@kterings.com') {
+                    setAllowed(true);
+                }
+            } catch (error) {
+                console.error("An error occurred:", error);
+            }
+        };
         fetchUnverifiedKterers();
     }, []);
 
@@ -78,6 +108,10 @@ export default function Admin() {
         }
 
         fetchUnverifiedKterers();
+    }
+
+    if (!allowed) {
+        return <div>Unauthorized</div>
     }
 
     return (
