@@ -39,12 +39,39 @@ export default function Dashboard() {
     const [postToDelete, setPostToDelete] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [deleteMode, setDeleteMode] = useState(0);
+    const [isAdminVerified, setIsAdminVerified] = useState(0);
 
     const { updateNotifications } = useNotifications();
     const globalStatus = useContext(StatusContext);
 
     useEffect(() => {
         if (!user) return;
+
+        const getKtererAccountInfo = async () => {
+            const accessToken = localStorage.getItem("accessToken");
+            const apiURL = process.env.NEXT_PUBLIC_API_URL;
+            try {
+                const response = await fetch(`${apiURL}/api/user`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+
+                const data = await response.json();
+                setIsAdminVerified(data.user.kterer.admin_verified);
+            } catch (error) {
+                console.error("An error occurred:", error);
+                return 0;
+            }
+        };
+        getKtererAccountInfo();
 
         const getKtererFood = async () => {
             const accessToken = localStorage.getItem("accessToken");
@@ -225,7 +252,21 @@ export default function Dashboard() {
         );
     }
 
-    if (globalStatus?.is_serving_time) {
+    if (isAdminVerified !== 1) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="max-w-2xl mx-auto">
+                    <div className="bg-red-200 px-3.5 py-5 text-red-700 text-center">
+                        <h3 className="font-bold mb-4 center">Your account is not verified!</h3>
+                        <h3 className="m-0 font-medium italic">Please wait till we verify your account.</h3>
+                    </div>
+
+                </div>
+            </div>
+        );
+    }
+
+    if (!globalStatus?.is_serving_time) {
         return (
             <>
                 <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

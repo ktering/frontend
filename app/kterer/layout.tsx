@@ -10,11 +10,12 @@ export const metadata: Metadata = {
   description: "Kterer Dashboard and Pages",
 };
 
-export default function KtererLayout({
+export default async function KtererLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
   return (
     <section>
       <CartProvider>
