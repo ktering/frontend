@@ -140,7 +140,7 @@ export default function ConsumerOrders() {
                             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{order.id}</TableCell>
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
@@ -182,7 +182,7 @@ export default function ConsumerOrders() {
                             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{order.id}</TableCell>
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
@@ -231,7 +231,7 @@ export default function ConsumerOrders() {
                             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{order.id}</TableCell>
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
