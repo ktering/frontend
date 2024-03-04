@@ -35,7 +35,7 @@ export default function Earnings() {
     const [ktererOrders, setKtererOrders] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [orderIdToCancel, setOrderIdToCancel] = useState<number | 0>(0);
+    const [orderIdToCancel, setOrderIdToCancel] = useState<string>('');
 
     const { updateNotifications } = useNotifications();
 
@@ -59,6 +59,7 @@ export default function Earnings() {
                 }
 
                 const data = await response.json();
+                console.log(data);
                 setKtererOrders(data.orders);
             } catch (error) {
                 console.error(`Error: ${error}`);
@@ -204,13 +205,13 @@ export default function Earnings() {
         }
     };
 
-    const cancelOrder = async (id: number) => {
+    const cancelOrder = async (id: string) => {
         const accessToken = localStorage.getItem("accessToken");
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
         try {
             const response = await fetch(`${apiURL}/api/orders/${id}/cancel`, {
-                method: "POST",
+                method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${accessToken}`,
@@ -223,10 +224,11 @@ export default function Earnings() {
 
             const data = await response.json();
 
-            if (data) {
-                let cancelled_orders = ktererOrders.filter((order) => order.id === data.order_id);
-                cancelled_orders.map((order) => ({ ...order, status: 'cancelled' }));
-                setKtererOrders([...ktererOrders, ...cancelled_orders]);
+            if (data) { 
+                setKtererOrders([...ktererOrders.map((order) => {
+                    if(order.id === data.order_id) return { ...order, status: 'cancelled' }
+                    return order;
+                })]);
             }
 
 
@@ -346,7 +348,7 @@ export default function Earnings() {
         );
     }
 
-    const handleCancelOrder = (id: number) => {
+    const handleCancelOrder = (id: string) => {
         cancelOrder(id)
             .then(() => {
                 getNotifications().catch((error) => {
@@ -361,7 +363,7 @@ export default function Earnings() {
             });
     }
 
-    const openCancelOrderDialog = (id: number) => () => {
+    const openCancelOrderDialog = (id: string) => () => {
         setOrderIdToCancel(id);
         setIsDialogOpen(true);
     }
@@ -475,7 +477,7 @@ export default function Earnings() {
                                             </Button> */}
                                             <Button
                                                 variant="link"
-                                                onClick={openCancelOrderDialog(order.id)}
+                                                onClick={openCancelOrderDialog(order.uuid)}
                                                 className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Cancel Order
@@ -543,7 +545,7 @@ export default function Earnings() {
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
                                                 variant="link"
-                                                onClick={openCancelOrderDialog(order.id)}
+                                                onClick={openCancelOrderDialog(order.uuid)}
                                                 className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Cancel Order
@@ -610,7 +612,7 @@ export default function Earnings() {
                                             <Button
                                                 disabled={true}
                                                 variant="link"
-                                                onClick={openCancelOrderDialog(order.id)}
+                                                onClick={openCancelOrderDialog(order.uuid)}
                                                 className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Cancel Order
