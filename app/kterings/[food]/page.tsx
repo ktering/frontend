@@ -123,6 +123,7 @@ export default function Food() {
       }
 
       setFoodDetails(data.data);
+      console.log( "Data ",data.data )
       if (data.data && data.data.images && data.data.images.length > 0) {
         setMainImage(data.data.images[0].image_url);
       }
@@ -162,6 +163,7 @@ export default function Food() {
         }
 
         const data = await response.json();
+        console.log( "kterer " , data.user )
         setKtererInfo(data.user);
       } catch (error) {
         console.error("An error occurred:", error);
@@ -580,7 +582,7 @@ export default function Food() {
             </div>
             {!isOutOfStock ? (
               <button
-                disabled={foodDetails?.kterer_id === ktererInfo?.kterer?.id}
+                disabled={foodDetails?.kterer_id === ktererInfo?.kterer?.id }
                 onClick={addToCart}
                 className={
                   foodDetails?.kterer_id === ktererInfo?.kterer?.id
@@ -588,7 +590,7 @@ export default function Food() {
                     : "rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
                 }
               >
-                Add to Cart
+                 {foodDetails?.kterer_id === ktererInfo?.kterer?.id ? "This order belongs to same kterer" : "Add to Cart" }
               </button>
             ) : (
               <button

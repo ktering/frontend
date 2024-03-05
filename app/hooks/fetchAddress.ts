@@ -20,7 +20,7 @@ export const fetchHomeAddress = async (
             },
         });
 
-        if (!response.ok) {
+        if (!response.ok) {d
             throw new Error('Failed to fetch addresses');
         }
 
