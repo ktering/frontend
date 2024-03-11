@@ -66,7 +66,7 @@ export default function KtererProfile() {
         }
 
         const data = await response.json();
-        console.log("data", data.kterer);
+    
         setKtererInfo(data.kterer);
       } catch (error) {
         console.error(`Error: ${error}`);
@@ -90,7 +90,7 @@ export default function KtererProfile() {
       }
 
       let data = await response.json();
-      console.log("kterer food", data.data);
+
       setKtererFood(data.data);
 
       response = await fetch(

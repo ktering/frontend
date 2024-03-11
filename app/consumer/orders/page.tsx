@@ -19,6 +19,8 @@ export default function ConsumerOrders() {
     useEffect(() => {
         if (orderSuccess === "true") {
             clearCart();
+            handleAddNewOrder();
+
         } else if (orderSuccess === "false") {
             toast({
                 variant: "destructive",
@@ -27,6 +29,39 @@ export default function ConsumerOrders() {
             });
         }
     }, [orderSuccess]);
+
+    const handleAddNewOrder = async () => {
+
+        const accessToken = localStorage.getItem("accessToken");
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        const storedData = JSON.parse(  localStorage?.getItem('myData') );
+
+        if(  storedData  ) {
+           
+            try {
+                const response = await fetch(`${apiURL}/api/checkoutorder`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({ storedData : storedData }),
+                });
+    
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+                
+                localStorage.removeItem('myData');
+    
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            } 
+
+        }
+
+    }
 
     useEffect(() => {
         const getUserOrders = async () => {
@@ -50,6 +85,7 @@ export default function ConsumerOrders() {
                 }
 
                 const data = await response.json();
+                console.log( "Orders Data : " ,  data.orders )
                 setOrders(data.orders);
             } catch (error) {
                 console.error(`Error: ${error}`);

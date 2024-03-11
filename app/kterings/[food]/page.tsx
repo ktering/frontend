@@ -123,7 +123,7 @@ export default function Food() {
       }
 
       setFoodDetails(data.data);
-      console.log( "Data ",data.data )
+
       if (data.data && data.data.images && data.data.images.length > 0) {
         setMainImage(data.data.images[0].image_url);
       }
@@ -163,7 +163,7 @@ export default function Food() {
         }
 
         const data = await response.json();
-        console.log( "kterer " , data.user )
+  
         setKtererInfo(data.user);
       } catch (error) {
         console.error("An error occurred:", error);

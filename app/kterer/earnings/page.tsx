@@ -59,6 +59,7 @@ export default function Earnings() {
                 }
 
                 const data = await response.json();
+                console.log( "Fetch Order " , data )
                 setKtererOrders(data.orders);
             } catch (error) {
                 console.error(`Error: ${error}`);
