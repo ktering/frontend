@@ -114,6 +114,7 @@ const AddressPopup = ({isAddressPopupOpen, setIsAddressPopupOpen, setAddressChan
                 })
                 .then(data => {
                     setAddressChanged(true);
+                    setIsAddressPopupOpen(false);
                     if (type === 'home') {
                         setHomeAddress(addressValue);
                     } else {

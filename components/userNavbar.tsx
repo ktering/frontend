@@ -196,13 +196,10 @@ export default function UserNavbar() {
                 },
                 body: JSON.stringify({ cart: cartForBackend }),
             });
-
-            console.log("Checkout response:", response);
-
-            const { url } = await response.json();
-
-            console.log("Checkout URL:", url);
-
+            localStorage.removeItem('myData');
+            const { url , session_data } = await response.json();
+            localStorage.setItem('myData', JSON.stringify(session_data));
+            console.log( session_data )
             // Redirect to Stripe Checkout
             window.location.href = url;
         } catch (error) {
