@@ -14,6 +14,7 @@ export default function ConsumerOrders() {
 
     const {clearCart} = useCart();
     const [orders, setOrders] = useState<any[]>([]);
+    const [dataLocal, setDataLocal] = useState<any[]>([]);
     const {updateNotifications} = useNotifications();
 
     useEffect(() => {
@@ -34,7 +35,8 @@ export default function ConsumerOrders() {
 
         const accessToken = localStorage.getItem("accessToken");
         const apiURL = process.env.NEXT_PUBLIC_API_URL;
-        const storedData = JSON.parse(  localStorage?.getItem('myData') );
+        const storedDataLocal = localStorage?.getItem('myData') ;
+        const storedData = storedDataLocal ? JSON.parse(  storedDataLocal ) : [] ;
 
         if(  storedData  ) {
            
