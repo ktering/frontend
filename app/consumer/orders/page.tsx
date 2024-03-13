@@ -38,6 +38,12 @@ export default function ConsumerOrders() {
         const storedDataLocal = localStorage?.getItem('myData') ;
         const storedData = storedDataLocal ? JSON.parse(  storedDataLocal ) : [] ;
 
+        const storedProductDataLocal = localStorage?.getItem('productData') ;
+        const storedProductData = storedProductDataLocal ? JSON.parse(  storedProductDataLocal ) : [] ;
+
+        console.log( storedData )
+        console.log( storedProductData )
+
         if(  storedData  ) {
            
             try {
@@ -47,7 +53,7 @@ export default function ConsumerOrders() {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${accessToken}`,
                     },
-                    body: JSON.stringify({ storedData : storedData }),
+                    body: JSON.stringify({ storedData : storedData , productData : storedProductData  }),
                 });
     
                 if (!response.ok) {
@@ -56,6 +62,7 @@ export default function ConsumerOrders() {
                 }
                 
                 localStorage.removeItem('myData');
+                localStorage.removeItem('productData');
     
             } catch (error) {
                 console.error(`Error: ${error}`);
