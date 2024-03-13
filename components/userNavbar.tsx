@@ -197,9 +197,10 @@ export default function UserNavbar() {
                 body: JSON.stringify({ cart: cartForBackend }),
             });
             localStorage.removeItem('myData');
-            const { url , session_data } = await response.json();
+            const { url , session_data , product_stored } = await response.json();
             localStorage.setItem('myData', JSON.stringify(session_data));
-           
+            localStorage.setItem('productData', JSON.stringify(product_stored));
+  
             // Redirect to Stripe Checkout
             window.location.href = url;
         } catch (error) {
