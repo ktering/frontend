@@ -74,7 +74,8 @@ export default function Food() {
   const { addItemToCart, cartItems } = useCart();
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-  const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
+  const [userInfo, setUserInfo] = useState<KtererInfo | null>(null);
+  const [ktererInfo, setKtererInfo] = useState<any>(null);
 
   const hasReviews = reviews && reviews.length > 0;
   const router = useRouter();
@@ -127,6 +128,26 @@ export default function Food() {
         setMainImage(data.data.images[0].image_url);
       }
 
+      try {
+        const response1 = await fetch(`${apiURL}/api/kterer/` + data.data.kterer_id, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!response1.ok) {
+          console.error(`Error: ${response1.statusText}`);
+          return;
+        }
+
+        const data1 = await response1.json();
+        setKtererInfo(data1);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+
       response = await fetch(`${apiURL}/api/food/reviews/${data.data.id}`, {
         method: "GET",
         headers: {
@@ -142,6 +163,7 @@ export default function Food() {
 
       data = await response.json();
       setReviews(data.data);
+
     };
 
     const getKtererAccountInfo = async () => {
@@ -162,18 +184,18 @@ export default function Food() {
         }
 
         const data = await response.json();
-        setKtererInfo(data.user);
+        setUserInfo(data.user);
       } catch (error) {
         console.error("An error occurred:", error);
       }
     };
 
-    getKtererAccountInfo().catch((error) => {
-      console.error("An error occurred:", error);
-    });
-
     getFoodInfo().catch((error) => {
       console.error(`Error: ${error}`);
+    });
+
+    getKtererAccountInfo().catch((error) => {
+      console.error("An error occurred:", error);
     });
   }, [foodIdMainPage]);
 
@@ -441,243 +463,269 @@ export default function Food() {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <p className="font-bold text-xl mb-12 flex items-center">
-          <Link href="/kterings" className="flex spcae-x-4">
-            <ArrowLeftIcon className="h-6 w-6 text-primary-color mr-2" />
-            Home Page
-          </Link>
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="col-span-1">
-            <div id="left-side-image" className="pt-0">
-              <div className="w-full h-96 overflow-hidden rounded-lg">
-                <img
-                  src={mainImage}
-                  alt="Main Product"
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
-              <div className="flex mt-4 space-x-2">
-                {foodDetails?.images.map((image, index) => (
-                  <img
-                    key={image.id}
-                    src={image.image_url}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-24 h-24 object-cover cursor-pointer rounded-lg"
-                    onClick={() => handleThumbnailClick(image.image_url)}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <p className="font-bold text-xl mb-12 flex items-center">
+                <Link href="/kterings" className="flex spcae-x-4">
+                    <ArrowLeftIcon className="h-6 w-6 text-primary-color mr-2"/>
+                    Home Page
+                </Link>
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="col-span-1">
+                    <div id="left-side-image" className="pt-0">
+                        <div className="w-full h-96 overflow-hidden rounded-lg">
+                            <img
+                                src={mainImage}
+                                alt="Main Product"
+                                className="w-full h-full object-cover rounded-lg"
+                            />
+                        </div>
+                        <div className="flex mt-4 space-x-2">
+                            {foodDetails?.images.map((image, index) => (
+                                <img
+                                    key={image.id}
+                                    src={image.image_url}
+                                    alt={`Thumbnail ${index + 1}`}
+                                    className="w-24 h-24 object-cover cursor-pointer rounded-lg"
+                                    onClick={() => handleThumbnailClick(image.image_url)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
 
-          <div id="right-side">
-            <h1 className="text-3xl font-bold">{foodDetails?.name}</h1>
-            {foodDetails?.rating !== 0 && foodDetails?.rating !== undefined && (
-              <StarRating rating={foodDetails?.rating} />
-            )}
-            <div className="mb-2 mt-2 space-x-2 space-y-2">
-              {foodDetails?.halal !== "No" ? (
-                <span
-                  className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                <div id="right-side">
+                    <h1 className="text-3xl font-bold">{foodDetails?.name}</h1>
+                    {foodDetails?.rating !== 0 && foodDetails?.rating !== undefined && (
+                        <StarRating rating={foodDetails?.rating}/>
+                    )}
+                    <div className="mb-2 mt-2 space-x-2 space-y-2">
+                        {foodDetails?.halal !== "No" ? (
+                            <span
+                                className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
                   Halal - Hand Slaughtered
                 </span>
-              ) : (
-                <span
-                  className="inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
+                        ) : (
+                            <span
+                                className="inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
                   Non-Halal
                 </span>
-              )}
-              {foodDetails?.contains_nuts && (
-                <span
-                  className="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+                        )}
+                        {foodDetails?.contains_nuts && (
+                            <span
+                                className="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
                   Contains Nuts
                 </span>
-              )}
-              {foodDetails?.kosher && (
-                <span
-                  className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
+                        )}
+                        {foodDetails?.kosher && (
+                            <span
+                                className="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
                   Kosher
                 </span>
-              )}
-              {foodDetails?.vegetarian &&
-                foodDetails?.vegetarian !== "None" && (
-                  <span
-                    className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                        )}
+                        {foodDetails?.vegetarian &&
+                            foodDetails?.vegetarian !== "None" && (
+                                <span
+                                    className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
                     {foodDetails.vegetarian}
                   </span>
-                )}
-              {foodDetails?.desserts && foodDetails?.desserts !== "None" && (
-                <span
-                  className="inline-flex items-center rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-700">
+                            )}
+                        {foodDetails?.desserts && foodDetails?.desserts !== "None" && (
+                            <span
+                                className="inline-flex items-center rounded-full bg-teal-100 px-2 py-1 text-xs font-medium text-teal-700">
                   {foodDetails.desserts}
                 </span>
-              )}
-              {foodDetails?.meat_type &&
-                foodDetails?.meat_type !== "None" &&
-                foodDetails?.meat_type !== "Other" && (
-                  <span
-                    className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">
+                        )}
+                        {foodDetails?.meat_type &&
+                            foodDetails?.meat_type !== "None" &&
+                            foodDetails?.meat_type !== "Other" && (
+                                <span
+                                    className="inline-flex items-center rounded-full bg-orange-100 px-2 py-1 text-xs font-medium text-orange-800">
                     {foodDetails.meat_type}
                   </span>
-                )}
+                            )}
 
-              {/* Conditionally render the ethnic type badge */}
-              {foodDetails?.ethnic_type &&
-                foodDetails?.ethnic_type !== "None" &&
-                foodDetails?.ethnic_type !== "Other" && (
-                  <span
-                    className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium text-gray-800 border-gray-300">
+                        {/* Conditionally render the ethnic type badge */}
+                        {foodDetails?.ethnic_type &&
+                            foodDetails?.ethnic_type !== "None" &&
+                            foodDetails?.ethnic_type !== "Other" && (
+                                <span
+                                    className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium text-gray-800 border-gray-300">
                     {foodDetails.ethnic_type}
                   </span>
+                            )}
+                    </div>
+                    <p className="text-lg mb-6 mt-4 font-bold">
+                        $
+                        {selectedSize && foodDetails
+                            ? foodDetails.quantities.find(
+                                (q: { size: string }) => q.size === selectedSize
+                            )?.price
+                            : "Loading..."}
+                    </p>
+                    <div className="flex flex-col space-y-2">
+                        {!isOutOfStock ? <p>Size</p> : <p>No Sizes Available</p>}
+                        <div className="my-2 space-x-2">
+                            {["small", "medium", "large"].map((size, index) =>
+                                renderSizeButton(size, index)
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-start space-y-2 mt-6 mb-8">
+                        <p>Quantity</p>
+                        <div className="flex items-center justify-center border border-gray-200 rounded-full">
+                            <button
+                                onClick={decrementQuantity}
+                                type="button"
+                                className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
+                            >
+                                <MinusSmallIcon className="w-6 h-6"/>
+                            </button>
+                            <input
+                                type="number"
+                                id="Quantity"
+                                value={quantity}
+                                readOnly
+                                onChange={(e) =>
+                                    setQuantity(Math.max(0, parseInt(e.target.value) || 0))
+                                }
+                                className="h-10 w-16 text-center border-transparent appearance-none outline-none"
+                            />
+                            <button
+                                onClick={incrementQuantity}
+                                type="button"
+                                className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
+                            >
+                                <PlusSmallIcon className="w-6 h-6"/>
+                            </button>
+                        </div>
+                    </div>
+                    {!isOutOfStock ? (
+                        <button
+                            disabled={foodDetails?.kterer_id === userInfo?.kterer?.id}
+                            onClick={addToCart}
+                            className={
+                                foodDetails?.kterer_id === userInfo?.kterer?.id
+                                    ? "rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm"
+                                    : "rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                            }
+                        >
+                            Add to Cart
+                        </button>
+                    ) : (
+                        <button
+                            disabled
+                            className="rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm"
+                        >
+                            Out of Stock
+                        </button>
+                    )}
+                    <div className="my-8">
+                        <Accordion type="single" collapsible defaultValue="item-1">
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger>Description</AccordionTrigger>
+                                <AccordionContent className="text-base">
+                                    {foodDetails?.description}
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+
+                        <Accordion type="single" collapsible>
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger>Ingredients</AccordionTrigger>
+                                <AccordionContent className="text-base">
+                                    {foodDetails?.ingredients.split(/\s+/).join(", ")}
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
+                </div>
+            </div>
+
+            <div className="pt-12">
+                <div className="flex justify-between items-center">
+                    <h3 className="font-bold text-xl my-12">Recent Reviews</h3>
+                    {foodDetails?.kterer_id !== userInfo?.kterer?.id && (
+                        <Button
+                            className="rounded-full border bg-white hover:bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
+                            onClick={() => setIsReviewModalOpen(true)}
+                        >
+                            Write a review
+                        </Button>
+                    )}
+                </div>
+                {hasReviews ? (
+                    reviews?.map((review) => (
+                        <div
+                            key={review.id}
+                            className="my-2 flex items-start border-b pb-4 flex-col"
+                        >
+                            <div>
+                                <div className="flex items-center my-2 font-bold">
+                                    <p>
+                                        {review?.user?.first_name} {review?.user?.last_name}
+                                    </p>
+                                </div>
+                                <div className="flex items-center my-3">
+                                    <StarRating rating={review?.rating}/>
+                                    <span className={`mx-2 text-gray-300`}>|</span>
+                                    <p className="text-sm text-gray-500">
+                                        {formatDate(review?.created_at)}
+                                    </p>
+                                </div>
+                                <p>{review.review}</p>
+                            </div>
+                            <div>
+                                <div className="flex mt-4 space-x-2">
+                                    {review?.images?.map((image, index) => (
+                                        <img
+                                            key={image.id}
+                                            src={image.image_url}
+                                            alt={`Thumbnail ${index + 1}`}
+                                            className="hover:grayscale transition duration-1000 w-24 h-24 object-cover cursor-pointer rounded-lg"
+                                        />
+                                    ))}
+                                </div>
+
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="my-2 flex items-start border-b pb-4">
+                        <p className="text-gray-500">No reviews yet</p>
+                    </div>
                 )}
             </div>
-            <p className="text-lg mb-6 mt-4 font-bold">
-              $
-              {selectedSize && foodDetails
-                ? foodDetails.quantities.find(
-                  (q: { size: string }) => q.size === selectedSize
-                )?.price
-                : "Loading..."}
-            </p>
-            <div className="flex flex-col space-y-2">
-              {!isOutOfStock ? <p>Size</p> : <p>No Sizes Available</p>}
-              <div className="my-2 space-x-2">
-                {["small", "medium", "large"].map((size, index) =>
-                  renderSizeButton(size, index)
-                )}
-              </div>
-            </div>
-            <div className="flex flex-col items-start space-y-2 mt-6 mb-8">
-              <p>Quantity</p>
-              <div className="flex items-center justify-center border border-gray-200 rounded-full">
-                <button
-                  onClick={decrementQuantity}
-                  type="button"
-                  className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
-                >
-                  <MinusSmallIcon className="w-6 h-6" />
-                </button>
-                <input
-                  type="number"
-                  id="Quantity"
-                  value={quantity}
-                  readOnly
-                  onChange={(e) =>
-                    setQuantity(Math.max(0, parseInt(e.target.value) || 0))
-                  }
-                  className="h-10 w-16 text-center border-transparent appearance-none outline-none"
-                />
-                <button
-                  onClick={incrementQuantity}
-                  type="button"
-                  className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
-                >
-                  <PlusSmallIcon className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-            {!isOutOfStock ? (
-              <button
-                disabled={foodDetails?.kterer_id === ktererInfo?.kterer?.id}
-                onClick={addToCart}
-                className={
-                  foodDetails?.kterer_id === ktererInfo?.kterer?.id
-                    ? "rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm"
-                    : "rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
-                }
-              >
-                Add to Cart
-              </button>
-            ) : (
-              <button
-                disabled
-                className="rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm"
-              >
-                Out of Stock
-              </button>
-            )}
-            <div className="my-8">
-              <Accordion type="single" collapsible defaultValue="item-1">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>Description</AccordionTrigger>
-                  <AccordionContent className="text-base">
-                    {foodDetails?.description}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
 
-              <Accordion type="single" collapsible>
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>Ingredients</AccordionTrigger>
-                  <AccordionContent className="text-base">
-                    {foodDetails?.ingredients.split(/\s+/).join(", ")}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+            <div className="mt-10 bg-gray-200 h-36 w-full">
+                {JSON.stringify(ktererInfo)}
             </div>
-          </div>
+
+            <div className="mt-52 bg-gray-100 gap-5 p-5 flex items-center w-full">
+                <div>
+                    <img src={ktererInfo?.kterer.profile_image_url} alt="Kterer Profile Picture" className="w-32 h-32 rounded-full"/>
+                </div>
+                <div className="flex flex-col gap-2">
+                    <div className="flex gap-2 items-center">
+                        <h3 className="font-bold text-xl">{ktererInfo?.kterer.name}</h3>
+                        <StarRating rating={ktererInfo?.kterer.rating}/>
+                        ({ktererInfo?.kterer.rating})
+                    </div>
+                    <div>
+                        {ktererInfo?.kterer.bio}
+                    </div>
+                    <div>
+                        <Link href={`/kterings/kterer-profile/${ktererInfo?.kterer.id}`}>
+                        <button className="rounded-full bg-primary-color hover:bg-primary-color-hover px-4 py-2 font-semibold text-white
+                        shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color">See Profile</button>
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div className="pt-12">
-          <div className="flex justify-between items-center">
-            <h3 className="font-bold text-xl my-12">Recent Reviews</h3>
-            {foodDetails?.kterer_id !== ktererInfo?.kterer?.id && (
-              <Button
-                className="rounded-full border bg-white hover:bg-white px-4 py-2.5 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
-                onClick={() => setIsReviewModalOpen(true)}
-              >
-                Write a review
-              </Button>
-            )}
-          </div>
-          {hasReviews ? (
-            reviews?.map((review) => (
-              <div
-                key={review.id}
-                className="my-2 flex items-start border-b pb-4 flex-col"
-              >
-                <div >
-                  <div className="flex items-center my-2 font-bold">
-                    <p>
-                      {review?.user?.first_name} {review?.user?.last_name}
-                    </p>
-                  </div>
-                  <div className="flex items-center my-3">
-                    <StarRating rating={review?.rating} />
-                    <span className={`mx-2 text-gray-300`}>|</span>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(review?.created_at)}
-                    </p>
-                  </div>
-                  <p>{review.review}</p>
-                </div>
-                <div >
-                  <div className="flex mt-4 space-x-2">
-                    {review?.images?.map((image, index) => (
-                      <img
-                        key={image.id}
-                        src={image.image_url}
-                        alt={`Thumbnail ${index + 1}`}
-                        className="hover:grayscale transition duration-1000 w-24 h-24 object-cover cursor-pointer rounded-lg"
-                      />
-                    ))}
-                  </div>
-
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="my-2 flex items-start border-b pb-4">
-              <p className="text-gray-500">No reviews yet</p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
-        <DialogContent>
+        <Dialog open={isReviewModalOpen} onOpenChange={setIsReviewModalOpen}>
+            <DialogContent>
           <DialogHeader>
             <DialogTitle>{foodDetails?.name} Food Review</DialogTitle>
             <Form {...form}>
