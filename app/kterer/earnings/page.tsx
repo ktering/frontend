@@ -59,6 +59,7 @@ export default function Earnings() {
                 }
 
                 const data = await response.json();
+                console.log( "Fetch Order " , data )
                 setKtererOrders(data.orders);
             } catch (error) {
                 console.error(`Error: ${error}`);
@@ -449,7 +450,7 @@ export default function Earnings() {
                                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                                 .map((order, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{index + 1}</TableCell>
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
@@ -466,20 +467,20 @@ export default function Earnings() {
                                         </TableCell>
 
                                         <TableCell className="text-left md:space-x-8">
-                                            <Button
+                                            {/* <Button
                                                 variant="link"
                                                 onClick={handleCreateDelivery(order.id)}
                                                 className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Create Delivery
-                                            </Button>
-                                            {/* <Button
+                                            </Button> */}
+                                            <Button
                                                 variant="link"
                                                 onClick={openCancelOrderDialog(order.id)}
                                                 className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Cancel Order
-                                            </Button> */}
+                                            </Button>
                                         </TableCell>
 
                                         <TableCell className="text-left md:space-x-8">
@@ -525,7 +526,7 @@ export default function Earnings() {
                                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                                 .map((order, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{index + 1}</TableCell>
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
@@ -591,7 +592,7 @@ export default function Earnings() {
                                 .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                                 .map((order, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{index + 1}</TableCell>
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>

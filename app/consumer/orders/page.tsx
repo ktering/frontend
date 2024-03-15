@@ -14,11 +14,14 @@ export default function ConsumerOrders() {
 
     const {clearCart} = useCart();
     const [orders, setOrders] = useState<any[]>([]);
+    const [dataLocal, setDataLocal] = useState<any[]>([]);
     const {updateNotifications} = useNotifications();
 
     useEffect(() => {
         if (orderSuccess === "true") {
             clearCart();
+            handleAddNewOrder();
+
         } else if (orderSuccess === "false") {
             toast({
                 variant: "destructive",
@@ -27,6 +30,47 @@ export default function ConsumerOrders() {
             });
         }
     }, [orderSuccess]);
+
+    const handleAddNewOrder = async () => {
+
+        const accessToken = localStorage.getItem("accessToken");
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+        const storedDataLocal = localStorage?.getItem('myData') ;
+        const storedData = storedDataLocal ? JSON.parse(  storedDataLocal ) : [] ;
+
+        const storedProductDataLocal = localStorage?.getItem('productData') ;
+        const storedProductData = storedProductDataLocal ? JSON.parse(  storedProductDataLocal ) : [] ;
+
+        console.log( storedData )
+        console.log( storedProductData )
+
+        if(  storedData  ) {
+           
+            try {
+                const response = await fetch(`${apiURL}/api/checkoutorder`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: JSON.stringify({ storedData : storedData , productData : storedProductData  }),
+                });
+    
+                if (!response.ok) {
+                    console.error(`Error: ${response.statusText}`);
+                    return;
+                }
+                
+                localStorage.removeItem('myData');
+                localStorage.removeItem('productData');
+    
+            } catch (error) {
+                console.error(`Error: ${error}`);
+            } 
+
+        }
+
+    }
 
     useEffect(() => {
         const getUserOrders = async () => {
@@ -50,6 +94,7 @@ export default function ConsumerOrders() {
                 }
 
                 const data = await response.json();
+                console.log( "Orders Data : " ,  data.orders )
                 setOrders(data.orders);
             } catch (error) {
                 console.error(`Error: ${error}`);
@@ -140,7 +185,7 @@ export default function ConsumerOrders() {
                             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{order.id}</TableCell>
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
@@ -182,7 +227,7 @@ export default function ConsumerOrders() {
                             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{order.id}</TableCell>
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
@@ -231,7 +276,7 @@ export default function ConsumerOrders() {
                             .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                             .map((order, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{order.id}</TableCell>
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell>{order.kterer_name}</TableCell>
                                     <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                     <TableCell>${order.total_price}</TableCell>
