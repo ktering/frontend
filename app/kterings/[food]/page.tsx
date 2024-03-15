@@ -186,7 +186,6 @@ export default function Food() {
 
         const data = await response.json();
         setUserInfo(data.user);
-
       } catch (error) {
         console.error("An error occurred:", error);
       }
@@ -699,86 +698,7 @@ export default function Food() {
                 )}
             </div>
 
-            <p className="text-lg mb-6 mt-4 font-bold">
-              $
-              {selectedSize && foodDetails
-                ? foodDetails.quantities.find(
-                  (q: { size: string }) => q.size === selectedSize
-                )?.price
-                : "Loading..."}
-            </p>
-            <div className="flex flex-col space-y-2">
-              {!isOutOfStock ? <p>Size</p> : <p>No Sizes Available</p>}
-              <div className="my-2 space-x-2">
-                {["small", "medium", "large"].map((size, index) =>
-                  renderSizeButton(size, index)
-                )}
-              </div>
-            </div>
-            <div className="flex flex-col items-start space-y-2 mt-6 mb-8">
-              <p>Quantity</p>
-              <div className="flex items-center justify-center border border-gray-200 rounded-full">
-                <button
-                  onClick={decrementQuantity}
-                  type="button"
-                  className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
-                >
-                  <MinusSmallIcon className="w-6 h-6" />
-                </button>
-                <input
-                  type="number"
-                  id="Quantity"
-                  value={quantity}
-                  readOnly
-                  onChange={(e) =>
-                    setQuantity(Math.max(0, parseInt(e.target.value) || 0))
-                  }
-                  className="h-10 w-16 text-center border-transparent appearance-none outline-none"
-                />
-                <button
-                  onClick={incrementQuantity}
-                  type="button"
-                  className="flex items-center justify-center w-10 h-10 text-gray-600 transition hover:opacity-75"
-                >
-                  <PlusSmallIcon className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-            {!isOutOfStock ? (
-              <button
-                disabled={foodDetails?.kterer_id === ktererInfo?.kterer?.id }
-                onClick={addToCart}
-                className={
-                  foodDetails?.kterer_id === ktererInfo?.kterer?.id
-                    ? "rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm"
-                    : "rounded-full w-full bg-primary-color hover:bg-primary-color-hover px-4 py-2.5 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color"
-                }
-              >
-                 {foodDetails?.kterer_id === ktererInfo?.kterer?.id ? "This order belongs to same kterer" : "Add to Cart" }
-              </button>
-            ) : (
-              <button
-                disabled
-                className="rounded-full w-full bg-gray-400 px-4 py-2.5 font-semibold text-white shadow-sm"
-              >
-                Out of Stock
-              </button>
-            )}
-            <div className="my-8">
-              <Accordion type="single" collapsible defaultValue="item-1">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>Description</AccordionTrigger>
-                  <AccordionContent className="text-base">
-                    {foodDetails?.description}
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-            <div className="mt-10 bg-gray-200 h-36 w-full">
-                {JSON.stringify(ktererInfo)}
-            </div>
-
-            <div className="mt-52 bg-gray-100 gap-5 p-5 flex items-center w-full">
+            <div className="mt-24 bg-gray-100 gap-5 p-5 flex items-center w-full">
                 <div>
                     <img src={ktererInfo?.kterer.profile_image_url} alt="Kterer Profile Picture" className="w-32 h-32 rounded-full"/>
                 </div>
@@ -914,7 +834,6 @@ export default function Food() {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-        </div>
     </>
-    );
+  );
 }
