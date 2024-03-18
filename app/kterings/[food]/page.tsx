@@ -699,10 +699,10 @@ export default function Food() {
             </div>
 
             <div className="mt-24 bg-gray-100 gap-5 p-5 flex items-center w-full">
-                <div>
+                <div className="w-[150px]">
                     <img src={ktererInfo?.kterer.profile_image_url} alt="Kterer Profile Picture" className="w-32 h-32 rounded-full"/>
                 </div>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-grow flex-col gap-2">
                     <div className="flex gap-2 items-center">
                         <h3 className="font-bold text-xl">{ktererInfo?.kterer.name}</h3>
                         <StarRating rating={ktererInfo?.kterer.rating}/>
