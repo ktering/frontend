@@ -41,9 +41,6 @@ export default function ConsumerOrders() {
         const storedProductDataLocal = localStorage?.getItem('productData') ;
         const storedProductData = storedProductDataLocal ? JSON.parse(  storedProductDataLocal ) : [] ;
 
-        console.log( storedData )
-        console.log( storedProductData )
-
         if(  storedData  ) {
            
             try {

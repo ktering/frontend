@@ -467,13 +467,13 @@ export default function Earnings() {
                                         </TableCell>
 
                                         <TableCell className="text-left md:space-x-8">
-                                            {/* <Button
+                                            <Button
                                                 variant="link"
                                                 onClick={handleCreateDelivery(order.id)}
                                                 className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Create Delivery
-                                            </Button> */}
+                                            </Button>
                                             <Button
                                                 variant="link"
                                                 onClick={openCancelOrderDialog(order.id)}
@@ -618,12 +618,12 @@ export default function Earnings() {
                                             </Button>
                                         </TableCell>
 
-                                        {/* <Button
+                                        <Button
                                             variant="link"
                                             onClick={handleCreateDelivery(order.id)}
                                         >
-                                            Create Delivery
-                                        </Button> */}
+                                            Create Delivery 
+                                        </Button>
                                         <TableCell className="text-left md:space-x-8">
 
                                             {order.receipt_url && (
