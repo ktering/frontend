@@ -708,7 +708,7 @@ export default function Food() {
                         <StarRating rating={ktererInfo?.kterer.rating}/>
                         ({ktererInfo?.kterer.rating})
                     </div>
-                    <div>
+                    <div className="truncate">
                         {ktererInfo?.kterer.bio}
                     </div>
                     <div>
