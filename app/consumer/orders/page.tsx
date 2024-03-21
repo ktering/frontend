@@ -41,7 +41,8 @@ export default function ConsumerOrders() {
         const storedProductDataLocal = localStorage?.getItem('productData') ;
         const storedProductData = storedProductDataLocal ? JSON.parse(  storedProductDataLocal ) : [] ;
 
-        if(  storedData  ) {
+
+        if(  storedData?.id  ) {
            
             try {
                 const response = await fetch(`${apiURL}/api/checkoutorder`, {
@@ -60,86 +61,121 @@ export default function ConsumerOrders() {
                 
                 localStorage.removeItem('myData');
                 localStorage.removeItem('productData');
+
+                getUserOrders().catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
+    
+                getNotifications().catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
     
             } catch (error) {
                 console.error(`Error: ${error}`);
+
+                getUserOrders().catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
+    
+                getNotifications().catch((error) => {
+                    console.error(`Error: ${error}`);
+                });
             } 
+
+        } else {
+
+            console.log( "Testing" )
+
+            getUserOrders().catch((error) => {
+                console.error(`Error: ${error}`);
+            });
+
+            getNotifications().catch((error) => {
+                console.error(`Error: ${error}`);
+            });
 
         }
 
     }
 
+    const getUserOrders = async () => {
+        const accessToken = localStorage.getItem("accessToken");
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(`${apiURL}/api/orders`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                console.error(`Error: ${response.statusText}`);
+                return;
+            }
+
+            const data = await response.json();
+            console.log( "Orders Data : " ,  data.orders )
+            setOrders(data.orders);
+        } catch (error) {
+            console.error(`Error: ${error}`);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    
+    const getNotifications = async () => {
+        const accessToken = localStorage.getItem("accessToken");
+        const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+        try {
+            const response = await fetch(`${apiURL}/api/notifications`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                console.error(`Error: ${response.statusText}`);
+                return;
+            }
+
+            const data = await response.json();
+
+            updateNotifications(
+                data.map((not: any) => ({
+                    id: not.id,
+                    message: not.data.message,
+                    created_at: new Date(not.created_at),
+                    read_at: not.read_at ? new Date(not.read_at) : null,
+                }))
+            );
+        } catch (error) {
+            console.error(`Error: ${error}`);
+        }
+    };
+
     useEffect(() => {
-        const getUserOrders = async () => {
-            const accessToken = localStorage.getItem("accessToken");
-            const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
-            setIsLoading(true);
-
-            try {
-                const response = await fetch(`${apiURL}/api/orders`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    console.error(`Error: ${response.statusText}`);
-                    return;
-                }
-
-                const data = await response.json();
-                console.log( "Orders Data : " ,  data.orders )
-                setOrders(data.orders);
-            } catch (error) {
+        if( !orderSuccess ) {
+   
+            getUserOrders().catch((error) => {
                 console.error(`Error: ${error}`);
-            } finally {
-                setIsLoading(false);
-            }
-        };
+            });
 
-        const getNotifications = async () => {
-            const accessToken = localStorage.getItem("accessToken");
-            const apiURL = process.env.NEXT_PUBLIC_API_URL;
-
-            try {
-                const response = await fetch(`${apiURL}/api/notifications`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
-
-                if (!response.ok) {
-                    console.error(`Error: ${response.statusText}`);
-                    return;
-                }
-
-                const data = await response.json();
-
-                updateNotifications(
-                    data.map((not: any) => ({
-                        id: not.id,
-                        message: not.data.message,
-                        created_at: new Date(not.created_at),
-                        read_at: not.read_at ? new Date(not.read_at) : null,
-                    }))
-                );
-            } catch (error) {
+            getNotifications().catch((error) => {
                 console.error(`Error: ${error}`);
-            }
-        };
+            });
 
-        getUserOrders().catch((error) => {
-            console.error(`Error: ${error}`);
-        });
+        }
 
-        getNotifications().catch((error) => {
-            console.error(`Error: ${error}`);
-        });
     }, []);
 
     const handleLinkClick = (url: string) => () => {
