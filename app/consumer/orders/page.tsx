@@ -7,6 +7,47 @@ import {toast} from "@/components/ui/use-toast";
 import {useNotifications} from "@/components/notificationContext";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 
+import { styled } from '@mui/material/styles';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
+import MuiAccordionSummary, {
+  AccordionSummaryProps,
+} from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+
+const Accordion = styled((props: AccordionProps) => (
+    <MuiAccordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: `1px solid ${theme.palette.divider}`,
+    '&:not(:last-child)': {
+      borderBottom: 0,
+    },
+    '&::before': {
+      display: 'none',
+    },
+  }));
+  
+  const AccordionSummary = styled((props: AccordionSummaryProps) => (
+    <MuiAccordionSummary
+      expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' , color : 'black' }} />}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    flexDirection: 'row-reverse',
+    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+      transform: 'rotate(90deg)',
+    },
+    '& .MuiAccordionSummary-content': {
+      marginLeft: theme.spacing(1),
+    },
+  }));
+  
+  const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+    
+  }));
+  
+
 export default function ConsumerOrders() {
     const searchParams = useSearchParams();
     const orderSuccess = searchParams.get("success");
@@ -15,6 +56,7 @@ export default function ConsumerOrders() {
     const {clearCart} = useCart();
     const [orders, setOrders] = useState<any[]>([]);
     const [dataLocal, setDataLocal] = useState<any[]>([]);
+    const [expanded, setExpanded] = useState<string | false>('panel1');
     const {updateNotifications} = useNotifications();
 
     useEffect(() => {
@@ -194,150 +236,194 @@ export default function ConsumerOrders() {
         );
     }
 
+    const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+        setExpanded(newExpanded ? panel : false);
+    };
+
     return (
         <>
             <div className="flex justify-between my-8">
                 <div className="text-2xl font-bold ">Orders</div>
             </div>
 
-            <h2 className="my-4 font-bold text-lg">In Progress</h2>
-            <div className="my-8">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-32">Order No.</TableHead>
-                            <TableHead>Kterer</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead className="w-72">Status</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {orders
-                            .filter((order) => order.status === "progress")
-                            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                            .map((order, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{order.kterer_name}</TableCell>
-                                    <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
-                                    <TableCell>${order.total_price}</TableCell>
-                                    <TableCell className="text-left">
-                                        {order.receipt_url && (
-                                            <Button
-                                                variant="link"
-                                                className="pl-0"
-                                                onClick={handleLinkClick(order.receipt_url)}
-                                            >
-                                                View Receipt
-                                            </Button>
-                                        )}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </div>
+            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ border : 'none'}}>
+                
+                    <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                        <h2 className="my-4 font-bold text-lg">In Progress</h2>
+                    </AccordionSummary>
 
-            <h2 className="my-4 font-bold text-lg">Open</h2>
-            <div className="my-8">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-32">Order No.</TableHead>
-                            <TableHead>Kterer</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead className="w-72">Status</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {orders
-                            .filter((order) =>
-                                order.status !== "cancelled" &&
-                                order.status !== "delivered" &&
-                                order.status !== "progress")
-                            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                            .map((order, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{order.kterer_name}</TableCell>
-                                    <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
-                                    <TableCell>${order.total_price}</TableCell>
-                                    <TableCell className="text-left md:space-x-4">
-                                        {order.track_url && (
-                                            <Button
-                                                variant="link"
-                                                className="pl-0"
-                                                onClick={handleLinkClick(order.track_url)}
-                                            >
-                                                Track Delivery
-                                            </Button>
-                                        )}
-                                        {order.receipt_url && (
-                                            <Button
-                                                variant="link"
-                                                className="pl-0"
-                                                onClick={handleLinkClick(order.receipt_url)}
-                                            >
-                                                View Receipt
-                                            </Button>
-                                        )}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </div>
+                    <AccordionDetails>
 
-            <h2 className="my-4 font-bold text-lg">Completed</h2>
-            <div className="my-8">
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-32">Order No.</TableHead>
-                            <TableHead>Kterer</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead className="w-72">Status</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {orders
-                            .filter((order) =>
-                                order.status === "cancelled" || order.status === "delivered")
-                            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                            .map((order, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{order.kterer_name}</TableCell>
-                                    <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
-                                    <TableCell>${order.total_price}</TableCell>
-                                    <TableCell className="text-left md:space-x-8">
-                                        {order.track_url && (
-                                            <Button
-                                                variant="link"
-                                                className="pl-0"
-                                                onClick={handleLinkClick(order.track_url)}
-                                            >
-                                                Track Delivery
-                                            </Button>
-                                        )}
-                                        {order.receipt_url && (
-                                            <Button
-                                                variant="link"
-                                                className="pl-0"
-                                                onClick={handleLinkClick(order.receipt_url)}
-                                            >
-                                                View Receipt
-                                            </Button>
-                                        )}
-                                    </TableCell>
+                    <div>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-32"><span className="font-bold text-black">Order No.</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Kterer</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Date</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Amount</span></TableHead>
+                                    <TableHead className="w-72"><span className="font-bold text-black">Status</span></TableHead>
                                 </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </div>
+                            </TableHeader>
+                            <TableBody>
+                                {orders
+                                    .filter((order) => order.status === "progress")
+                                    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                    .map((order, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>{order.kterer_name}</TableCell>
+                                            <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                            <TableCell>${order.total_price}</TableCell>
+                                            <TableCell className="text-left">
+                                                {order.receipt_url && (
+                                                    <Button
+                                                        variant="link"
+                                                        className="pl-0"
+                                                        onClick={handleLinkClick(order.receipt_url)}
+                                                    >
+                                                        View Receipt
+                                                    </Button>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    </AccordionDetails>
+
+                </Accordion>
+
+                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')} sx={{ border : 'none'}}>
+                
+                    <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                        <h2 className="my-4 font-bold text-lg">Open</h2>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+
+                    <div className="my-8">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-32"><span className="font-bold text-black">Order No.</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Kterer</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Date</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Amount</span></TableHead>
+                                    <TableHead className="w-72"><span className="font-bold text-black">Status</span></TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {orders
+                                    .filter((order) =>
+                                        order.status !== "cancelled" &&
+                                        order.status !== "delivered" &&
+                                        order.status !== "progress")
+                                    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                    .map((order, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>{order.kterer_name}</TableCell>
+                                            <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                            <TableCell>${order.total_price}</TableCell>
+                                            <TableCell className="text-left md:space-x-4">
+                                                {order.track_url && (
+                                                    <Button
+                                                        variant="link"
+                                                        className="pl-0"
+                                                        onClick={handleLinkClick(order.track_url)}
+                                                    >
+                                                        Track Delivery
+                                                    </Button>
+                                                )}
+                                                {order.receipt_url && (
+                                                    <Button
+                                                        variant="link"
+                                                        className="pl-0"
+                                                        onClick={handleLinkClick(order.receipt_url)}
+                                                    >
+                                                        View Receipt
+                                                    </Button>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    </AccordionDetails>
+
+                </Accordion>
+
+                
+                <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} sx={{ border : 'none'}}>
+                
+                    <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                        <h2 className="my-4 font-bold text-lg">Completed</h2>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+
+                    <div>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-32"><span className="font-bold text-black">Order No.</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Kterer</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Date</span></TableHead>
+                                    <TableHead><span className="font-bold text-black">Amount</span></TableHead>
+                                    <TableHead className="w-72"><span className="font-bold text-black">Status</span></TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {orders
+                                    .filter((order) =>
+                                        order.status === "cancelled" || order.status === "delivered")
+                                    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                                    .map((order, index) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{index + 1}</TableCell>
+                                            <TableCell>{order.kterer_name}</TableCell>
+                                            <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
+                                            <TableCell>${order.total_price}</TableCell>
+                                            <TableCell className="text-left md:space-x-8">
+                                                {order.track_url && (
+                                                    <Button
+                                                        variant="link"
+                                                        className="pl-0"
+                                                        onClick={handleLinkClick(order.track_url)}
+                                                    >
+                                                        Track Delivery
+                                                    </Button>
+                                                )}
+                                                {order.receipt_url && (
+                                                    <Button
+                                                        variant="link"
+                                                        className="pl-0"
+                                                        onClick={handleLinkClick(order.receipt_url)}
+                                                    >
+                                                        View Receipt
+                                                    </Button>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                    </AccordionDetails>
+
+                </Accordion>
+
+            {/* <h2 className="my-4 font-bold text-lg">In Progress</h2> */}
+            
+
+            {/* <h2 className="my-4 font-bold text-lg">Open</h2> */}
+            
+
+            {/* <h2 className="my-4 font-bold text-lg">Completed</h2> */}
+            
         </>
     )
         ;

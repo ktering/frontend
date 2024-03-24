@@ -21,6 +21,47 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { styled } from '@mui/material/styles';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
+import MuiAccordionSummary, {
+  AccordionSummaryProps,
+} from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+
+const Accordion = styled((props: AccordionProps) => (
+    <MuiAccordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: `1px solid ${theme.palette.divider}`,
+    '&:not(:last-child)': {
+      borderBottom: 0,
+    },
+    '&::before': {
+      display: 'none',
+    },
+  }));
+  
+  const AccordionSummary = styled((props: AccordionSummaryProps) => (
+    <MuiAccordionSummary
+      expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' , color : 'black' }} />}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    flexDirection: 'row-reverse',
+    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+      transform: 'rotate(90deg)',
+    },
+    '& .MuiAccordionSummary-content': {
+      marginLeft: theme.spacing(1),
+    },
+  }));
+  
+  const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+    
+  }));
+  
+
 export default function Earnings() {
     const user = useUser();
     if (!user) {
@@ -36,6 +77,8 @@ export default function Earnings() {
     const [isLoading, setIsLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [orderIdToCancel, setOrderIdToCancel] = useState<number | 0>(0);
+
+    const [expanded, setExpanded] = useState<string | false>('panel1');
 
     const { updateNotifications } = useNotifications();
 
@@ -367,6 +410,10 @@ export default function Earnings() {
         setIsDialogOpen(true);
     }
 
+    const handleChange = (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+      setExpanded(newExpanded ? panel : false);
+    };
+
     return (
         <>
             <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -429,21 +476,32 @@ export default function Earnings() {
                     <p>Today's total</p>
                 </div>
 
-                <h2 className="my-4 font-bold text-lg">In Progress</h2>
-                <div className="my-8">
+                <div>
+
+                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} sx={{ border : 'none'}}>
+                
+                    <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                        <h2 className="my-4 font-bold text-lg">In Progress</h2>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+
+                    <div>
                     <Table>
+
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-32">Order No.</TableHead>
-                                <TableHead>Customer</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead className="w-72">Status</TableHead>
-                                <TableHead className="w-72">Actions</TableHead>
-                                <TableHead className="w-72"></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Order No.</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Customer</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Date</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Amount</span></TableHead>
+                                {/* <TableHead>Type</TableHead> */}
+                                <TableHead className="w-32"><span className="font-bold text-black">Status</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Actions</span></TableHead>
+                                <TableHead className="w-32"></TableHead>
                             </TableRow>
                         </TableHeader>
+                        
                         <TableBody>
                             {ktererOrders
                                 .filter((order) => order.status === "progress")
@@ -454,7 +512,7 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
-                                        <TableCell>{order.status}</TableCell>
+                                        {/* <TableCell>{order.status}</TableCell> */}
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
                                                 disabled={!order.track_url}
@@ -467,13 +525,13 @@ export default function Earnings() {
                                         </TableCell>
 
                                         <TableCell className="text-left md:space-x-8">
-                                            <Button
+                                            {/* <Button
                                                 variant="link"
                                                 onClick={handleCreateDelivery(order.id)}
                                                 className="p-0 text-primary-color underline-offset-auto"
                                             >
                                                 Create Delivery
-                                            </Button>
+                                            </Button> */}
                                             <Button
                                                 variant="link"
                                                 onClick={openCancelOrderDialog(order.id)}
@@ -498,22 +556,32 @@ export default function Earnings() {
                                     </TableRow>
                                 ))}
                         </TableBody>
-                    </Table>
-                </div>
+                        </Table>
+                    </div>
+                    </AccordionDetails>
 
-                <h2 className="my-4 font-bold text-lg">Open</h2>
-                <div className="my-8">
+                </Accordion>
+                
+                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')} sx={{ border : 'none'}}>
+
+                    <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                        <h2 className="font-bold text-lg">Open</h2>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+
+                    <div>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-32">Order No.</TableHead>
-                                <TableHead>Customer</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead className="w-72">Status</TableHead>
-                                <TableHead className="w-72">Actions</TableHead>
-                                <TableHead className="w-72"></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Order No.</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Customer</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Date</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Amount</span></TableHead>
+                                {/* <TableHead>Type</TableHead> */}
+                                <TableHead className="w-32"><span className="font-bold text-black">Status</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Actions</span></TableHead>
+                                <TableHead className="w-32"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -530,7 +598,7 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
-                                        <TableCell>{order.status}</TableCell>
+                                        {/* <TableCell>{order.status}</TableCell> */}
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
                                                 disabled={!order.track_url}
@@ -567,21 +635,30 @@ export default function Earnings() {
                                 ))}
                         </TableBody>
                     </Table>
-                </div>
+                    </div>
+                    </AccordionDetails>
 
-                <h2 className="my-4 font-bold text-lg">Completed</h2>
-                <div className="my-8">
+                </Accordion>
+
+                <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')} sx={{ border : 'none'}}>
+
+                    <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
+                        <h2 className="my-4 font-bold text-lg">Completed</h2>
+                    </AccordionSummary>
+
+                    <AccordionDetails>
+                    <div>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-32">Order No.</TableHead>
-                                <TableHead>Customer</TableHead>
-                                <TableHead>Date</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Type</TableHead>
-                                <TableHead className="w-72">Status</TableHead>
-                                <TableHead className="w-72">Actions</TableHead>
-                                <TableHead className="w-72"></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Order No.</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Customer</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Date</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Amount</span></TableHead>
+                                {/* <TableHead>Type</TableHead> */}
+                                <TableHead className="w-32"><span className="font-bold text-black">Status</span></TableHead>
+                                <TableHead className="w-32"><span className="font-bold text-black">Actions</span></TableHead>
+                                <TableHead className="w-32"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -596,7 +673,7 @@ export default function Earnings() {
                                         <TableCell>{order.buyer_name}</TableCell>
                                         <TableCell>{new Date(order.created_at).toLocaleDateString('en-US')}</TableCell>
                                         <TableCell>${order.total_price}</TableCell>
-                                        <TableCell>{order.status}</TableCell>
+                                        {/* <TableCell>{order.status}</TableCell> */}
                                         <TableCell className="text-left md:space-x-8">
                                             <Button
                                                 disabled={!order.track_url}
@@ -640,7 +717,22 @@ export default function Earnings() {
                                 ))}
                         </TableBody>
                     </Table>
-                </div>
+                    </div>
+                    </AccordionDetails>
+                    
+                </Accordion>
+
+                    </div>
+
+                
+                {/* <h2 className="my-4 font-bold text-lg">In Progress</h2> */}
+
+
+                {/* <h2 className="my-4 font-bold text-lg">Open</h2> */}
+
+
+                {/* <h2 className="my-4 font-bold text-lg">Completed</h2> */}
+                
             </div >
         </>
     );
