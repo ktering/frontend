@@ -65,6 +65,7 @@ export default function ConsumerOrders() {
             handleAddNewOrder();
 
         } else if (orderSuccess === "false") {
+            handleAddNewOrder();
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
