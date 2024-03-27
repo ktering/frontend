@@ -65,7 +65,30 @@ export default function Dashboard() {
                 }
 
                 const data = await response.json();
+
                 setIsAdminVerified(data.user.kterer.admin_verified);
+                if ( data.user.kterer?.is_verified < 0 ) return 0;
+                if ( data.user.kterer?.admin_verified < 0 ) return 0;
+                if ( data.user.kterer?.door_dash_business_id ) return 0;
+
+                try {
+                    const response = await fetch(`${apiURL}/api/kterer/generate/business`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    });
+    
+                    if (!response.ok) {
+                        console.error(`Error: ${response.statusText}`);
+                        return;
+                    } 
+                } catch (error) {
+                    console.error(`Error: ${error}`);
+                }
+
+
             } catch (error) {
                 console.error("An error occurred:", error);
                 return 0;
