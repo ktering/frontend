@@ -46,6 +46,12 @@ export default function KtererProfile() {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const hasReviews = reviews && reviews.length > 0;
 
+  const pathname = window.location.pathname;
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   useEffect(() => {
     const fetchKtererInfo = async () => {
       const accessToken = localStorage.getItem("accessToken");
@@ -66,7 +72,7 @@ export default function KtererProfile() {
         }
 
         const data = await response.json();
-    
+
         setKtererInfo(data.kterer);
       } catch (error) {
         console.error(`Error: ${error}`);
