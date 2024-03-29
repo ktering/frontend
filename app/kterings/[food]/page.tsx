@@ -401,7 +401,7 @@ export default function Food() {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const uploadedFiles = Array.from(event.target.files || []);
         const totalFiles = reviewImages.length;
-        if (totalFiles > 3) {
+        if (totalFiles > 2) {
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
@@ -739,13 +739,13 @@ export default function Food() {
                                         <>
                                             <div className="flex flex-col space-y-1 mt-8">
                                                 <div className="font-semibold mb-2">Rating</div>
-                                                <div className="space-x-1 sm:space-x-2">
+                                                <div className="space-x-3">
                                                     {[1, 2, 3, 4, 5].map((starValue) => (
                                                         <button
                                                             key={starValue}
                                                             type="button"
                                                             onClick={() => onChange(starValue)}
-                                                            className={`rounded-lg border px-1 py-2 md:px-4 md:py-2.5 font-semibold ${value === starValue
+                                                            className={`rounded-lg border px-2 py-2 md:px-4 md:py-2.5 font-semibold ${value === starValue
                                                                 ? "bg-primary-color text-white"
                                                                 : "bg-white text-primary-color"
                                                             } shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-color`}
