@@ -113,6 +113,7 @@ export default function PostFood() {
       const accessToken = localStorage.getItem("accessToken");
       const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
+      console.log('IS post');
       try {
         const response = await fetch(`${apiURL}/api/user`, {
           method: "GET",

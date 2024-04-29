@@ -63,6 +63,7 @@ const Accordion = styled((props: AccordionProps) => (
   
 
 export default function Earnings() {
+    console.log('Is Earnings');
     const user = useUser();
     if (!user) {
         return <div>Loading user...</div>;

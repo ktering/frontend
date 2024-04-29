@@ -32,6 +32,7 @@ export default authMiddleware({
     // TODO: Add check for non-kterer users so they can't access the kterer pages
     if (auth.userId) {
       if (req.nextUrl.pathname === "/") {
+        console.log('Type user ', checkUser);
         if (checkUser === true) {
           const dashboardPage = new URL("/kterer/dashboard", req.url);
           return NextResponse.redirect(dashboardPage);
