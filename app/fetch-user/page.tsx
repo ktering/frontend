@@ -9,6 +9,7 @@ export default function FetchUser() {
 
     useEffect(() => {
         const fetchUserInfo = async () => {
+            console.log('Validate user..');
             if (isSignedIn && user) {
                 const ktererSignUpCompleted = (user.publicMetadata?.ktererSignUpCompleted === true);
 
@@ -37,6 +38,7 @@ export default function FetchUser() {
 
                     const registerData = await response.json();
                     localStorage.setItem('accessToken', registerData.token);
+                    console.log('Login kterer');
                     router.push("/kterer/dashboard");
                 } else {
                     let userInfo = {
@@ -64,6 +66,7 @@ export default function FetchUser() {
 
                         const registerData = await response.json();
                         localStorage.setItem('accessToken', registerData.token);
+                        console.log('Login ktering');
                         router.push("/kterings");
                     } catch (error) {
                         console.error('Error updating user info', error);

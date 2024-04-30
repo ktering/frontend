@@ -20,6 +20,7 @@ export default async function KteringsLayout({
   children: React.ReactNode;
 }) {
   const user = await currentUser();
+  console.log('Mother kterings');
   if (!user) {
     return null;
   }

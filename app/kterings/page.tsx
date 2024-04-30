@@ -58,6 +58,7 @@ export default function Kterings() {
       const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
       setIsLoading(true);
+      console.log('Page kterings');
 
       try {
         const response = await fetch(`${apiURL}/api/food`, {
