@@ -18,8 +18,13 @@ export default authMiddleware({
       return NextResponse.redirect(homePage);
     }
     // @ts-ignore
-    const checkUser = (auth.sessionClaims?.ktererSignUpCompleted as any)
-      ?.ktererSignUpCompleted;
+
+    // const checkUser = (auth.sessionClaims?.ktererSignUpCompleted as any)
+    //   ?.ktererSignUpCompleted;
+
+    const checkUser = auth.sessionClaims?.sid ? true : false;
+
+    // console.log("check User", checkUser);
 
     // let checkUser: boolean | undefined = undefined;
     // if (auth.sessionClaims && 'ktererSignUpCompleted' in auth.sessionClaims) {
