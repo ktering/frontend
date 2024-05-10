@@ -1,4 +1,4 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { authMiddleware, clerkClient } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 export default authMiddleware({
@@ -10,7 +10,7 @@ export default authMiddleware({
     "/api/:path*",
     "/help",
   ],
-  afterAuth(auth, req, evt) {
+  async afterAuth(auth, req, evt) {
     // handle users who aren't authenticated
 
     if (!auth.userId && !auth.isPublicRoute) {
@@ -18,8 +18,9 @@ export default authMiddleware({
       return NextResponse.redirect(homePage);
     }
     // @ts-ignore
-    const checkUser = (auth.sessionClaims?.ktererSignUpCompleted as any)
-      ?.ktererSignUpCompleted;
+
+    // const checkUser = (auth.sessionClaims?.ktererSignUpCompleted as any)
+    //   ?.ktererSignUpCompleted;
 
     // let checkUser: boolean | undefined = undefined;
     // if (auth.sessionClaims && 'ktererSignUpCompleted' in auth.sessionClaims) {
@@ -31,6 +32,11 @@ export default authMiddleware({
 
     // TODO: Add check for non-kterer users so they can't access the kterer pages
     if (auth.userId) {
+      // Get user session clerk
+      const user = await clerkClient.users.getUser(auth.userId);
+
+      const checkUser = user.publicMetadata.ktererSignUpCompleted;
+
       if (req.nextUrl.pathname === "/") {
         if (checkUser === true) {
           const dashboardPage = new URL("/kterer/dashboard", req.url);
