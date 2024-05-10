@@ -13,8 +13,6 @@ export default function Dashboard() {
   const searchParams = useSearchParams();
   const kycStatus = searchParams.get("status");
 
-  console.log("kyc-verified", user);
-
   useEffect(() => {
     const updateMetadata = async () => {
       if (
@@ -49,8 +47,6 @@ export default function Dashboard() {
           if (response.ok && localResponse.ok) {
             const responseJson = await response.json();
             const userInfo = responseJson.user;
-
-            console.log("response User", userInfo);
 
             if (userInfo.publicMetadata.ktererSignUpCompleted === true) {
               window.location.reload();
