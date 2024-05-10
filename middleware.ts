@@ -32,6 +32,7 @@ export default authMiddleware({
 
     // TODO: Add check for non-kterer users so they can't access the kterer pages
     if (auth.userId) {
+      // Get user session clerk
       const user = await clerkClient.users.getUser(auth.userId);
 
       const checkUser = user.publicMetadata.ktererSignUpCompleted;
