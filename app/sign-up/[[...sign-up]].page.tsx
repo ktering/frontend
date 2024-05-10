@@ -25,10 +25,10 @@ export default function SignUpForm() {
 
     try {
       await signUp.create({
-        first_name: firstName,
-        last_name: lastName,
+        firstName: firstName,
+        lastName: lastName,
         // phone_number: phoneNumber,
-        email_address: email,
+        emailAddress: email,
         password,
       });
 
