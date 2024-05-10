@@ -300,7 +300,7 @@ export default function Earnings() {
 
     try {
       const response = await fetch(`${apiURL}/api/orders/${id}/delivery`, {
-        method: "POST",
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
@@ -554,13 +554,16 @@ export default function Earnings() {
                           </TableCell>
 
                           <TableCell className="text-left md:space-x-8">
-                            {/* <Button
-                                                variant="link"
-                                                onClick={handleCreateDelivery(order.id)}
-                                                className="p-0 text-primary-color underline-offset-auto"
-                                            >
-                                                Create Delivery
-                                            </Button> */}
+                            <Button
+                              variant="link"
+                              onClick={handleCreateDelivery(order.id)}
+                              // className="p-0 text-primary-color underline-offset-auto"
+                            >
+                              Create Delivery
+                            </Button>
+                          </TableCell>
+
+                          <TableCell className="text-left md:space-x-8">
                             <Button
                               variant="link"
                               onClick={openCancelOrderDialog(order.id)}
@@ -774,12 +777,14 @@ export default function Earnings() {
                             </Button>
                           </TableCell>
 
-                          <Button
-                            variant="link"
-                            onClick={handleCreateDelivery(order.id)}
-                          >
-                            Create Delivery
-                          </Button>
+                          {/* <TableCell className="text-left md:space-x-8">
+                            <Button
+                              variant="link"
+                              onClick={handleCreateDelivery(order.id)}
+                            >
+                              Create Delivery
+                            </Button>
+                          </TableCell> */}
                           <TableCell className="text-left md:space-x-8">
                             {order.receipt_url && (
                               <Button
