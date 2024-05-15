@@ -19,6 +19,8 @@ export default authMiddleware({
     }
     // @ts-ignore
 
+    // Comment on validation of session data due to not being able to validate parameter ktererSignUpCompleted
+
     // const checkUser = (auth.sessionClaims?.ktererSignUpCompleted as any)
     //   ?.ktererSignUpCompleted;
 
@@ -32,6 +34,7 @@ export default authMiddleware({
 
     // TODO: Add check for non-kterer users so they can't access the kterer pages
     if (auth.userId) {
+      // Added clerk library method to obtain logged in user data and validate parameters ktererSignUpCompleted
       // Get user session clerk
       const user = await clerkClient.users.getUser(auth.userId);
 

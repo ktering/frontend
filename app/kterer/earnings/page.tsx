@@ -299,6 +299,7 @@ export default function Earnings() {
     const apiURL = process.env.NEXT_PUBLIC_API_URL;
 
     try {
+      // The method of obtaining deliveries is modified.
       const response = await fetch(`${apiURL}/api/orders/${id}/delivery`, {
         method: "GET",
         headers: {
@@ -553,6 +554,7 @@ export default function Earnings() {
                             </Button>
                           </TableCell>
 
+                          {/* Button to create delivery is enabled */}
                           <TableCell className="text-left md:space-x-8">
                             <Button
                               variant="link"
@@ -777,6 +779,7 @@ export default function Earnings() {
                             </Button>
                           </TableCell>
 
+                          {/* Button to create delivery is disabled */}
                           {/* <TableCell className="text-left md:space-x-8">
                             <Button
                               variant="link"
