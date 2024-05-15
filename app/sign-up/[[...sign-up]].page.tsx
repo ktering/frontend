@@ -23,6 +23,8 @@ export default function SignUpForm() {
       return;
     }
 
+    // Telephone field in the form has been hidden to allow the correct registration of the user kterer.
+
     try {
       await signUp.create({
         firstName: firstName,
@@ -134,6 +136,7 @@ export default function SignUpForm() {
             <p className="text-xl font-bold mb-1">Create your Kterer account</p>
             <p>to continue to Kterings</p>
 
+            {/* Add method onSubmit to the form and remove to the button. */}
             <form onSubmit={handleSubmit} className="text-black">
               <div className="mt-2">
                 <div className="mt-10 grid grid-cols-1 auto-cols-fr gap-x-6 gap-y-4 sm:grid-cols-6">
