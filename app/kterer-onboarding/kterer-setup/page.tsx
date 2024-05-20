@@ -177,7 +177,7 @@ export default function KtererSetup() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4">
+    <div className="max-w-7xl mx-auto px-4 pb-3">
       {isModalOpen ? (
         <Transition.Root show={isModalOpen} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={() => {}}>
@@ -480,6 +480,7 @@ export default function KtererSetup() {
                         id="terms"
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="bg-stone-300"
                       />
                       <label
                         htmlFor="terms"
