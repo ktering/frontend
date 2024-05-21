@@ -252,7 +252,7 @@ export default function Kterings() {
   ];
 
 
-  if (!globalStatus?.is_serving_time) {
+  // if (!globalStatus?.is_serving_time) {
     return (
       <>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -418,23 +418,23 @@ export default function Kterings() {
         </div>
       </>
     );
-  }
-  else {
-    return (
-      <>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-red-200 px-3.5 py-5  text-red-700 text-center">
-              {/* <h3 className="font-bold mb-4 center">Kterings is currently closed!</h3> */}
-              <h3 className="font-bold mb-4 center">Kterings should be open between 8am-8pm</h3>
-              {/* <h3 className="m-0 font-medium italic">Services end at 8pm daily. Come back tomorrow</h3>
-              <h3 className="m-0 font-medium italic">to order more of your favorites!</h3> */}
-              <h3 className="m-0 font-medium italic">Come back tomorrow to order more of your favorites</h3>
-            </div>
+  // }
+  // else {
+  //   return (
+  //     <>
+  //       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  //         <div className="max-w-2xl mx-auto">
+  //           <div className="bg-red-200 px-3.5 py-5  text-red-700 text-center">
+  //             {/* <h3 className="font-bold mb-4 center">Kterings is currently closed!</h3> */}
+  //             <h3 className="font-bold mb-4 center">Kterings should be open between 8am-8pm</h3>
+  //             {/* <h3 className="m-0 font-medium italic">Services end at 8pm daily. Come back tomorrow</h3>
+  //             <h3 className="m-0 font-medium italic">to order more of your favorites!</h3> */}
+  //             <h3 className="m-0 font-medium italic">Come back tomorrow to order more of your favorites</h3>
+  //           </div>
 
-          </div>
-        </div>
-      </>
-    );
-  }
+  //         </div>
+  //       </div>
+  //     </>
+  //   );
+  // }
 }
