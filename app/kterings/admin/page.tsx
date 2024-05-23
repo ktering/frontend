@@ -117,7 +117,18 @@ export default function Admin() {
 
     return (
         <div className="p-10 gap-y-10 flex flex-col">
-            <h1 className="text-2xl mb-10">Hi <span className="text-red-600">Admin</span>!</h1>
+
+            <div className="w-full flex mb-10 justify-between items-center">
+                <h1 className="text-2xl">Hi <span className="text-red-600 font-semibold">Admin</span>!</h1>
+                <div className="flex items-center gap-2">
+                    <p>Applications: <span
+                        className="text-red-500">{(unverifiedK?.length ?? 0) + (verifiedK?.length ?? 0) + (rejectedK?.length ?? 0)}</span>
+                    </p>
+                    <p>Pending: <span className="text-red-500">{unverifiedK?.length}</span></p>
+                    <p>Approved: <span className="text-red-500">{verifiedK?.length}</span></p>
+                    <p>Denied: <span className="text-red-500">{rejectedK?.length}</span></p>
+                </div>
+            </div>
 
             <div>
                 <h2 className="mb-5 text-xl font-semibold">Pending</h2>
@@ -125,10 +136,10 @@ export default function Admin() {
                 {unverifiedK?.length !== 0 && <table className="w-full">
                     <thead className="text-left">
                     <tr>
-                        <th>Date Applied</th>
-                        <th>Kterer</th>
-                        <th>Ethnicity</th>
-                        <th></th>
+                        <th className="w-1/5">Date Applied</th>
+                        <th className="w-2/5">Kterer</th>
+                        <th className="w-1/5">Ethnicity</th>
+                        <th className="w-1/5"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -158,11 +169,11 @@ export default function Admin() {
                 {verifiedK?.length === 0 && <p>No approved Kterers</p>}
                 {verifiedK?.length !== 0 && <table className="w-full">
                     <thead className="text-left">
-                    <tr>
-                        <th>Date Applied</th>
-                        <th>Kterer</th>
-                        <th>Ethnicity</th>
-                        <th></th>
+                    <tr className="w-full">
+                        <th className="w-1/5">Date Applied</th>
+                        <th className="w-2/5">Kterer</th>
+                        <th className="w-1/5">Ethnicity</th>
+                        <th className="w-1/5"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -193,10 +204,10 @@ export default function Admin() {
                     <table className="w-full">
                         <thead className="text-left">
                         <tr>
-                            <th>Date Applied</th>
-                            <th>Kterer</th>
-                            <th>Ethnicity</th>
-                            <th></th>
+                            <th className="w-1/5">Date Applied</th>
+                            <th className="w-2/5">Kterer</th>
+                            <th className="w-1/5">Ethnicity</th>
+                            <th className="w-1/5"></th>
                         </tr>
                         </thead>
                         <tbody>
