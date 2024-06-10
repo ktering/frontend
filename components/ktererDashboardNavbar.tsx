@@ -2,10 +2,8 @@
 
 import Link from "next/link";
 import {useEffect, useState} from "react";
-import {useRouter} from "next/navigation";
 
 export default function KtererDashboardNavbar() {
-    const router = useRouter();
     const buttons = [
         {name: "Help", href: "/help"},
         {name: "Dashboard", href: "/kterer/dashboard"},
@@ -45,7 +43,7 @@ export default function KtererDashboardNavbar() {
 
 
     if (isAdminVerified !== 1) {
-        router.push("/kterer-onboarding/wait-for-confirmation");
+        return <></>
     }
 
     return (

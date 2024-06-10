@@ -60,7 +60,7 @@ export default function Dashboard() {
       } else if (user.publicMetadata.ktererSignUpCompleted) {
         router.push("/kterer/earnings");
       } else {
-        router.push("/kterer-onboarding/wait-for-confirmation");
+        router.push("/kterer-onboarding/kterer-setup");
       }
     };
     updateMetadata().catch((error) => {
