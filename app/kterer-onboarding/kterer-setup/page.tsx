@@ -340,51 +340,60 @@ export default function KtererSetup() {
                 />
               </div>
 
-              <div className="col-span-1 sm:col-span-3 text-center text-3xl font-bold my-8">
+              <div className="col-span-1 sm:col-span-3  text-xl font-bold my-8">
                 Kterer Profile Setup
               </div>
 
-              <div className="my-10 grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-3">
-                <div className="col-span-3 sm:col-span-1 text-center">
-                  <h1 className="text-xl font-bold mb-2">Profile Picture</h1>
-                  <p className="mb-4 max-w-xs mx-auto">
-                    A profile picture helps people recognize and trust you more
-                    leading to more sales
-                  </p>
-                  <img
-                    className="inline-block h-28 w-28 rounded-full mb-8"
-                    src={profileImageSrc}
-                    alt=""
-                  />
-                  <FormField
-                    control={form.control}
-                    name="profile_image_url"
-                    render={() => (
-                      <FormItem>
-                        <FormControl>
-                          <div>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              id="profilePictureInput"
-                              className="hidden"
-                              onChange={handleImageChange}
-                            />
-                            <label
-                              htmlFor="profilePictureInput"
-                              className="cursor-pointer text-sm md:text-base rounded-full bg-primary-color px-3 md:px-4 py-2 font-semibold text-white shadow-sm hover:bg-primary-color-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                              Choose File
-                            </label>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+              <div className="my-10 grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-5">
+                <div className="col-span-5 md:col-span-2 text-center bg-primary-color rounded-xl flex items-center justify-center ">
+                  {/* <h1 className="text-xl font-bold mb-2">Profile Picture</h1> */}
+                  <div className=" flex flex-col lg:flex-row items-center justify-center px-2 py-5">
+                    <div className="lg:w-1/2">
+                        <img
+                        className="inline-block h-40 w-40 rounded-full"
+                        src={profileImageSrc}
+                        alt=""
+                      />
+                    </div>
+                    <div className="lg:w-1/2">
+                        <p className="mb-4 max-w-xs mx-auto text-white ">
+                        A profile picture helps people recognize & trust you more, leading to more sales!
+                        </p>
+                        
+                        <FormField
+                          control={form.control}
+                          name="profile_image_url"
+                          render={() => (
+                            <FormItem>
+                              <FormControl>
+                                <div>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    id="profilePictureInput"
+                                    className="hidden"
+                                    onChange={handleImageChange}
+                                  />
+                                  <label
+                                    htmlFor="profilePictureInput"
+                                    className="cursor-pointer text-sm md:text-base rounded-full bg-white text-primary-color px-3 md:px-4 py-2 font-semibold  shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                  >
+                                    Upload a Photo
+                                  </label>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="col-span-3 sm:col-span-2 space-y-8">
+                <div className="col-span-5 md:col-span-3 space-y-8">
+                  <span className=" text-white  bg-primary-color rounded-xl px-4 py-1">
+                      Other Information
+                  </span>
                   <FormField
                     control={form.control}
                     name="bio"
@@ -394,7 +403,7 @@ export default function KtererSetup() {
                         <FormControl>
                           <Textarea
                             placeholder="Tell us a little bit about yourself"
-                            className="resize-none"
+                            className="resize-none border-gray-600"
                             {...field}
                           />
                         </FormControl>
@@ -403,30 +412,65 @@ export default function KtererSetup() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="ethnicity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ethnicity</FormLabel>
-                        <FormControl>
-                          <Input className="rounded-full" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 sm:space-x-8 space-y-8">
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-4 sm:space-x-8 space-y-3 sm:space-y-0">
+                    {/* <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ethnicity</FormLabel>
+                          <FormControl>
+                            <Input className="rounded-full" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    /> */}
+                    <div className="sm:col-span-2">
+                      
+                      <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            >
+                            <FormLabel>Ethnicity</FormLabel>
+                            <FormControl className="rounded-xl border-gray-600 exclu ">
+                              <SelectTrigger>
+                                <SelectValue placeholder="e.g: Pakistani" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Pakistani">Pakistani</SelectItem>
+                              <SelectItem value="Indian">Indian</SelectItem>
+                              <SelectItem value="Chinese">Chinese</SelectItem>
+                              <SelectItem value="Japanese">Japanese</SelectItem>
+                              <SelectItem value="Canadian">Canadian</SelectItem>
+                              <SelectItem value="African">African</SelectItem>
+                              <SelectItem value="American">American</SelectItem>
+                              <SelectItem value="Mexican">Mexican</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                      />
+                    </div>
                     <FormField
                       control={form.control}
                       name="experienceUnit"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Experience</FormLabel>
-                          <FormControl>
+                          <FormLabel>Cooking Experience</FormLabel>
+                          <FormControl className="rounded-xl border-gray-600 ">
                             <Input
                               placeholder="e.g: 1,2,3..."
-                              className="rounded-full"
+                              
                               type="number"
                               {...field}
                             />
@@ -445,7 +489,8 @@ export default function KtererSetup() {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <FormControl className="rounded-full">
+                            <FormLabel className="text-white hidden md:inline">.</FormLabel>
+                            <FormControl className="rounded-xl border-gray-600 exclu">
                               <SelectTrigger>
                                 <SelectValue placeholder="e.g: Days, Months, Year" />
                               </SelectTrigger>
@@ -464,13 +509,13 @@ export default function KtererSetup() {
                 </div>
               </div>
 
-              <div className="col-span-1 sm:col-span-3">
+              <div className="col-span-1 sm:col-span-3 pt-5">
                 <ScrollArea className="h-[500px] rounded-md border p-4 w-full">
                   <VendorTermsAndConditionsPage />
                 </ScrollArea>
               </div>
 
-              <div className="col-span-1 sm:col-span-3 flex items-center space-x-2">
+              <div className="col-span-1 sm:col-span-3 flex items-center justify-center space-x-2">
                 <Controller
                   name="terms"
                   control={form.control}
@@ -498,7 +543,7 @@ export default function KtererSetup() {
                 />
               </div>
 
-              <div className="col-span-1 sm:col-span-3">
+              <div className="col-span-1 sm:col-span-3 text-center">
                 <Button
                   type="submit"
                   className="bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
