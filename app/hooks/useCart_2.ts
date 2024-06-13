@@ -46,49 +46,49 @@ function useCart() {
 
   const saveCartItems = (items: CartItem[]) => {
     localStorage.setItem("cart", JSON.stringify(items));
-    setCartItems(items);
+    // setCartItems(items);
   };
 
   const addItemToCart = (newItem: CartItem) => {
-    const realItems = localStorage.getItem('cart');
-    console.log('previos-local',realItems);
 
-  
-    const arItems = realItems ? JSON.parse(realItems):[];
+    console.log('nuevo',newItem);
     
-
-    const existingItemIndex = arItems.findIndex(
-      (item:any) => item.id === newItem.id && item.size === newItem.size
-    );
-
-    let updatedItems;
-    if (existingItemIndex >= 0) {
-      updatedItems = arItems.map((item:any, index:any) =>
-        index === existingItemIndex
-          ? { ...item, quantity: item.quantity + newItem.quantity }
-          : item
+    setCartItems((currentItems) => {
+      const existingItemIndex = currentItems.findIndex(
+        (item) => item.id === newItem.id && item.size === newItem.size
       );
-    } else {
-      updatedItems = [...arItems, newItem];
-    }
 
-    setCartItems(updatedItems);
-    saveCartItems(updatedItems);
-
-    // setCartItems((currentItems) => {
-      
-    //   return updatedItems;
-    // });
-  
+      let updatedItems;
+      if (existingItemIndex >= 0) {
+        updatedItems = currentItems.map((item, index) =>
+          index === existingItemIndex
+            ? { ...item, quantity: item.quantity + newItem.quantity }
+            : item
+        );
+      } else {
+        updatedItems = [...currentItems, newItem];
+        // updatedItems = [newItem];
+      }
+      saveCartItems(updatedItems);
+      return updatedItems;
+    });
   };
 
   // const removeItemFromCart = (id: string, size: string) => {
+
+  //   console.log('actuales',cartItems);
+  //   const updatedItems = cartItems.filter(
+  //     (item) => !(item.id === id && item.size === size)
+  //   );
+  //   console.log('filtrados',updatedItems);
+  //   saveCartItems(updatedItems);
+  //   console.log('luego de borrar',cartItems);
+  //   updateCartCount(updatedItems.length);
+
+  //   return;
   //   setCartItems((currentItems) => {
-  //     const updatedItems = currentItems.filter(
-  //       (item) => !(item.id === id && item.size === size)
-  //     );
-  //     saveCartItems(updatedItems);
-  //     updateCartCount(updatedItems.length);
+     
+      
   //     return updatedItems;
   //   });
   // };
@@ -100,12 +100,14 @@ function useCart() {
     );
   
     console.log('filtrados', updatedItems);
-    // setCartItems(updatedItems);
-    saveCartItems(updatedItems);
+    setCartItems(updatedItems);
     updateCartCount(updatedItems.length);
   };
 
-  
+  useEffect(() => {
+    console.log('luego de borrar', cartItems);
+    saveCartItems(cartItems);
+  }, [cartItems]); // Esto se ejecutará cada vez que `cartItems` cambie
 
   const updateItemQuantity = (
     id: string,

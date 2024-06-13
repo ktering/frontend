@@ -247,12 +247,16 @@ export default function Food() {
 
   const addToCart = () => {
     // console.log(foodDetails);
-    if (cartItems.length) {
-      let index = cartItems.findIndex(
-        (item) => item.kterer_id !== foodDetails?.kterer_id
+    const realItems = localStorage.getItem('cart');
+    const arItems = realItems ? JSON.parse(realItems):[];
+    
+    if (arItems.length) {
+      let index = arItems.findIndex(
+        (item:any) => item.kterer_id !== foodDetails?.kterer_id
       );
       // in the carItems it will look to see if the selected size has already been added to the cart to indicate that it should continue adding from there.
-      if (cartItems.some((q) => q.size === selectedSize)) {
+    
+      if (arItems.some((q:any) => q.size === selectedSize)) {
         toast({
           description: (
             <>
@@ -267,6 +271,7 @@ export default function Food() {
         });
         return;
       }
+    
 
       if (index >= 0 || foodDetails?.kterer_id === undefined) {
         toast({

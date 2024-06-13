@@ -179,6 +179,11 @@ export default function UserNavbar() {
       return;
     }
 
+    if (fullAddress == "") {
+      alert("In the option Saved Address you must add your address");
+      return;
+    }
+
     // Process cart items to extract the real food IDs
     const cartForBackend = cartItems.map((item) => {
       const lastIndex = item.id.lastIndexOf("-"); // Find the last hyphen
@@ -209,17 +214,17 @@ export default function UserNavbar() {
         body: JSON.stringify({ cart: cartWithAddress }),
       });
 
-      localStorage.removeItem("myData");
       const { url, session_data, product_stored } = await response.json();
-      localStorage.setItem("myData", JSON.stringify(session_data));
-      localStorage.setItem("productData", JSON.stringify(product_stored));
 
-      console.log("Response url ", url);
 
       // Redirect to Stripe Checkout
       if (url && url.message) {
         alert(url.message);
       } else {
+        localStorage.removeItem("myData");
+        localStorage.setItem("myData", JSON.stringify(session_data));
+        localStorage.setItem("productData", JSON.stringify(product_stored));
+
         window.location.href = url;
       }
     } catch (error) {
