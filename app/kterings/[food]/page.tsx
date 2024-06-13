@@ -246,11 +246,27 @@ export default function Food() {
   };
 
   const addToCart = () => {
-    console.log(foodDetails);
+    // console.log(foodDetails);
     if (cartItems.length) {
       let index = cartItems.findIndex(
         (item) => item.kterer_id !== foodDetails?.kterer_id
       );
+      // in the carItems it will look to see if the selected size has already been added to the cart to indicate that it should continue adding from there.
+      if (cartItems.some((q) => q.size === selectedSize)) {
+        toast({
+          description: (
+            <>
+              <div className="flex items-center">
+                <ExclamationTriangleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                You have already added this size, if you want to change the
+                quantity, go to the cart!
+              </div>
+            </>
+          ),
+          duration: 5000,
+        });
+        return;
+      }
 
       if (index >= 0 || foodDetails?.kterer_id === undefined) {
         toast({
@@ -303,7 +319,10 @@ export default function Food() {
 
   const renderSizeButton = (size: string, index: number) => {
     const isSelected = selectedSize === size;
-    const isAvailable = foodDetails?.quantities.some((q) => q.size === size);
+    const isAvailable = foodDetails?.quantities.some((q) => {
+      const quantityNumber = parseFloat(q.quantity);
+      return q.size === size && quantityNumber > 0;
+    });
     const capitalizedSize = size.charAt(0).toUpperCase() + size.slice(1);
 
     return isAvailable ? (
