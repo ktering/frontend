@@ -50,20 +50,17 @@ function useCart() {
   };
 
   const addItemToCart = (newItem: CartItem) => {
-    const realItems = localStorage.getItem('cart');
-    console.log('previos-local',realItems);
+    const realItems = localStorage.getItem("cart");
 
-  
-    const arItems = realItems ? JSON.parse(realItems):[];
-    
+    const arItems = realItems ? JSON.parse(realItems) : [];
 
     const existingItemIndex = arItems.findIndex(
-      (item:any) => item.id === newItem.id && item.size === newItem.size
+      (item: any) => item.id === newItem.id && item.size === newItem.size
     );
 
     let updatedItems;
     if (existingItemIndex >= 0) {
-      updatedItems = arItems.map((item:any, index:any) =>
+      updatedItems = arItems.map((item: any, index: any) =>
         index === existingItemIndex
           ? { ...item, quantity: item.quantity + newItem.quantity }
           : item
@@ -76,10 +73,9 @@ function useCart() {
     saveCartItems(updatedItems);
 
     // setCartItems((currentItems) => {
-      
+
     //   return updatedItems;
     // });
-  
   };
 
   // const removeItemFromCart = (id: string, size: string) => {
@@ -93,19 +89,14 @@ function useCart() {
   //   });
   // };
   const removeItemFromCart = (id: string, size: string) => {
-    console.log('actuales', cartItems);
-  
     const updatedItems = cartItems.filter(
       (item) => !(item.id === id && item.size === size)
     );
-  
-    console.log('filtrados', updatedItems);
+
     // setCartItems(updatedItems);
     saveCartItems(updatedItems);
     updateCartCount(updatedItems.length);
   };
-
-  
 
   const updateItemQuantity = (
     id: string,

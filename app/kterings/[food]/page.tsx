@@ -247,16 +247,16 @@ export default function Food() {
 
   const addToCart = () => {
     // console.log(foodDetails);
-    const realItems = localStorage.getItem('cart');
-    const arItems = realItems ? JSON.parse(realItems):[];
-    
+    const realItems = localStorage.getItem("cart");
+    const arItems = realItems ? JSON.parse(realItems) : [];
+
     if (arItems.length) {
       let index = arItems.findIndex(
-        (item:any) => item.kterer_id !== foodDetails?.kterer_id
+        (item: any) => item.kterer_id !== foodDetails?.kterer_id
       );
       // in the carItems it will look to see if the selected size has already been added to the cart to indicate that it should continue adding from there.
-    
-      if (arItems.some((q:any) => q.size === selectedSize)) {
+
+      if (arItems.some((q: any) => q.size === selectedSize)) {
         toast({
           description: (
             <>
@@ -271,7 +271,6 @@ export default function Food() {
         });
         return;
       }
-    
 
       if (index >= 0 || foodDetails?.kterer_id === undefined) {
         toast({
@@ -346,8 +345,9 @@ export default function Food() {
     ) : null;
   };
 
+  // Condition is set to validate that when there is no stock, the add to cart button is disabled.
   const allSizesOutOfStock = () => {
-    return foodDetails?.quantities.every((q) => parseInt(q.quantity) === 0);
+    return foodDetails?.quantities.every((q) => parseInt(q.quantity) < 1);
   };
 
   const isOutOfStock = allSizesOutOfStock();
