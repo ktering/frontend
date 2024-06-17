@@ -214,17 +214,21 @@ export default function UserNavbar() {
         body: JSON.stringify({ cart: cartWithAddress }),
       });
 
+      // Session data are deleted from the storage if they exist.
+      localStorage.removeItem("myData");
+
       const { url, session_data, product_stored } = await response.json();
 
+      console.log("url ", url);
+      console.log("session_data ", session_data);
+      console.log("product_stored ", product_stored);
 
       // Redirect to Stripe Checkout
       if (url && url.message) {
         alert(url.message);
       } else {
-        localStorage.removeItem("myData");
         localStorage.setItem("myData", JSON.stringify(session_data));
         localStorage.setItem("productData", JSON.stringify(product_stored));
-
         window.location.href = url;
       }
     } catch (error) {
