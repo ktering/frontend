@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (!token && !["/fetch-user"].includes(pathname)) {
       signOut().then(() => {
         localStorage.removeItem("cart");
-        router.push("/");
+        // router.push("/"); //It is commented because it avoids the display of internal pages when arriving at the site.
       });
     }
   }, [router]);

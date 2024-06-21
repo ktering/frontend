@@ -90,10 +90,8 @@ const AddressPopup = ({
   // This status has been added to control the visibility of the search engine and the buttons
   const [showSearchAndButtons, setShowSearchAndButtons] = useState(false);
   // Is added state Validate Radius checked
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  const handleRadioChange = (event: {
-    target: { value: SetStateAction<null> };
-  }) => {
+  const [selectedAddress, setSelectedAddress] = useState<null | string>(null);
+  const handleRadioChange = (event: { target: { value: string } }) => {
     setSelectedAddress(event.target.value);
   };
 
@@ -169,6 +167,10 @@ const AddressPopup = ({
 
           setHomeAddress(homeAddress);
           setOfficeAddress(officeAddress);
+
+          if (homeAddress !== "") {
+            setSelectedAddress("home");
+          }
         })
         .catch((error) => {
           console.error("Error fetching addresses:", error);

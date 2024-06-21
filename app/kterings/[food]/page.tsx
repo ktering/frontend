@@ -84,6 +84,20 @@ export default function Food() {
 
   const { cartCount, updateCartCount } = useCartCount();
 
+  // Establecer el primer tamaño encontrado como predeterminado
+  useEffect(()=>{
+    console.log(foodDetails?.quantities);
+    const found = foodDetails?.quantities.find((q) => {
+      const quantityNumber = parseFloat(q.quantity);
+      return quantityNumber > 0;
+    });
+
+    if(found?.size){
+      setSelectedSize(found?.size);
+    }
+
+  },[foodDetails]);
+
   useEffect(() => {
     if (
       !foodIdMainPage ||
@@ -328,7 +342,6 @@ export default function Food() {
       return q.size === size && quantityNumber > 0;
     });
     const capitalizedSize = size.charAt(0).toUpperCase() + size.slice(1);
-
     return isAvailable ? (
       <button
         // Add key to button to validate

@@ -82,6 +82,11 @@ const formSchema = z.object({
   ethnicity: z.string(),
   experienceUnit: z.coerce.number(),
   experienceValue: z.enum(["Days", "Months", "Years"]),
+  street_address: z.string(),
+  province: z.string(),
+  city: z.string(),
+  apartment: z.coerce.number(),
+  postal_code: z.string(),
 });
 
 export default function KtererAccount() {
@@ -115,6 +120,11 @@ export default function KtererAccount() {
       ethnicity: "",
       experienceUnit: 0,
       experienceValue: "Days",
+      street_address: "",
+      province: "",
+      city: "",
+      apartment: 0,
+      postal_code: "",
     },
   });
 
@@ -195,6 +205,7 @@ export default function KtererAccount() {
   useEffect(() => {
     if (ktererInfo) {
 
+
       let {
         first_name = "",
         last_name = "",
@@ -219,6 +230,11 @@ export default function KtererAccount() {
         ethnicity: kterer?.ethnicity || "",
         experienceUnit: kterer?.experienceUnit || 0,
         experienceValue: kterer?.experienceValue || "Days",
+        street_address:kterer?.street_address,
+        province:kterer?.province,
+        city:kterer?.city,
+        apartment:kterer?.apartment,
+        postal_code:kterer?.postal_code,
       };
 
 
@@ -297,6 +313,7 @@ export default function KtererAccount() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
+    console.log(values);
     const formData = new FormData();
 
     formData.append("bio", values.bio);
@@ -308,6 +325,13 @@ export default function KtererAccount() {
     formData.append("last_name", values.last_name);
     formData.append("phone", values.phone);
     formData.append("email_notification", String(Number(values.email_notification)));
+    
+    formData.append("street_address", values.street_address);
+    formData.append("city", values.city);
+    formData.append("province", values.province);
+    formData.append("apartment", values.apartment.toString());
+    formData.append("postal_code", values.postal_code);
+
 
     if (values.profile_image_url instanceof File) {
       formData.append(
@@ -512,7 +536,70 @@ export default function KtererAccount() {
                     )}
                   />
                 </div>
-                <div className="col-span-2">
+                {/* address fields */}
+                <div className="col-span-2 sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="street_address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Street Address</FormLabel>
+                        <FormControl>
+                          <Input className="rounded-full" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input className="rounded-full" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="col-span-2 sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="apartment"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Apartment Number</FormLabel>
+                        <FormControl>
+                          <Input className="rounded-full" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="province"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Province</FormLabel>
+                        <FormControl>
+                          <Input className="rounded-full" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <div className="col-span-2 sm:col-span-1">
                   <FormField
                     control={form.control}
                     name="country"
@@ -521,6 +608,21 @@ export default function KtererAccount() {
                         <FormLabel>Country</FormLabel>
                         <FormControl>
                           <Input className="rounded-full" disabled {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="postal_code"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Zip/Postal Code</FormLabel>
+                        <FormControl>
+                          <Input className="rounded-full" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
