@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { loadGoogleMapsAPI } from "@/lib/loadGoogleMapsAPI";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { KtererInfo } from "@/types/shared/user";
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -128,6 +129,8 @@ export default function KtererAccount() {
     },
   });
 
+  const {setValue} = form;
+
   useEffect(() => {
     const getKtererAccountInfo = async () => {
       const accessToken = localStorage.getItem("accessToken");
@@ -205,6 +208,7 @@ export default function KtererAccount() {
   useEffect(() => {
     if (ktererInfo) {
 
+      console.log(ktererInfo);
 
       let {
         first_name = "",
@@ -222,7 +226,7 @@ export default function KtererAccount() {
         first_name,
         last_name,
         email,
-        phone,
+        phone:phone ? phone : "+1",
         country,
         email_notification,
         profile_image_url: kterer?.profile_image_url || "",
@@ -313,7 +317,6 @@ export default function KtererAccount() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    console.log(values);
     const formData = new FormData();
 
     formData.append("bio", values.bio);
@@ -419,6 +422,68 @@ export default function KtererAccount() {
     const { value } = event.target;
     event.target.value = value.replace(/[^\d+]/g, ''); // Solo permite dígitos y el símbolo +
   };
+
+  // Google Places 
+  const [input, setInput] = useState("");
+  const [suggestions, setSuggestions] = useState<google.maps.places.AutocompletePrediction[]>([]);
+
+  const handleFocus = () => {
+    setInput("");
+  };
+
+  useEffect(() => {
+    loadGoogleMapsAPI(() => {});
+  }, []);
+
+  const fetchSuggestions = (value: string) => {
+    setInput(value);
+    if (value.length > 2) {
+      const autocompleteService = new google.maps.places.AutocompleteService();
+      autocompleteService.getPlacePredictions(
+        {
+          input: value,
+          componentRestrictions: { country: "CA" },
+        },
+        (predictions, status) => {
+          if (
+            status === google.maps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
+            setSuggestions(predictions);
+          } else {
+            setSuggestions([]);
+          }
+        }
+      );
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSuggestion =  (suggestion:any) =>{
+    suggestion.terms.pop();
+
+    const length = suggestion.terms.length;
+    const reverse = suggestion.terms.reverse();
+    let stree = '';
+    if(length >= 3){
+      for (let i = length-1 ; i >= 0 ; i--) {
+        if(i== 0 ){
+          setValue('province' , reverse[i].value , { shouldValidate: true });
+        }else if(i==1){
+          setValue('city' , reverse[i].value , { shouldValidate: true });
+        }else{
+          stree += reverse[i].value + ', ';
+        }
+        
+
+      }
+      setValue('street_address' , stree.slice(0, -2) , { shouldValidate: true });
+    }
+    setInput(suggestion.description);
+    setSuggestions([]);
+  };
+
 
   return (
     <>
@@ -542,6 +607,40 @@ export default function KtererAccount() {
                   />
                 </div>
                 {/* address fields */}
+                {/* Search Google Place API */}
+                <div className="py-4 col-span-2">
+                  {/* Search bar */}
+                  <div className="relative">
+                    {/* Icon */}
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <MagnifyingGlassIcon className="w-5 h-5" />
+                    </div>
+                    {/* Input */}
+                    <Input
+                      type="text"
+                      className="rounded-full pl-10 pr-3 py-2"
+                      placeholder="Search for an address"
+                      onChange={(e) => fetchSuggestions(e.target.value)}
+                      onFocus={handleFocus}
+                      autoComplete="off"
+                      value={input}
+                    />
+                    {suggestions.length > 0 && (
+                      <div className="absolute z-10 bg-white shadow-lg max-h-60 overflow-auto w-full mt-1 rounded-md">
+                        {suggestions.map((suggestion) => (
+                          <div
+                            key={suggestion.place_id}
+                            className="p-4 hover:bg-gray-100 cursor-pointer"
+                            onClick={() => handleSuggestion(suggestion)}
+                          >
+                            {suggestion.description}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                  {/* ----------------------- */}
                 <div className="col-span-2 sm:col-span-1">
                   <FormField
                     control={form.control}
@@ -550,7 +649,7 @@ export default function KtererAccount() {
                       <FormItem>
                         <FormLabel>Street Address</FormLabel>
                         <FormControl>
-                          <Input className="rounded-full" {...field} />
+                          <Input className="rounded-full" {...field} disabled/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -565,7 +664,7 @@ export default function KtererAccount() {
                       <FormItem>
                         <FormLabel>City</FormLabel>
                         <FormControl>
-                          <Input className="rounded-full" {...field} />
+                          <Input className="rounded-full" {...field} disabled/>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -596,7 +695,7 @@ export default function KtererAccount() {
                       <FormItem>
                         <FormLabel>Province</FormLabel>
                         <FormControl>
-                          <Input className="rounded-full" {...field} />
+                          <Input className="rounded-full" {...field} disabled />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
