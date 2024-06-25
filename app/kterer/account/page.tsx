@@ -27,7 +27,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { KtererInfo } from "@/types/shared/user";
-import { CheckCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, MagnifyingGlassIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -208,7 +208,6 @@ export default function KtererAccount() {
   useEffect(() => {
     if (ktererInfo) {
 
-      console.log(ktererInfo);
 
       let {
         first_name = "",
@@ -356,17 +355,33 @@ export default function KtererAccount() {
       },
       body: formData,
     });
+    
     if (response.ok) {
-      toast({
-        description: (
-          <>
+      const data = await response.json();
+
+      if(data?.status == 400){
+        toast({
+          description: (
+            <>
+            <div className="flex items-center">
+              <XCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+              {data.message}
+            </div>
+          </>
+          ),
+        });
+      }else{
+        toast({
+          description: (
+            <>
             <div className="flex items-center">
               <CheckCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400" />
               Account Info Successfully Updated!
             </div>
           </>
-        ),
-      });
+          ),
+        });
+      }
     } else {
       console.error(`Error: ${response.statusText}`);
     }
