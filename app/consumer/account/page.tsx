@@ -214,6 +214,11 @@ export default function ConsumerAccount() {
         }
     };
 
+    const handleInputPhone = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        event.target.value = value.replace(/[^\d+]/g, ''); // Solo permite dígitos y el símbolo +
+    };
+
     return (
         <>
             <div className="flex justify-between my-8">
@@ -281,7 +286,11 @@ export default function ConsumerAccount() {
                                         <FormItem>
                                             <FormLabel>Phone Number</FormLabel>
                                             <FormControl>
-                                                <Input className="rounded-full" {...field} />
+                                                <Input 
+                                                className="rounded-full" 
+                                                {...field} 
+                                                onInput={handleInputPhone}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
