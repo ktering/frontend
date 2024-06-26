@@ -488,7 +488,7 @@ export default function KtererAccount() {
         }else if(i==1){
           setValue('city' , reverse[i].value , { shouldValidate: true });
         }else{
-          stree += reverse[i].value + ', ';
+          stree += reverse[i].value + ' ';
         }
         
 
