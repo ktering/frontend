@@ -27,6 +27,9 @@ import {
 } from "@/components/ui/select";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { KtererInfo } from "@/types/shared/user";
+import { useToast } from "@/components/ui/use-toast";
+import { XCircleIcon } from "lucide-react";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = [
@@ -71,6 +74,11 @@ const formSchema = z.object({
       ),
     z.string().url({ message: "Must be a valid URL" }),
   ]),
+  phone: z.string().refine((value) => /^\+1\d{10}$/.test(value), {
+    message:
+      "Phone number must start with +1 and be followed by exactly 10 digits",
+    path: [],
+  }),
   bio: z.string().max(500, "Bio can't be longer than 500 characters"),
   ethnicity: z.string(),
   experienceUnit: z.coerce.number(),
@@ -82,6 +90,42 @@ const formSchema = z.object({
 });
 
 export default function KtererSetup() {
+  const { toast } = useToast();
+
+  const [ktererInfo, setKtererInfo] = useState<KtererInfo | null>(null);
+
+  useEffect(() => {
+    const getKtererAccountInfo = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      const apiURL = process.env.NEXT_PUBLIC_API_URL;
+      try {
+        const response = await fetch(`${apiURL}/api/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`Error: ${response.statusText}`);
+          return;
+        }
+
+        const data = await response.json();
+        setKtererInfo(data.user);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+
+    };
+
+    getKtererAccountInfo().catch((error) => {
+      console.error("An error occurred:", error);
+    });
+
+  }, []);
+
   const [profileImageSrc, setProfileImageSrc] = useState<string>(
     "https://t4.ftcdn.net/jpg/04/10/43/77/360_F_410437733_hdq4Q3QOH9uwh0mcqAhRFzOKfrCR24Ta.jpg"
   );
@@ -105,7 +149,7 @@ export default function KtererSetup() {
       ethnicity: "",
       experienceUnit: 0,
       experienceValue: "Years",
-
+      phone:"",
       terms: false,
     },
   });
@@ -114,7 +158,7 @@ export default function KtererSetup() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    console.log(values);
+    // console.log(values);
     const formData = new FormData();
 
     formData.append("street_address", values.street_address);
@@ -126,6 +170,7 @@ export default function KtererSetup() {
     formData.append("country", values.country);
     formData.append("postal_code", values.postal_code);
     formData.append("bio", values.bio);
+    formData.append("phone", values.phone);
     formData.append("ethnicity", values.ethnicity);
     formData.append("experienceUnit", values.experienceUnit.toString());
     formData.append("experienceValue", values.experienceValue);
@@ -151,8 +196,23 @@ export default function KtererSetup() {
       body: formData,
     });
 
-    if (addKtererInfoResponse.ok) {
-      setIsModalOpen(true);
+    if(addKtererInfoResponse.ok) {
+      const dataAddK = await addKtererInfoResponse.json();
+
+      if(dataAddK?.status == 400 || dataAddK?.status == 404){
+        toast({
+          description: (
+            <>
+            <div className="flex items-center">
+              <XCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+              {dataAddK.message}
+            </div>
+          </>
+          ),
+        });
+      }else{
+        setIsModalOpen(true);
+      }
     } else {
       console.log(addKtererInfoResponse.statusText);
     }
@@ -181,6 +241,7 @@ export default function KtererSetup() {
     }
   };
 
+
   // Google Place
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<google.maps.places.AutocompletePrediction[]>([]);
@@ -188,11 +249,10 @@ export default function KtererSetup() {
   const handleFocus = () => {
     setInput("");
   };
-
   useEffect(() => {
     loadGoogleMapsAPI(() => {});
   }, []);
-
+  
   const fetchSuggestions = (value: string) => {
     setInput(value);
     if (value.length > 2) {
@@ -241,6 +301,20 @@ export default function KtererSetup() {
     setInput(suggestion.description);
     setSuggestions([]);
   };
+
+  useEffect(() => {
+    if(ktererInfo && ktererInfo.phone){
+      setValue('phone' , ktererInfo.phone , { shouldValidate: true });
+    }else{
+      console.log('no hay numero de telefono');
+    }
+  }, [ktererInfo]);
+
+  const handleInputPhone = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    event.target.value = value.replace(/[^\d+]/g, ''); // Solo permite dígitos y el símbolo +
+  };
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 pb-3">
@@ -490,7 +564,7 @@ export default function KtererSetup() {
                   </div>
                 </div>
 
-                <div className="col-span-5 md:col-span-3 space-y-8">
+                <div className="col-span-5 md:col-span-3 space-y-4">
                   <span className=" text-white  bg-primary-color rounded-xl px-4 py-1">
                       Other Information
                   </span>
@@ -511,6 +585,22 @@ export default function KtererSetup() {
                       </FormItem>
                     )}
                   />
+
+                  {/* <div className="col-span-2"> */}
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
+                          <FormControl>
+                            <Input className="rounded-xl border-gray-600" {...field} onInput={handleInputPhone} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  {/* </div> */}
 
                   
                   <div className="grid grid-cols-1 sm:grid-cols-4 sm:space-x-8 space-y-3 sm:space-y-0">

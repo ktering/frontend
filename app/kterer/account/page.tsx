@@ -359,7 +359,7 @@ export default function KtererAccount() {
     if (response.ok) {
       const data = await response.json();
 
-      if(data?.status == 400){
+      if(data?.status == 400 || data?.status == 404){
         toast({
           description: (
             <>
