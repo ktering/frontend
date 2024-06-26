@@ -38,6 +38,7 @@ import { useCartCount } from "@/contexts/CartContext";
 import { useNotifications } from "./notificationContext";
 import { StatusContext } from "@/contexts/StatusContext";
 import { formatDistanceToNow } from "date-fns";
+import { UserInfo } from "@/types/shared/user";
 
 export default function UserNavbar() {
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
@@ -57,6 +58,8 @@ export default function UserNavbar() {
   const [savedAddress, setSavedAddress] = useState("");
   // Added status to obtain the complete user address
   const [fullAddress, setFullAddress] = useState("");
+  // User information is obtained to verify that the user's phone is not invalid.
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [addressChanged, setAddressChanged] = useState(false);
   const { cartCount } = useCartCount();
   const { notifications, updateNotifications } = useNotifications();
@@ -101,6 +104,35 @@ export default function UserNavbar() {
       setCartItems(storedCart ? JSON.parse(storedCart) : []);
     }
   }, [isCartOpen]);
+
+  useEffect(() => {
+    const getConsumerAccountInfo = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+      try {
+        const response = await fetch(`${apiURL}/api/user`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`Error: ${response.statusText}`);
+          return;
+        }
+
+        const data = await response.json();
+        setUserInfo(data.user);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getConsumerAccountInfo().catch((error) => console.error(error));
+  }, []);
 
   const incrementQuantity = (item: CartItem) => {
     const maxQuantity = parseInt(item.maxQuantity, 10);
@@ -179,8 +211,19 @@ export default function UserNavbar() {
       return;
     }
 
+    // is validated when the user does not have a phone to send to the account to be added to it
+    if (userInfo?.phone == null) {
+      alert(
+        "In order to place the order you must add the phone number in your account."
+      );
+      setIsCartOpen(!isCartOpen);
+      router.push("/consumer/account");
+      return;
+    }
+
     if (fullAddress == "") {
       alert("In the option Saved Address you must add your address");
+      setIsCartOpen(!isCartOpen);
       return;
     }
 
