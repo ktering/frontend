@@ -296,7 +296,7 @@ export default function KtererSetup() {
         
 
       }
-      setValue('street_address' , stree.slice(0, -2) , { shouldValidate: true });
+      setValue('street_address' , stree.slice(0, -1) , { shouldValidate: true });
     }
     setInput(suggestion.description);
     setSuggestions([]);

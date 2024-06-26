@@ -493,7 +493,7 @@ export default function KtererAccount() {
         
 
       }
-      setValue('street_address' , stree.slice(0, -2) , { shouldValidate: true });
+      setValue('street_address' , stree.slice(0, -1) , { shouldValidate: true });
     }
     setInput(suggestion.description);
     setSuggestions([]);
