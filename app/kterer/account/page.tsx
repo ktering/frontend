@@ -503,7 +503,7 @@ export default function KtererAccount() {
   return (
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between my-8">
+        <div className="flex justify-between my-8 items-center">
           <div className="text-2xl font-bold ">Kterer Account</div>
           <button
             onClick={() => setIsPasswordResetOpen(true)}
@@ -621,6 +621,135 @@ export default function KtererAccount() {
                     )}
                   />
                 </div>
+                <div className="col-span-2 mt-5">
+                    <div className="bg-primary-color text-primary text-primary-foreground text-center py-2">
+                      Kterer Info
+                    </div>
+                    <div className="bg-red-50 text-primary text-center py-4 px-5 text-sm">
+                      This will help customers get to know you more as a food provider.<br className="sm:block hidden"></br> Be creative with your bio and flaunt your experience!
+                    </div>
+                </div>
+                <div className="col-span-2">
+                  <FormField
+                    control={form.control}
+                    name="bio"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Bio</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Tell us a little bit about yourself"
+                            className="resize-none"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-2">
+                  {/* <FormField
+                    control={form.control}
+                    name="ethnicity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ethnicity</FormLabel>
+                        <FormControl>
+                          <Input className="rounded-full" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  /> */}
+                  <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            >
+                            <FormLabel>Ethnicity</FormLabel>
+                            <FormControl className="rounded-full exclu ">
+                              <SelectTrigger>
+                                <SelectValue placeholder="e.g: Pakistani" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="Pakistani">Pakistani</SelectItem>
+                              <SelectItem value="Indian">Indian</SelectItem>
+                              <SelectItem value="Chinese">Chinese</SelectItem>
+                              <SelectItem value="Japanese">Japanese</SelectItem>
+                              <SelectItem value="Canadian">Canadian</SelectItem>
+                              <SelectItem value="African">African</SelectItem>
+                              <SelectItem value="American">American</SelectItem>
+                              <SelectItem value="Mexican">Mexican</SelectItem>
+                              <SelectItem value="Other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <FormField
+                    control={form.control}
+                    name="experienceUnit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Experience</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g: 1,2,3..."
+                            className="rounded-full"
+                            type="number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1 self-end">
+                  <FormField
+                    control={form.control}
+                    name="experienceValue"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormControl className="rounded-full">
+                            <SelectTrigger>
+                              <SelectValue placeholder="e.g: Days, Months, Year" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Days">Days</SelectItem>
+                            <SelectItem value="Months">Months</SelectItem>
+                            <SelectItem value="Years">Years</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="col-span-2 mt-5">
+                    <div className="bg-primary-color text-primary text-primary-foreground text-center py-2">
+                      Pickup Address
+                    </div>
+                    <div className="bg-red-50 text-primary text-center py-4 px-5 text-sm">
+                    Please make sure your address is accurate since delivery personnel<br className="sm:block hidden"></br>
+                    will be picking up orders from the address you put in.
+                    </div>
+                </div>
+
                 {/* address fields */}
                 {/* Search Google Place API */}
                 <div className="py-4 col-span-2">
@@ -754,9 +883,9 @@ export default function KtererAccount() {
                     name="email_notification"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="mt-4">Email Notification</FormLabel>
+                        <FormLabel className="mb-3">Email Notification</FormLabel>
                         <FormControl>
-                          <Switch className="rounded-full" checked={field.value} onCheckedChange={(checked) => field.onChange(checked)} />
+                          <Switch className="rounded-full border border-gray-500" checked={field.value} onCheckedChange={(checked) => field.onChange(checked)} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -764,91 +893,9 @@ export default function KtererAccount() {
                   />
                 </div>
 
-
-
-                <div className="col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="bio"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Bio</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Tell us a little bit about yourself"
-                            className="resize-none"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="ethnicity"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ethnicity</FormLabel>
-                        <FormControl>
-                          <Input className="rounded-full" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="col-span-2 sm:col-span-1">
-                  <FormField
-                    control={form.control}
-                    name="experienceUnit"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Experience</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="e.g: 1,2,3..."
-                            className="rounded-full"
-                            type="number"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="col-span-2 sm:col-span-1 self-end">
-                  <FormField
-                    control={form.control}
-                    name="experienceValue"
-                    render={({ field }) => (
-                      <FormItem>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                        >
-                          <FormControl className="rounded-full">
-                            <SelectTrigger>
-                              <SelectValue placeholder="e.g: Days, Months, Year" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="Days">Days</SelectItem>
-                            <SelectItem value="Months">Months</SelectItem>
-                            <SelectItem value="Years">Years</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
                 <Button
                   type="submit"
-                  className="col-span-2 bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
+                  className="col-span-2 bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full mt-5"
                 >
                   Save
                 </Button>
