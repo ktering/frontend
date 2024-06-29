@@ -167,8 +167,13 @@ export default function PostFood() {
               }
             );
 
-            if (!response.ok) {
+            const verify = await response.json();
+
+            if (verify.status !== "verified") {
               setKtererInfo(null);
+            }
+
+            if (!response.ok) {
               console.error(`Error: ${response.statusText}`);
               return;
             }
