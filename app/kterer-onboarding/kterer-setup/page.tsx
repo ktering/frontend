@@ -117,13 +117,11 @@ export default function KtererSetup() {
       } catch (error) {
         console.error("An error occurred:", error);
       }
-
     };
 
     getKtererAccountInfo().catch((error) => {
       console.error("An error occurred:", error);
     });
-
   }, []);
 
   const [profileImageSrc, setProfileImageSrc] = useState<string>(
@@ -149,16 +147,17 @@ export default function KtererSetup() {
       ethnicity: "",
       experienceUnit: 0,
       experienceValue: "Years",
-      phone:"",
+      phone: "",
       terms: false,
     },
   });
 
-  const {setValue} = form;
+  const { setValue } = form;
+  const [disabled, setDisabled] = useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     // console.log(values);
+    setDisabled(true);
     const formData = new FormData();
 
     formData.append("street_address", values.street_address);
@@ -196,25 +195,31 @@ export default function KtererSetup() {
       body: formData,
     });
 
-    if(addKtererInfoResponse.ok) {
+    if (addKtererInfoResponse.ok) {
+      setDisabled(false);
       const dataAddK = await addKtererInfoResponse.json();
 
-      if(dataAddK?.status == 400 || dataAddK?.status == 404){
+      if (
+        dataAddK?.status == 400 ||
+        dataAddK?.status == 404 ||
+        dataAddK?.status == 500
+      ) {
         toast({
           description: (
             <>
-            <div className="flex items-center">
-              <XCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
-              {dataAddK.message}
-            </div>
-          </>
+              <div className="flex items-center">
+                <XCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                {dataAddK.message}
+              </div>
+            </>
           ),
         });
-      }else{
+      } else {
         setIsModalOpen(true);
       }
     } else {
       console.log(addKtererInfoResponse.statusText);
+      setDisabled(false);
     }
   }
 
@@ -241,10 +246,11 @@ export default function KtererSetup() {
     }
   };
 
-
   // Google Place
   const [input, setInput] = useState("");
-  const [suggestions, setSuggestions] = useState<google.maps.places.AutocompletePrediction[]>([]);
+  const [suggestions, setSuggestions] = useState<
+    google.maps.places.AutocompletePrediction[]
+  >([]);
 
   const handleFocus = () => {
     setInput("");
@@ -252,7 +258,7 @@ export default function KtererSetup() {
   useEffect(() => {
     loadGoogleMapsAPI(() => {});
   }, []);
-  
+
   const fetchSuggestions = (value: string) => {
     setInput(value);
     if (value.length > 2) {
@@ -278,43 +284,86 @@ export default function KtererSetup() {
     }
   };
 
-  const handleSuggestion =  (suggestion:any) =>{
+  const handleSuggestion = (suggestion: any) => {
     suggestion.terms.pop();
 
     const length = suggestion.terms.length;
     const reverse = suggestion.terms.reverse();
-    let stree = '';
-    if(length >= 3){
-      for (let i = length-1 ; i >= 0 ; i--) {
-        if(i== 0 ){
-          setValue('province' , reverse[i].value , { shouldValidate: true });
-        }else if(i==1){
-          setValue('city' , reverse[i].value , { shouldValidate: true });
-        }else{
-          stree += reverse[i].value + ' ';
+    let stree = "";
+    if (length >= 3) {
+      for (let i = length - 1; i >= 0; i--) {
+        if (i == 0) {
+          setValue("province", reverse[i].value, { shouldValidate: true });
+        } else if (i == 1) {
+          setValue("city", reverse[i].value, { shouldValidate: true });
+        } else {
+          stree += reverse[i].value + " ";
         }
-        
-
       }
-      setValue('street_address' , stree.slice(0, -1) , { shouldValidate: true });
+      setValue("street_address", stree.slice(0, -1), { shouldValidate: true });
     }
     setInput(suggestion.description);
     setSuggestions([]);
   };
 
   useEffect(() => {
-    if(ktererInfo && ktererInfo.phone){
-      setValue('phone' , ktererInfo.phone , { shouldValidate: true });
-    }else{
-      console.log('no hay numero de telefono');
+    // If the phone is already added, it is formatted for display in the view and passed raw to the form.
+    if (ktererInfo && ktererInfo.phone) {
+      let value = ktererInfo.phone.slice(2);
+      let formattedValue = ktererInfo.phone.slice(0, 2);
+
+      // Formatting the phone number.
+      if (value.length > 3) {
+        formattedValue += " (" + value.slice(0, 3) + ") ";
+      } else {
+        formattedValue += value;
+      }
+      if (value.length > 3 && value.length < 7) {
+        formattedValue += value.slice(3);
+      } else if (value.length >= 7 && value.length <= 10) {
+        formattedValue += value.slice(3, 6) + "-" + value.slice(6);
+      } else if (value.length === 11) {
+        formattedValue +=
+          value.slice(1, 4) + "-" + value.slice(4, 8) + "-" + value.slice(8);
+      }
+
+      setValue("phone", ktererInfo.phone, { shouldValidate: true });
+      setPhoneValue(formattedValue);
     }
   }, [ktererInfo]);
 
+  const [phoneValue, setPhoneValue] = useState("+1");
   const handleInputPhone = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    event.target.value = value.replace(/[^\d+]/g, ''); // Solo permite dígitos y el símbolo +
-  };
+    let { value } = event.target;
+    // Handle "+" sign
+    let formattedValue = "+1";
 
+    value = value.replace(/[^\d+]/g, ""); // Remove non-allowed characters
+
+    // Limit to 11 digits
+    value = value.slice(0, 12);
+
+    value = value.slice(2);
+
+    // Formatting the phone number.
+    if (value.length > 3) {
+      formattedValue += " (" + value.slice(0, 3) + ") ";
+    } else {
+      formattedValue += value;
+    }
+    if (value.length > 3 && value.length < 7) {
+      formattedValue += value.slice(3);
+    } else if (value.length >= 7 && value.length <= 10) {
+      formattedValue += value.slice(3, 6) + "-" + value.slice(6);
+    } else if (value.length === 11) {
+      formattedValue +=
+        value.slice(1, 4) + "-" + value.slice(4, 8) + "-" + value.slice(8);
+    }
+
+    // Update state and input value
+    setPhoneValue(formattedValue);
+    event.target.value = "+1" + value;
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 pb-3">
@@ -493,7 +542,7 @@ export default function KtererSetup() {
                     <FormItem>
                       <FormLabel>Country</FormLabel>
                       <FormControl>
-                        <Input className="rounded-full" {...field} disabled/>
+                        <Input className="rounded-full" {...field} disabled />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -523,50 +572,51 @@ export default function KtererSetup() {
                   {/* <h1 className="text-xl font-bold mb-2">Profile Picture</h1> */}
                   <div className=" flex flex-col lg:flex-row items-center justify-center px-2 py-5">
                     <div className="lg:w-1/2">
-                        <img
+                      <img
                         className="inline-block h-40 w-40 rounded-full"
                         src={profileImageSrc}
                         alt=""
                       />
                     </div>
                     <div className="lg:w-1/2">
-                        <p className="mb-4 max-w-xs mx-auto text-white ">
-                        A profile picture helps people recognize & trust you more, leading to more sales!
-                        </p>
-                        
-                        <FormField
-                          control={form.control}
-                          name="profile_image_url"
-                          render={() => (
-                            <FormItem>
-                              <FormControl>
-                                <div>
-                                  <input
-                                    type="file"
-                                    accept="image/*"
-                                    id="profilePictureInput"
-                                    className="hidden"
-                                    onChange={handleImageChange}
-                                  />
-                                  <label
-                                    htmlFor="profilePictureInput"
-                                    className="cursor-pointer text-sm md:text-base rounded-full bg-white text-primary-color px-3 md:px-4 py-2 font-semibold  shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                  >
-                                    Upload a Photo
-                                  </label>
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                      <p className="mb-4 max-w-xs mx-auto text-white ">
+                        A profile picture helps people recognize & trust you
+                        more, leading to more sales!
+                      </p>
+
+                      <FormField
+                        control={form.control}
+                        name="profile_image_url"
+                        render={() => (
+                          <FormItem>
+                            <FormControl>
+                              <div>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  id="profilePictureInput"
+                                  className="hidden"
+                                  onChange={handleImageChange}
+                                />
+                                <label
+                                  htmlFor="profilePictureInput"
+                                  className="cursor-pointer text-sm md:text-base rounded-full bg-white text-primary-color px-3 md:px-4 py-2 font-semibold  shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                >
+                                  Upload a Photo
+                                </label>
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   </div>
                 </div>
 
                 <div className="col-span-5 md:col-span-3 space-y-4">
                   <span className=" text-white  bg-primary-color rounded-xl px-4 py-1">
-                      Other Information
+                    Other Information
                   </span>
                   <FormField
                     control={form.control}
@@ -587,22 +637,26 @@ export default function KtererSetup() {
                   />
 
                   {/* <div className="col-span-2"> */}
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Phone Number</FormLabel>
-                          <FormControl>
-                            <Input className="rounded-xl border-gray-600" {...field} onInput={handleInputPhone} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="rounded-xl border-gray-600"
+                            {...field}
+                            value={phoneValue}
+                            onInput={handleInputPhone}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   {/* </div> */}
 
-                  
                   <div className="grid grid-cols-1 sm:grid-cols-4 sm:space-x-8 space-y-3 sm:space-y-0">
                     {/* <FormField
                       control={form.control}
@@ -618,37 +672,44 @@ export default function KtererSetup() {
                       )}
                     /> */}
                     <div className="sm:col-span-2">
-                      
                       <FormField
-                      control={form.control}
-                      name="ethnicity"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
+                        control={form.control}
+                        name="ethnicity"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
                             >
-                            <FormLabel>Ethnicity</FormLabel>
-                            <FormControl className="rounded-xl border-gray-600 exclu ">
-                              <SelectTrigger>
-                                <SelectValue placeholder="e.g: Pakistani" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Pakistani">Pakistani</SelectItem>
-                              <SelectItem value="Indian">Indian</SelectItem>
-                              <SelectItem value="Chinese">Chinese</SelectItem>
-                              <SelectItem value="Japanese">Japanese</SelectItem>
-                              <SelectItem value="Canadian">Canadian</SelectItem>
-                              <SelectItem value="African">African</SelectItem>
-                              <SelectItem value="American">American</SelectItem>
-                              <SelectItem value="Mexican">Mexican</SelectItem>
-                              <SelectItem value="Other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                              <FormLabel>Ethnicity</FormLabel>
+                              <FormControl className="rounded-xl border-gray-600 exclu ">
+                                <SelectTrigger>
+                                  <SelectValue placeholder="e.g: Pakistani" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="Pakistani">
+                                  Pakistani
+                                </SelectItem>
+                                <SelectItem value="Indian">Indian</SelectItem>
+                                <SelectItem value="Chinese">Chinese</SelectItem>
+                                <SelectItem value="Japanese">
+                                  Japanese
+                                </SelectItem>
+                                <SelectItem value="Canadian">
+                                  Canadian
+                                </SelectItem>
+                                <SelectItem value="African">African</SelectItem>
+                                <SelectItem value="American">
+                                  American
+                                </SelectItem>
+                                <SelectItem value="Mexican">Mexican</SelectItem>
+                                <SelectItem value="Other">Other</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
                     </div>
                     <FormField
@@ -660,7 +721,6 @@ export default function KtererSetup() {
                           <FormControl className="rounded-xl border-gray-600 ">
                             <Input
                               placeholder="e.g: 1,2,3..."
-                              
                               type="number"
                               {...field}
                             />
@@ -679,7 +739,9 @@ export default function KtererSetup() {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <FormLabel className="text-white hidden md:inline">.</FormLabel>
+                            <FormLabel className="text-white hidden md:inline">
+                              .
+                            </FormLabel>
                             <FormControl className="rounded-xl border-gray-600 exclu">
                               <SelectTrigger>
                                 <SelectValue placeholder="e.g: Days, Months, Year" />
@@ -736,6 +798,7 @@ export default function KtererSetup() {
               <div className="col-span-1 sm:col-span-3 text-center">
                 <Button
                   type="submit"
+                  disabled={disabled}
                   className="bg-primary-color w-full sm:w-auto hover:bg-primary-color-hover rounded-full"
                 >
                   Continue

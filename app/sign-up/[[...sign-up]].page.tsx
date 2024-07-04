@@ -278,6 +278,9 @@ export default function SignUpForm() {
                   <div className="col-span-6">
                     <label className="block text-left text-sm font-medium leading-6 text-gray-900">
                       Verification Code
+                      <p>
+                        Enter the verification code sent to your email address
+                      </p>
                     </label>
                     <div className="mt-2">
                       <input

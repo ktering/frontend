@@ -27,7 +27,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { KtererInfo } from "@/types/shared/user";
-import { CheckCircleIcon, MagnifyingGlassIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import {
+  CheckCircleIcon,
+  MagnifyingGlassIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -129,7 +133,7 @@ export default function KtererAccount() {
     },
   });
 
-  const {setValue} = form;
+  const { setValue } = form;
 
   useEffect(() => {
     const getKtererAccountInfo = async () => {
@@ -207,8 +211,6 @@ export default function KtererAccount() {
 
   useEffect(() => {
     if (ktererInfo) {
-
-
       let {
         first_name = "",
         last_name = "",
@@ -225,7 +227,7 @@ export default function KtererAccount() {
         first_name,
         last_name,
         email,
-        phone:phone ? phone : "+1",
+        phone: phone ? phone : "+1",
         country,
         email_notification,
         profile_image_url: kterer?.profile_image_url || "",
@@ -233,13 +235,12 @@ export default function KtererAccount() {
         ethnicity: kterer?.ethnicity || "",
         experienceUnit: kterer?.experienceUnit || 0,
         experienceValue: kterer?.experienceValue || "Days",
-        street_address:kterer?.street_address,
-        province:kterer?.province,
-        city:kterer?.city,
-        apartment:kterer?.apartment,
-        postal_code:kterer?.postal_code,
+        street_address: kterer?.street_address,
+        province: kterer?.province,
+        city: kterer?.city,
+        apartment: kterer?.apartment,
+        postal_code: kterer?.postal_code,
       };
-
 
       (Object.keys(formValues) as Array<keyof typeof formValues>).forEach(
         (key) => {
@@ -247,8 +248,33 @@ export default function KtererAccount() {
         }
       );
     }
-
   }, [ktererInfo, form]);
+
+  useEffect(() => {
+    // If the phone is already added, it is formatted for display in the view and passed raw to the form.
+    if (ktererInfo && ktererInfo.phone) {
+      let value = ktererInfo.phone.slice(2);
+      let formattedValue = ktererInfo.phone.slice(0, 2);
+
+      // Formatting the phone number.
+      if (value.length > 3) {
+        formattedValue += " (" + value.slice(0, 3) + ") ";
+      } else {
+        formattedValue += value;
+      }
+      if (value.length > 3 && value.length < 7) {
+        formattedValue += value.slice(3);
+      } else if (value.length >= 7 && value.length <= 10) {
+        formattedValue += value.slice(3, 6) + "-" + value.slice(6);
+      } else if (value.length === 11) {
+        formattedValue +=
+          value.slice(1, 4) + "-" + value.slice(4, 8) + "-" + value.slice(8);
+      }
+
+      setValue("phone", ktererInfo.phone, { shouldValidate: true });
+      setPhoneValue(formattedValue);
+    }
+  }, [ktererInfo]);
 
   useEffect(() => {
     if (!isPasswordResetOpen) {
@@ -315,7 +341,6 @@ export default function KtererAccount() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     const formData = new FormData();
 
     formData.append("bio", values.bio);
@@ -326,14 +351,16 @@ export default function KtererAccount() {
     formData.append("first_name", values.first_name);
     formData.append("last_name", values.last_name);
     formData.append("phone", values.phone);
-    formData.append("email_notification", String(Number(values.email_notification)));
-    
+    formData.append(
+      "email_notification",
+      String(Number(values.email_notification))
+    );
+
     formData.append("street_address", values.street_address);
     formData.append("city", values.city);
     formData.append("province", values.province);
     formData.append("apartment", values.apartment.toString());
     formData.append("postal_code", values.postal_code);
-
 
     if (values.profile_image_url instanceof File) {
       formData.append(
@@ -355,30 +382,30 @@ export default function KtererAccount() {
       },
       body: formData,
     });
-    
+
     if (response.ok) {
       const data = await response.json();
 
-      if(data?.status == 400 || data?.status == 404){
+      if (data?.status == 400 || data?.status == 404) {
         toast({
           description: (
             <>
-            <div className="flex items-center">
-              <XCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
-              {data.message}
-            </div>
-          </>
+              <div className="flex items-center">
+                <XCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-red-400" />
+                {data.message}
+              </div>
+            </>
           ),
         });
-      }else{
+      } else {
         toast({
           description: (
             <>
-            <div className="flex items-center">
-              <CheckCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400" />
-              Account Info Successfully Updated!
-            </div>
-          </>
+              <div className="flex items-center">
+                <CheckCircleIcon className="w-6 h-6 inline-block align-text-bottom mr-2 text-green-400" />
+                Account Info Successfully Updated!
+              </div>
+            </>
           ),
         });
       }
@@ -433,14 +460,45 @@ export default function KtererAccount() {
     }
   };
 
+  const [phoneValue, setPhoneValue] = useState("+1");
   const handleInputPhone = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    event.target.value = value.replace(/[^\d+]/g, ''); // Solo permite dígitos y el símbolo +
+    let { value } = event.target;
+    // event.target.value = value.replace(/[^\d+]/g, ''); // Solo permite dígitos y el símbolo +
+    value = value.replace(/[^\d+]/g, ""); // Remove non-allowed characters
+
+    // Handle "+" sign
+    let formattedValue = "+1";
+
+    // Limit to 11 digits
+    value = value.slice(0, 12);
+
+    value = value.slice(2);
+
+    // Formatting the phone number.
+    if (value.length > 3) {
+      formattedValue += " (" + value.slice(0, 3) + ") ";
+    } else {
+      formattedValue += value;
+    }
+    if (value.length > 3 && value.length < 7) {
+      formattedValue += value.slice(3);
+    } else if (value.length >= 7 && value.length <= 10) {
+      formattedValue += value.slice(3, 6) + "-" + value.slice(6);
+    } else if (value.length === 11) {
+      formattedValue +=
+        value.slice(1, 4) + "-" + value.slice(4, 8) + "-" + value.slice(8);
+    }
+
+    // Update state and input value
+    setPhoneValue(formattedValue);
+    event.target.value = "+1" + value;
   };
 
-  // Google Places 
+  // Google Places
   const [input, setInput] = useState("");
-  const [suggestions, setSuggestions] = useState<google.maps.places.AutocompletePrediction[]>([]);
+  const [suggestions, setSuggestions] = useState<
+    google.maps.places.AutocompletePrediction[]
+  >([]);
 
   const handleFocus = () => {
     setInput("");
@@ -475,30 +533,27 @@ export default function KtererAccount() {
     }
   };
 
-  const handleSuggestion =  (suggestion:any) =>{
+  const handleSuggestion = (suggestion: any) => {
     suggestion.terms.pop();
 
     const length = suggestion.terms.length;
     const reverse = suggestion.terms.reverse();
-    let stree = '';
-    if(length >= 3){
-      for (let i = length-1 ; i >= 0 ; i--) {
-        if(i== 0 ){
-          setValue('province' , reverse[i].value , { shouldValidate: true });
-        }else if(i==1){
-          setValue('city' , reverse[i].value , { shouldValidate: true });
-        }else{
-          stree += reverse[i].value + ' ';
+    let stree = "";
+    if (length >= 3) {
+      for (let i = length - 1; i >= 0; i--) {
+        if (i == 0) {
+          setValue("province", reverse[i].value, { shouldValidate: true });
+        } else if (i == 1) {
+          setValue("city", reverse[i].value, { shouldValidate: true });
+        } else {
+          stree += reverse[i].value + " ";
         }
-        
-
       }
-      setValue('street_address' , stree.slice(0, -1) , { shouldValidate: true });
+      setValue("street_address", stree.slice(0, -1), { shouldValidate: true });
     }
     setInput(suggestion.description);
     setSuggestions([]);
   };
-
 
   return (
     <>
@@ -514,7 +569,11 @@ export default function KtererAccount() {
         </div>
         <div className="max-w-2xl mx-auto">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" id="kterer_acount_form">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-8"
+              id="kterer_acount_form"
+            >
               <div className="my-10 grid gap-x-6 gap-y-8 grid-cols-1 sm:grid-cols-2">
                 <div className="col-span-2 text-center">
                   <h1 className="text-xl font-bold mb-2">Profile Picture</h1>
@@ -614,7 +673,12 @@ export default function KtererAccount() {
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <Input className="rounded-full" {...field} onInput={handleInputPhone} />
+                          <Input
+                            className="rounded-full"
+                            {...field}
+                            value={phoneValue}
+                            onInput={handleInputPhone}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -622,12 +686,14 @@ export default function KtererAccount() {
                   />
                 </div>
                 <div className="col-span-2 mt-5">
-                    <div className="bg-primary-color text-primary text-primary-foreground text-center py-2">
-                      Kterer Info
-                    </div>
-                    <div className="bg-red-50 text-primary text-center py-4 px-5 text-sm">
-                      This will help customers get to know you more as a food provider.<br className="sm:block hidden"></br> Be creative with your bio and flaunt your experience!
-                    </div>
+                  <div className="bg-primary-color text-primary text-primary-foreground text-center py-2">
+                    Kterer Info
+                  </div>
+                  <div className="bg-red-50 text-primary text-center py-4 px-5 text-sm">
+                    This will help customers get to know you more as a food
+                    provider.<br className="sm:block hidden"></br> Be creative
+                    with your bio and flaunt your experience!
+                  </div>
                 </div>
                 <div className="col-span-2">
                   <FormField
@@ -663,36 +729,36 @@ export default function KtererAccount() {
                     )}
                   /> */}
                   <FormField
-                      control={form.control}
-                      name="ethnicity"
-                      render={({ field }) => (
-                        <FormItem>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                            >
-                            <FormLabel>Ethnicity</FormLabel>
-                            <FormControl className="rounded-full exclu ">
-                              <SelectTrigger>
-                                <SelectValue placeholder="e.g: Pakistani" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="Pakistani">Pakistani</SelectItem>
-                              <SelectItem value="Indian">Indian</SelectItem>
-                              <SelectItem value="Chinese">Chinese</SelectItem>
-                              <SelectItem value="Japanese">Japanese</SelectItem>
-                              <SelectItem value="Canadian">Canadian</SelectItem>
-                              <SelectItem value="African">African</SelectItem>
-                              <SelectItem value="American">American</SelectItem>
-                              <SelectItem value="Mexican">Mexican</SelectItem>
-                              <SelectItem value="Other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    control={form.control}
+                    name="ethnicity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <FormLabel>Ethnicity</FormLabel>
+                          <FormControl className="rounded-full exclu ">
+                            <SelectTrigger>
+                              <SelectValue placeholder="e.g: Pakistani" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="Pakistani">Pakistani</SelectItem>
+                            <SelectItem value="Indian">Indian</SelectItem>
+                            <SelectItem value="Chinese">Chinese</SelectItem>
+                            <SelectItem value="Japanese">Japanese</SelectItem>
+                            <SelectItem value="Canadian">Canadian</SelectItem>
+                            <SelectItem value="African">African</SelectItem>
+                            <SelectItem value="American">American</SelectItem>
+                            <SelectItem value="Mexican">Mexican</SelectItem>
+                            <SelectItem value="Other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
                 <div className="col-span-2 sm:col-span-1">
                   <FormField
@@ -741,13 +807,14 @@ export default function KtererAccount() {
                   />
                 </div>
                 <div className="col-span-2 mt-5">
-                    <div className="bg-primary-color text-primary text-primary-foreground text-center py-2">
-                      Pickup Address
-                    </div>
-                    <div className="bg-red-50 text-primary text-center py-4 px-5 text-sm">
-                    Please make sure your address is accurate since delivery personnel<br className="sm:block hidden"></br>
+                  <div className="bg-primary-color text-primary text-primary-foreground text-center py-2">
+                    Pickup Address
+                  </div>
+                  <div className="bg-red-50 text-primary text-center py-4 px-5 text-sm">
+                    Please make sure your address is accurate since delivery
+                    personnel<br className="sm:block hidden"></br>
                     will be picking up orders from the address you put in.
-                    </div>
+                  </div>
                 </div>
 
                 {/* address fields */}
@@ -784,7 +851,7 @@ export default function KtererAccount() {
                     )}
                   </div>
                 </div>
-                  {/* ----------------------- */}
+                {/* ----------------------- */}
                 <div className="col-span-2 sm:col-span-1">
                   <FormField
                     control={form.control}
@@ -793,7 +860,7 @@ export default function KtererAccount() {
                       <FormItem>
                         <FormLabel>Street Address</FormLabel>
                         <FormControl>
-                          <Input className="rounded-full" {...field} disabled/>
+                          <Input className="rounded-full" {...field} disabled />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -808,7 +875,7 @@ export default function KtererAccount() {
                       <FormItem>
                         <FormLabel>City</FormLabel>
                         <FormControl>
-                          <Input className="rounded-full" {...field} disabled/>
+                          <Input className="rounded-full" {...field} disabled />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -846,7 +913,7 @@ export default function KtererAccount() {
                     )}
                   />
                 </div>
-                
+
                 <div className="col-span-2 sm:col-span-1">
                   <FormField
                     control={form.control}
@@ -883,9 +950,17 @@ export default function KtererAccount() {
                     name="email_notification"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="mb-3">Email Notification</FormLabel>
+                        <FormLabel className="mb-3">
+                          Email Notification
+                        </FormLabel>
                         <FormControl>
-                          <Switch className="rounded-full border border-gray-500" checked={field.value} onCheckedChange={(checked) => field.onChange(checked)} />
+                          <Switch
+                            className="rounded-full border border-gray-500"
+                            checked={field.value}
+                            onCheckedChange={(checked) =>
+                              field.onChange(checked)
+                            }
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
