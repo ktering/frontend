@@ -262,9 +262,9 @@ export default function UserNavbar() {
 
       const { url, session_data, product_stored } = await response.json();
 
-      console.log("url ", url);
-      console.log("session_data ", session_data);
-      console.log("product_stored ", product_stored);
+      // console.log("url ", url);
+      // console.log("session_data ", session_data);
+      // console.log("product_stored ", product_stored);
 
       // Redirect to Stripe Checkout
       if (url && url.message) {
@@ -567,7 +567,9 @@ export default function UserNavbar() {
                     <li className="py-4 space-y-2">
                       <div>{item.name}</div>
                       <div className="text-sm">{capitalizedSize}</div>
-                      <div className="font-bold">CAD ${item.price}</div>
+                      <div className="font-bold">
+                        CAD ${parseInt(item.price, 10) * item.quantity}
+                      </div>
                     </li>
 
                     <div className="flex items-center justify-center border border-gray-200 rounded-full h-12">
