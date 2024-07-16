@@ -568,6 +568,7 @@ export default function UserNavbar() {
                       <div>{item.name}</div>
                       <div className="text-sm">{capitalizedSize}</div>
                       <div className="font-bold">
+                        {/* Casting price to Int */}
                         CAD ${parseInt(item.price, 10) * item.quantity}
                       </div>
                     </li>
