@@ -50,9 +50,6 @@ function useCart() {
   };
 
   const addItemToCart = (newItem: CartItem) => {
-
-    console.log('nuevo',newItem);
-    
     setCartItems((currentItems) => {
       const existingItemIndex = currentItems.findIndex(
         (item) => item.id === newItem.id && item.size === newItem.size
@@ -87,25 +84,20 @@ function useCart() {
 
   //   return;
   //   setCartItems((currentItems) => {
-     
-      
+
   //     return updatedItems;
   //   });
   // };
   const removeItemFromCart = (id: string, size: string) => {
-    console.log('actuales', cartItems);
-  
     const updatedItems = cartItems.filter(
       (item) => !(item.id === id && item.size === size)
     );
-  
-    console.log('filtrados', updatedItems);
+
     setCartItems(updatedItems);
     updateCartCount(updatedItems.length);
   };
 
   useEffect(() => {
-    console.log('luego de borrar', cartItems);
     saveCartItems(cartItems);
   }, [cartItems]); // Esto se ejecutará cada vez que `cartItems` cambie
 
