@@ -95,6 +95,8 @@ const AddressPopup = ({
     setSelectedAddress(event.target.value);
   };
 
+  const [canCloseDialog, setCanCloseDialog] = useState(false); 
+
   const user = useUser();
 
   if (!user) {
@@ -170,6 +172,10 @@ const AddressPopup = ({
 
           if (homeAddress !== "") {
             setSelectedAddress("home");
+          }
+
+          if(homeAddress !== "" || officeAddress !== ""){
+            setCanCloseDialog(true);
           }
         })
         .catch((error) => {
@@ -275,12 +281,21 @@ const AddressPopup = ({
     setEditing("");
   };
 
+  const handleOpenChange = (isOpen:any) => {
+    if (isOpen || canCloseDialog) {
+      setIsAddressPopupOpen(isOpen);
+    } else {
+      // Aquí puedes mostrar un mensaje de advertencia o ejecutar alguna otra lógica
+      alert('To provide you with a better experience, you must enter your address .');
+    }
+  };
+
   // Added to validate when the RadioButton is displayed.
   const showRadioButton = homeAddress !== "" || officeAddress !== "";
 
   return (
     // the dialogTitle variable displays dynamic text according to the selected option
-    <Dialog open={isAddressPopupOpen} onOpenChange={setIsAddressPopupOpen}>
+    <Dialog open={isAddressPopupOpen} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogTitle>
           {editing === "home" && homeAddress === "" ? (

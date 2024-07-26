@@ -5,6 +5,7 @@ interface User {
 export const fetchHomeAddress = async (
   setHomeAddress: (address: string) => void,
   setFullAddress: (address: string) => void,
+  setIsAddressPopupOpen: (isOpen:boolean)=> void,
   user: User
 ) => {
   const accessToken = localStorage.getItem("accessToken");
@@ -30,6 +31,12 @@ export const fetchHomeAddress = async (
     const addressUntilFirstComma = fullHomeAddress.split(",")[0];
     setFullAddress(fullHomeAddress);
     setHomeAddress(addressUntilFirstComma);
+    
+    //Force address popup 
+    if(fullHomeAddress == ''){
+      setIsAddressPopupOpen(true);
+    }
+
   } catch (error) {
     console.error("Error fetching addresses:", error);
   }

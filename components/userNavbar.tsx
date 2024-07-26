@@ -80,6 +80,13 @@ export default function UserNavbar() {
     }
   };
 
+  //Force address popup 
+  // useEffect(() => {
+  //   if (fullAddress == "") {
+  //     setIsAddressPopupOpen(true);
+  //   }
+  // }, [fullAddress]);
+
   const toggleSideBar = () => {
     setIsSideBarOpen(!isSideBarOpen);
   };
@@ -93,7 +100,7 @@ export default function UserNavbar() {
   useEffect(() => {
     if (user) {
       // Function is modified by adding a new variable that returns the complete address.
-      fetchHomeAddress(setSavedAddress, setFullAddress, user);
+      fetchHomeAddress(setSavedAddress, setFullAddress, setIsAddressPopupOpen, user);
       setAddressChanged(false);
     }
   }, [addressChanged, user]);
