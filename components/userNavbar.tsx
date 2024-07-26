@@ -80,13 +80,6 @@ export default function UserNavbar() {
     }
   };
 
-  //Force address popup 
-  // useEffect(() => {
-  //   if (fullAddress == "") {
-  //     setIsAddressPopupOpen(true);
-  //   }
-  // }, [fullAddress]);
-
   const toggleSideBar = () => {
     setIsSideBarOpen(!isSideBarOpen);
   };
