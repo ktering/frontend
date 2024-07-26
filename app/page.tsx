@@ -14,8 +14,8 @@ import Family from "@/static/landing-page/family.png";
 import Number1Icon from "@/static/shared/number-1-icon.svg";
 import Number2Icon from "@/static/shared/number-2-icon.svg";
 import Number3Icon from "@/static/shared/number-3-icon.svg";
-import WhiteLogo from "@/static/white-logo.svg";
-import LandingPicture from "@/static/home/landing-picture.png";
+import WhiteLogo from "@/static/red-logo.svg";
+import LandingPicture from "@/static/home/landing_picture_new.jpg";
 
 const steps = [
     {
@@ -93,12 +93,12 @@ export default function Home() {
         <>
             {/* Section 1 */}
             <section className="w-full relative overflow-x-hidden">
-                <Image src={LandingPicture} className="w-full h-[50vh] md:h-[70vh] object-cover"
+                <Image src={LandingPicture} className="w-full h-[70vh] md:h-[100vh] object-cover"
                        alt="hero section food image"/>
                 <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2">
                     <div className="hidden md:flex flex-1"></div>
                     <div className="flex justify-center md:justify-start">
-                        <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24"/>
+                        {/* <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24 "/> */}
                     </div>
 
                     <div className="flex space-x-2 md:space-x-4 flex-1 justify-end">
@@ -123,15 +123,16 @@ export default function Home() {
                 {/* Center Content */}
                 <div
                     className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                    <h1 className="text-xl md:text-2xl lg:text-4xl text-white font-bold text-center mb-4 md:mb-8">
-                        Get Homemade Food Wherever and Whenever You Want
+                    <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24 mb-10"/>
+                    <h1 className="text-xl md:text-2xl lg:text-4xl  font-bold text-center mb-4 md:mb-8">
+                        Order homemade food wherever and whenever you want!
                     </h1>
                     <SignUpButton mode="modal">
                         <button
                             type="button"
-                            className="text-sm md:text-base rounded-full bg-white px-3 md:px-4 py-2 font-semibold text-primary-color shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                            className="text-sm md:text-base rounded-full bg-primary-color px-3 md:px-4 py-2 font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         >
-                            Join Now
+                            Order Now
                         </button>
                     </SignUpButton>
                 </div>

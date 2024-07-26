@@ -251,6 +251,7 @@ export default function ConsumerOrders() {
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
         sx={{ border: "none" }}
+        className="hidden"
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
           <h2 className="my-4 font-bold text-lg">In Progress</h2>
@@ -319,7 +320,8 @@ export default function ConsumerOrders() {
         sx={{ border: "none" }}
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <h2 className="my-4 font-bold text-lg">Open</h2>
+          {/* <h2 className="my-4 font-bold text-lg">Open</h2> */}
+          <h2 className="my-4 font-bold text-lg">In Progress</h2>
         </AccordionSummary>
 
         <AccordionDetails>
