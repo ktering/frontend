@@ -108,7 +108,7 @@ export default function Earnings() {
         }
 
         const data = await response.json();
-        console.log("Fetch Order ", data);
+        // console.log("Fetch Order ", data);
         setKtererOrders(data.orders);
       } catch (error) {
         console.error(`Error: ${error}`);
@@ -484,10 +484,12 @@ export default function Earnings() {
         </div>
 
         <div>
+          {/* The hidden class hides the in progress option and changes the name of the next section from open to In Progress. */}
           <Accordion
             expanded={expanded === "panel1"}
             onChange={handleChange("panel1")}
             sx={{ border: "none" }}
+            className="hidden"
           >
             <AccordionSummary
               aria-controls="panel1d-content"
@@ -603,7 +605,7 @@ export default function Earnings() {
               aria-controls="panel2d-content"
               id="panel2d-header"
             >
-              <h2 className="font-bold text-lg">Open</h2>
+              <h2 className="font-bold text-lg">In Progress</h2>
             </AccordionSummary>
 
             <AccordionDetails>

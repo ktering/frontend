@@ -52,11 +52,11 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-        <body className={inter.className}>
+        <body className={`${inter.className} flex flex-col min-h-screen`}>
           <AuthProvider>
             <StatusContextProvider>
-              {children}
-
+              {/* Main container for content */}
+              <main className="flex-grow">{children}</main>
             </StatusContextProvider>
           </AuthProvider>
           <Toaster />

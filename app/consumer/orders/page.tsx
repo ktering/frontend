@@ -131,8 +131,6 @@ export default function ConsumerOrders() {
         });
       }
     } else {
-      console.log("Testing");
-
       getUserOrders().catch((error) => {
         console.error(`Error: ${error}`);
       });
@@ -246,7 +244,7 @@ export default function ConsumerOrders() {
       <div className="flex justify-between my-8">
         <div className="text-2xl font-bold ">Orders</div>
       </div>
-
+      {/* The hidden class hides the in progress option and changes the name of the next section from open to In Progress. */}
       <Accordion
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
