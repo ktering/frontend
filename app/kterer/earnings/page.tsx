@@ -84,7 +84,7 @@ export default function Earnings() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [orderIdToCancel, setOrderIdToCancel] = useState<number | 0>(0);
 
-  const [expanded, setExpanded] = useState<string | false>("panel1");
+  const [expanded, setExpanded] = useState<string | false>("panel2");
 
   const { updateNotifications } = useNotifications();
 

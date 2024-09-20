@@ -62,7 +62,7 @@ export default function ConsumerOrders() {
   const { clearCart } = useCart();
   const [orders, setOrders] = useState<any[]>([]);
   const [dataLocal, setDataLocal] = useState<any[]>([]);
-  const [expanded, setExpanded] = useState<string | false>("panel1");
+  const [expanded, setExpanded] = useState<string | false>("panel2");
   const { updateNotifications } = useNotifications();
 
   useEffect(() => {
