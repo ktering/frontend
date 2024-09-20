@@ -251,6 +251,19 @@ export default function Kterings() {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        {/* Example loading spinner */}
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary-color"></div>
+        <div>
+          <p className="text-primary-color mt-4">
+            Please wait while we load your data...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // if (!globalStatus?.is_serving_time) {
     return (
