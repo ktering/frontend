@@ -91,7 +91,7 @@ const BecomeTypes = [
 export default function Home() {
   return (
     <>
-      {/* Section 1 */}
+      {/* Section 1 - validate */}
       <section className="w-full relative overflow-x-hidden">
         <Image
           src={LandingPicture}
