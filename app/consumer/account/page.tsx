@@ -119,7 +119,7 @@ export default function ConsumerAccount() {
       form.setValue("email", email || "");
       form.setValue("phone", phone || "");
       form.setValue("country", country || "");
-      form.setValue("email_notification", !!email_notification);
+      form.setValue("email_notification", email_notification || false);
     }
   }, [userInfo, form]);
 

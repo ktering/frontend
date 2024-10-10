@@ -104,6 +104,44 @@ input[type=number] {
     z-index: 0;
 }
 
+.character {
+    border: none;
+    border-bottom: 3px #cccc solid;
+    color: black;
+}
+
+.character--inactive {
+    background-color: transparent;
+}
+
+.character--selected {
+    position: relative;
+    border-bottom: 3px rgb(69, 69, 255) solid;
+    outline: transparent;
+}
+
+.character--selected:not(.character--filled)::after {
+    content: "";
+    width: 1px;
+    height: 25px;
+    background-color: #333;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: blink 1s infinite step-end;
+}
+   
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
 @media (min-width: 1024px) {
     .bg-primary-color-angled-wrapper::before {
         clip-path: polygon(0 0, 70% 0, 55% 100%, 0% 100%);
