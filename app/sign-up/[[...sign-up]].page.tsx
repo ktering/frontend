@@ -579,7 +579,7 @@ interface TimerButtonProps {
 
 const TimerButton: React.FC<TimerButtonProps> = ({
   disabled,
-  timer,
+  timer = 0,
   onClick,
 }) => {
   return (
