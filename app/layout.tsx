@@ -52,6 +52,10 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
+        <head>
+          {/* Google Site Verification */}
+          <meta name="google-site-verification" content="bDfble7zNQRL2tvbUVa6dpaXJIj6W9f-1Q9LJz5KdlE" />
+        </head>
         <body className={`${inter.className} flex flex-col min-h-screen`}>
           <AuthProvider>
             <StatusContextProvider>
