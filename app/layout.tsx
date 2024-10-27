@@ -44,7 +44,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider
-      appearance={{
+      appearance={{ 
         elements: {
           card: "w-[512px]",
           formButtonPrimary: "bg-primary-color hover:bg-primary-color-hover",
