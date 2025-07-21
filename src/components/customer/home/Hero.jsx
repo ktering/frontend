@@ -37,10 +37,13 @@ const heroImages = [
         {/* Left: Text Content */}
         <div className=" ">
           <h1 className="text-4xl md:text-5xl text-primary mb-4">
-            TASTY FOOD COMING TO YOU
+            HOMEMADE FOOD 
+          </h1>
+          <h1 className="text-4xl md:text-5xl text-primary mb-4">
+            DELIVERED FAST
           </h1>
           <p className="text-black text-lg mb-7 max-w-lg">
-            Your time is precious, and we know your struggle only to get your favorite food. Get your job done and let us lessen your hustle!
+            Busy day? Treat yourself to authentic homemade meals, prepared by local chefs and delivered hot to your door. Skip the stress—order now and enjoy comfort food made just for you!
           </p>
           <div className="flex items-center gap-4 mb-10">
             <button className="bg-primary text-white font-bold px-6 py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors">
@@ -51,19 +54,20 @@ const heroImages = [
             </button>
           </div>
           <div className="flex gap-8 mt-6">
-            <div>
-              <p className="text-2xl font-bold text-primary">5K+</p>
-              <p className="text-black font-medium">Merchants</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-primary">12K+</p>
-              <p className="text-black font-medium">Yummy Menus</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-primary">500K+</p>
-              <p className="text-black font-medium">Happy Customers</p>
-            </div>
-          </div>
+        <div>
+        <p className="text-2xl font-bold text-primary">Chefs</p>
+        <p className="text-black font-medium">Trusted & Local</p>
+        </div>
+        <div>
+        <p className="text-2xl font-bold text-primary">Menus</p>
+        <p className="text-black font-medium">Endless Choices</p>
+        </div>
+        <div>
+    <p className="text-2xl font-bold text-primary">Foodies</p>
+    <p className="text-black font-medium">Satisfied Eaters</p>
+  </div>
+</div>
+
         </div>
         {/* Right: Instantly Rotating Image */}
         <div className="flex  items-center justify-center h-[450px]">
