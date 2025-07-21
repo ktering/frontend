@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const heroImages = [
-    "/biryani.png",
-    "/daal-chawal.png",
-   "/arab-sweet.png",
+  "/biryani.png",
+  "/daal-chawal.png",
+  "/arab-sweet.png",
 ];
 
-  export default function HeroSection() {
+export default function HeroSection() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const hasScrolled = useRef(false);
@@ -31,77 +31,80 @@ const heroImages = [
   }, [paused]);
 
   return (
-    <section className="bg-white text-center py-5 md:px-12 md:text-left">
-      <div className="max-w-7xl mx-auto flex  flex-col md:flex-row items-center justify-between gap-12">
+    <section className="bg-white py-8 px-2 sm:py-12 sm:px-4 md:py-16 md:px-12">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
         {/* Left: Text Content */}
-        <div className=" ">
-          <h1 className="text-4xl md:text-5xl text-primary mb-4">
-            HOMEMADE FOOD 
+        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-5xl font-extrabold text-primary mb-2 md:mb-4 leading-tight">
+            HOMEMADE FOOD
           </h1>
-          <h1 className="text-4xl md:text-5xl text-primary mb-4">
+          <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-5xl font-extrabold text-primary mb-4 leading-tight">
             DELIVERED FAST
           </h1>
-          <p className="text-black text-lg mb-7 max-w-lg">
+          <p className="text-black text-base sm:text-lg mb-7 max-w-md sm:max-w-lg">
             Busy day? Treat yourself to authentic homemade meals, prepared by local chefs and delivered hot to your door. Skip the stress—order now and enjoy comfort food made just for you!
           </p>
-          <div className="flex items-center gap-4 mb-10 justify-center">
-  <button className="bg-primary text-white font-bold px-8 py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors text-lg">
+          <div className="flex items-center gap-3 sm:gap-4 mb-8 sm:mb-10 justify-center md:justify-start">
+  {/* ORDER NOW button: always visible, centered on mobile */}
+  <button className="bg-primary text-white font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors text-base sm:text-lg mx-auto md:mx-0">
     ORDER NOW
   </button>
-  <div className="flex items-center ml-2 relative">
+  {/* Arrow + Text: hidden on small screens, shown on md+ */}
+  <div className="items-center ml-1 sm:ml-2 relative hidden md:flex">
     {/* Arrow SVG */}
     <svg
-      className="w-16 h-8 md:w-24 md:h-10 text-primary -scale-x-100 -scale-y-100 -rotate-12"
+      className="w-12 h-6 sm:w-16 sm:h-8 md:w-24 md:h-10 text-primary -scale-x-100 -rotate-12"
       fill="none"
       stroke="currentColor"
       strokeWidth={3}
       viewBox="0 0 60 30"
-      style={{ minWidth: "60px" }}
+      style={{ minWidth: "48px" }}
     >
       <path
-        d="M2 18 Q30 5 55 22"
+        d="M55 22 Q30 5 2 18"
         stroke="currentColor"
         strokeWidth="3"
         fill="none"
         strokeLinecap="round"
       />
       <path
-        d="M52 13 L55 22 L45 30"
+        d="M6 16 L2 18 L7 21"
         stroke="currentColor"
         strokeWidth="3"
         fill="none"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
-    <span className="ml-1 text-primary italic font-medium text-sm md:text-base whitespace-nowrap">
-      Go ahead,<br/> we know you’re hungry!
+    <span className="ml-1 text-primary italic font-medium text-xs sm:text-sm md:text-base font-[cursive] whitespace-nowrap">
+      Go ahead,<br className="hidden xs:block" /> we know you’re hungry!
     </span>
   </div>
 </div>
 
-          <div className="flex gap-8 mt-6">
-        <div>
-        <p className="text-2xl font-bold text-primary">Chefs</p>
-        <p className="text-black font-medium">Trusted & Local</p>
-        </div>
-        <div>
-        <p className="text-2xl font-bold text-primary">Menus</p>
-        <p className="text-black font-medium">Endless Choices</p>
-        </div>
-        <div>
-    <p className="text-2xl font-bold text-primary">Foodies</p>
-    <p className="text-black font-medium">Satisfied Eaters</p>
-  </div>
-</div>
-
+          
+          <div className="flex gap-6 sm:gap-8 mt-4 sm:mt-6 mb-6 sm:mb-0 justify-center md:justify-start">
+            <div>
+              <p className="text-lg sm:text-2xl font-bold text-primary">Chefs</p>
+              <p className="text-black text-sm sm:text-base font-medium">Trusted & Local</p>
+            </div>
+            <div>
+              <p className="text-lg sm:text-2xl font-bold text-primary">Menus</p>
+              <p className="text-black text-sm sm:text-base font-medium">Endless Choices</p>
+            </div>
+            <div>
+              <p className="text-lg sm:text-2xl font-bold text-primary">Foodies</p>
+              <p className="text-black text-sm sm:text-base font-medium">Satisfied Eaters</p>
+            </div>
+          </div>
         </div>
         {/* Right: Instantly Rotating Image */}
-        <div className="flex  items-center justify-center h-[450px]">
-           <img
+        <div className="w-full md:w-1/2 flex items-center justify-center min-h-[220px] sm:min-h-[300px]">
+          <img
             src={heroImages[index]}
             alt="Food"
-            className="w-[350px] h-[350px] md:w-[420px] md:h-[420px] drop-shadow-xl rounded-2xl object-cover object-center cursor-pointer"
-            style={{ minWidth: "250px", minHeight: "250px" }}
+            className="w-[200px] h-[200px] xs:w-[250px] xs:h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[420px] lg:h-[420px] drop-shadow-xl rounded-2xl object-cover object-center cursor-pointer"
+            style={{ minWidth: "150px", minHeight: "150px" }}
             draggable={false}
           />
         </div>
