@@ -9,7 +9,7 @@ export default function Header() {
         {/* Logo */}
         <a href="/">
           <img
-            src="static/red-logo.svg"
+            src="/red-logo.svg"
             alt="Kterings logo"
             className="h-10 w-auto"
           />
@@ -26,7 +26,7 @@ export default function Header() {
         <div className="hidden md:block">
           <a
             href="/order"
-            className="bg-primary text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-black hover:text-primary transition-colors"
+            className="bg-primary text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors"
           >
             Order Now
           </a>
