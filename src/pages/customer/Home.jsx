@@ -4,6 +4,7 @@ import CategorySection from "../../components/customer/home/CategorySection";
 import FoodGridSection from "../../components/customer/home/FoodGridSection";
 import AboutSection from "../../components/customer/home/AboutSection";
 import Services from "../../components/customer/home/Services";
+import Testimonials from "../../components/customer/home/Testimonials";
 export default function Home() {
 
     return (
@@ -18,6 +19,7 @@ export default function Home() {
                 </section>
                 <Services />
                 <AboutSection />
+                <Testimonials/>
             </div>
 
         </>
