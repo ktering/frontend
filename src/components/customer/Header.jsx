@@ -9,7 +9,7 @@ export default function Header() {
         {/* Logo */}
         <a href="/">
           <img
-            src="static/red-logo.svg"
+            src="/red-logo.svg"
             alt="Kterings logo"
             className="h-10 w-auto"
           />

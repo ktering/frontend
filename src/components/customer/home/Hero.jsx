@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowBigLeft } from "lucide-react";
 
 const heroImages = [
-    "/static/biryani.png",
-    "/static/daal-chawal.png",
-   "/static/arab-sweet.png",
-  
+    "/biryani.png",
+    "/daal-chawal.png",
+   "/arab-sweet.png",
 ];
 
   export default function HeroSection() {
