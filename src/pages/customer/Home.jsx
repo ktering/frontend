@@ -3,6 +3,7 @@ import Hero from "../../components/customer/home/Hero";
 import CategorySection from "../../components/customer/home/CategorySection";
 import FoodGridSection from "../../components/customer/home/FoodGridSection";
 import AboutSection from "../../components/customer/home/AboutSection";
+import Footer from "../../components/customer/home/Footer";
 export default function Home() {
 
     return (
@@ -17,6 +18,7 @@ export default function Home() {
                 </section>
                 <AboutSection />
             </div>
+            <Footer />
 
         </>
     );
