@@ -46,34 +46,33 @@ export default function HeroSection() {
           </p>
           <div className="flex items-center gap-3 sm:gap-4 mb-8 sm:mb-10 justify-center md:justify-start">
   {/* ORDER NOW button: always visible, centered on mobile */}
-  <button className="bg-primary text-white font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors text-base sm:text-lg mx-auto md:mx-0">
+  <button className="bg-primary text-white font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors text-base sm:text-lg mx-auto ">
     ORDER NOW
   </button>
   {/* Arrow + Text: hidden on small screens, shown on md+ */}
   <div className="items-center ml-1 sm:ml-2 relative hidden md:flex">
-    {/* Arrow SVG */}
+     {/* Arrow SVG */}
     <svg
-      className="w-12 h-6 sm:w-16 sm:h-8 md:w-24 md:h-10 text-primary -scale-x-100 -rotate-12"
+      className="w-16 h-8 md:w-24 md:h-10 text-primary -scale-x-100 -scale-y-100 -rotate-12"
       fill="none"
       stroke="currentColor"
       strokeWidth={3}
       viewBox="0 0 60 30"
-      style={{ minWidth: "48px" }}
+      style={{ minWidth: "60px" }}
     >
       <path
-        d="M55 22 Q30 5 2 18"
+        d="M2 18 Q30 5 55 22"
         stroke="currentColor"
         strokeWidth="3"
         fill="none"
         strokeLinecap="round"
       />
       <path
-        d="M6 16 L2 18 L7 21"
+        d="M52 13 L55 22 L45 30"
         stroke="currentColor"
         strokeWidth="3"
         fill="none"
         strokeLinecap="round"
-        strokeLinejoin="round"
       />
     </svg>
     <span className="ml-1 text-primary italic font-medium text-xs sm:text-sm md:text-base font-[cursive] whitespace-nowrap">
