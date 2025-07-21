@@ -3,7 +3,7 @@ const testimonials = [
     name: "Ayesha Khan",
     quote: "The biryani was just like home! I love that I can order real homemade food from my own city.",
     orderLabel: "Ordered Biryani",
-    orderLink: "/products/biryani", // Adjust the link as per your app routes
+    orderLink: "/products/biryani", // Adjust the link after adding menu page 
   },
   {
     name: "Emily Thompson",
@@ -35,7 +35,7 @@ export default function TestimonialsSection() {
             <img
               src="/testimonials.jpg"
               alt="Karhai Kterings"
-              className="rounded-lg shadow-lg object-cover w-full h-64 md:h-96"
+              className="rounded-lg shadow-lg object-cover w-full h-64 md:h-[28rem]"
             />
           </div>
           {/* TESTIMONIALS */}
