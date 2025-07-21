@@ -1,12 +1,16 @@
 const CategoryItem = ({ name, image }) => {
   return (
-    <div className="flex items-center gap-3 px-3 py-2 rounded-full bg-white shadow hover:shadow-md cursor-pointer transition">
+    <div className="relative overflow-hidden group flex items-center gap-3 px-3 py-2 rounded-full bg-white border border-gray-200 hover:border-primary/60 cursor-pointer transition-all duration-300">
+      {/* Wave animation */}
+      <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transition duration-200"></div>
+
+      {/* Content */}
       <img
         src={image}
         alt={name}
-        className="w-10 h-10 object-cover rounded-full border border-gray-200"
+        className="w-10 h-10 object-cover rounded-full border border-gray-200 z-10"
       />
-      <span className="text-sm font-medium text-gray-800">{name}</span>
+      <span className="text-sm font-medium text-gray-800 z-10">{name}</span>
     </div>
   );
 };
