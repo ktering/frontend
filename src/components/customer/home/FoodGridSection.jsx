@@ -46,23 +46,34 @@
 // export default FoodGridSection;
 
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import foodItems from "../../../assets/data/foodItems.js";
 import FoodItemCard from "./FoodItemCard";
 import { Link } from "react-router-dom";
 
 const FoodGridSection = ({ limit = 8, showButton = true }) => {
   const [displayLimit, setDisplayLimit] = useState(limit);
+  const lastIsMobile = useRef(null);
+  const resizeTimeout = useRef();
 
   useEffect(() => {
     const handleResize = () => {
-      const isMobile = window.matchMedia("(max-width: 639px)").matches;
-      setDisplayLimit(isMobile ? 5 : limit);
+      clearTimeout(resizeTimeout.current);
+      resizeTimeout.current = setTimeout(() => {
+        const isMobile = window.matchMedia("(max-width: 639px)").matches;
+        if (isMobile !== lastIsMobile.current) {
+          setDisplayLimit(isMobile ? 5 : limit);
+          lastIsMobile.current = isMobile;
+        }
+      }, 150); // Throttle to 150ms
     };
 
-    handleResize(); // call on mount
+    handleResize(); // Initial check
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      clearTimeout(resizeTimeout.current);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [limit]);
 
   const displayedItems = useMemo(() => {
@@ -76,7 +87,6 @@ const FoodGridSection = ({ limit = 8, showButton = true }) => {
           <FoodItemCard key={item._id} item={item} />
         ))}
       </div>
-
       {showButton && (
         <div className="text-center mt-8">
           <Link to="/menu">
