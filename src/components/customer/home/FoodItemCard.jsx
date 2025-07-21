@@ -62,7 +62,8 @@ import { Clock, ChefHat, ShoppingBag } from "lucide-react";
 
 const FoodItemCard = ({ item }) => {
   return (
-    <div className="bg-white rounded-xl border [border-color:#e0dada] hover:border-primary/40 hover:scale-[1.01] transition-transform duration-100 ease-in-out w-full max-w-[270px] mx-auto flex flex-col cursor-pointer">
+    <div className="bg-white rounded-xl border [border-color:#e0dada] w-full max-w-[270px] mx-auto flex flex-col cursor-pointer">
+
       {/* Image with Category Tag */}
       <div className="relative w-full h-36">
         <img
