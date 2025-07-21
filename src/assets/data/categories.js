@@ -1,11 +1,11 @@
 // src/data/categories.js
 
-// import trendingImg from '../assets/category-images/trending.png';
-import asianImg from '';
-import middleEasternImg from '../assets/category-images/middle-eastern.png';
-import vegetarianImg from '../assets/category-images/vegetarian.png';
-import veganImg from '../assets/category-images/vegan.png';
-import dessertsImg from '../assets/category-images/desserts.png';
+import trendingImg from '../category-images/trending.jpg';
+import asianImg from '../category-images/asian.jpg';
+import middleEasternImg from '../category-images/eastern.jpg';
+import vegetarianImg from '../category-images/vegeterian.jpg';
+import veganImg from '../category-images/vegan.jpg';
+import dessertsImg from '../category-images/dessert.jpg';
 
 const categories = [
   { id: 'trending', name: 'Trending', image: trendingImg },
