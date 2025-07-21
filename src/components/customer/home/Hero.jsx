@@ -31,7 +31,7 @@ const heroImages = [
   }, [paused]);
 
   return (
-    <section className="bg-white py-5 md:px-12">
+    <section className="bg-white text-center py-5 md:px-12 md:text-left">
       <div className="max-w-7xl mx-auto flex  flex-col md:flex-row items-center justify-between gap-12">
         {/* Left: Text Content */}
         <div className=" ">
