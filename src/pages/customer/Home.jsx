@@ -5,6 +5,7 @@ import FoodGridSection from "../../components/customer/home/FoodGridSection";
 import AboutSection from "../../components/customer/home/AboutSection";
 import Services from "../../components/customer/home/Services";
 import Testimonials from "../../components/customer/home/Testimonials";
+import Footer from "../../components/customer/home/Footer";
 export default function Home() {
 
     return (
