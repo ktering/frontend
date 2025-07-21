@@ -2,7 +2,8 @@ const CategoryItem = ({ name, image }) => {
   return (
     <div className="relative overflow-hidden group flex items-center gap-3 px-3 py-2 rounded-full bg-white border border-gray-200 hover:border-primary/60 cursor-pointer transition-all duration-300">
       {/* Wave animation */}
-      <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transition duration-200"></div>
+      <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none"></div>
+
 
       {/* Content */}
       <img
