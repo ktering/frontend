@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { ArrowBigLeft } from "lucide-react";
 
 const heroImages = [
     "/static/biryani.png",
@@ -45,14 +46,41 @@ const heroImages = [
           <p className="text-black text-lg mb-7 max-w-lg">
             Busy day? Treat yourself to authentic homemade meals, prepared by local chefs and delivered hot to your door. Skip the stress—order now and enjoy comfort food made just for you!
           </p>
-          <div className="flex items-center gap-4 mb-10">
-            <button className="bg-primary text-white font-bold px-6 py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors">
-              ORDER NOW
-            </button>
-            <button className="flex items-center gap-2 text-primary font-semibold border border-primary rounded-full px-6 py-3 bg-white hover:bg-primary hover:text-white transition-colors">
-              <span role="img" aria-label="pizza">🍕</span> WHAT TO EAT
-            </button>
-          </div>
+          <div className="flex items-center gap-4 mb-10 justify-center">
+  <button className="bg-primary text-white font-bold px-8 py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors text-lg">
+    ORDER NOW
+  </button>
+  <div className="flex items-center ml-2 relative">
+    {/* Arrow SVG */}
+    <svg
+      className="w-16 h-8 md:w-24 md:h-10 text-primary -scale-x-100 -scale-y-100 -rotate-12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={3}
+      viewBox="0 0 60 30"
+      style={{ minWidth: "60px" }}
+    >
+      <path
+        d="M2 18 Q30 5 55 22"
+        stroke="currentColor"
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
+      <path
+        d="M52 13 L55 22 L45 30"
+        stroke="currentColor"
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
+    </svg>
+    <span className="ml-1 text-primary italic font-medium text-sm md:text-base whitespace-nowrap">
+      Go ahead,<br/> we know you’re hungry!
+    </span>
+  </div>
+</div>
+
           <div className="flex gap-8 mt-6">
         <div>
         <p className="text-2xl font-bold text-primary">Chefs</p>
