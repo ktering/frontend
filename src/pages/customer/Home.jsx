@@ -10,12 +10,12 @@ export default function Home() {
             <Header />
             <div className="div mt-8 w-4/5 mx-auto">
                 <Hero />
-                <section className="w-full px-4 py-10">
-                <h2 className="text-2xl font-bold text-center mb-8">Explore Homemade Food</h2>
-                <CategorySection />
-                <FoodGridSection limit={8} showButton={true} />
-            </section>
-            <AboutSection />
+                <section className="w-full py-10 px-2 sm:px-4">
+                    <h2 className="text-2xl font-bold text-center mb-8">Explore Homemade Food</h2>
+                    <CategorySection />
+                    <FoodGridSection limit={8} showButton={true} />
+                </section>
+                <AboutSection />
             </div>
 
         </>
