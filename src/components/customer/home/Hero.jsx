@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 
 const heroImages = [
-  "/biryani.jpg",
-  "/daal-chawal.jpg",
-  "/arab-sweet.jpg",
+  "/biryani.png",
+  "/daal-chawal.png",
 ];
 
 export default function HeroSection() {
