@@ -3,7 +3,7 @@ const partners = [
     name: "Windsor Islamic Association",
     logo: "/windsor-removebg.png",
     height: "h-[8rem]",       // square, needs more height to appear same as wide
-    maxWidth: "max-w-[100px]",
+    maxWidth: "max-w-[120px]",
   },
   {
     name: "Islamic Relief Canada",
