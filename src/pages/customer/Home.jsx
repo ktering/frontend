@@ -17,7 +17,7 @@ export default function Home() {
                     <h2 className="text-2xl font-bold text-center mb-8">Explore Homemade Food</h2>
                     <CategorySection />
                     <FoodGridSection  />
-                 </section> 
+                 </section>
                 <Services />
                 <AboutSection />
                 <Testimonials/>

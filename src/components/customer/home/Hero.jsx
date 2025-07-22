@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 const heroImages = [
   "/biryani.png",
   "/daal-chawal.png",
-  "/arab-sweet.png",
 ];
 
 export default function HeroSection() {
