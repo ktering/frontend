@@ -92,10 +92,6 @@ export default function Header() {
             >
               <X size={28} />
             </button>
-            {/* Mobile Nav Links */}
-            <a href="/menu" className="block py-2 px-2 text-black hover:text-primary font-medium rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>Explore Menu</a>
-            <a href="/chefs" className="block py-2 px-2 text-black hover:text-primary font-medium rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>Explore Chefs</a>
-            <a href="/order" className="block bg-primary text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-white hover:text-primary hover:border border-primary transition-colors mt-2 text-center" onClick={() => setMobileMenuOpen(false)}>Order Now</a>
             {/* Mobile Search */}
             <form
               className="relative mt-2"
@@ -114,6 +110,10 @@ export default function Header() {
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
               />
             </form>
+            {/* Mobile Nav Links */}
+            <a href="/menu" className="block py-2 px-2 text-black hover:text-primary font-medium rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>Explore Menu</a>
+            <a href="/chefs" className="block py-2 px-2 text-black hover:text-primary font-medium rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>Explore Chefs</a>
+            <a href="/order" className="block bg-primary text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-white hover:text-primary hover:border border-primary transition-colors mt-2 text-center" onClick={() => setMobileMenuOpen(false)}>Order Now</a>
           </div>
         </div>
       )}
