@@ -102,7 +102,7 @@ export default function Home() {
         <h1 className="text-2xl sm:text-3xl font-bold text-black text-center mb-3">
           Hold up, Kterings is Cooking – check back later
         </h1>
-        <p className="text-lg text-gray-700 text-center mb-1">Launching soon</p>
+        <p className="text-lg text-gray-700 text-center mb-1">Launching soon!</p>
         <p className="mb-2 text-gray-700 text-center">
           If you have questions, comments, or requests, please contact us:
         </p>
