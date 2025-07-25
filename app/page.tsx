@@ -1,6 +1,5 @@
-import Image from "next/image";
+/* import Image from "next/image";
 import Link from "next/link";
-import {SignInButton, SignUpButton} from "@clerk/nextjs";
 import Biryani from "@/static/landing-page/biryani.png";
 import Knafeh from "@/static/landing-page/knafeh.png";
 import Rendang from "@/static/landing-page/rendang.png";
@@ -8,7 +7,7 @@ import Ramen from "@/static/landing-page/ramen.png";
 import Lasagna from "@/static/landing-page/lasagna.png";
 import PadThai from "@/static/landing-page/pad-thai.png";
 import BecomeKtererIcon from "@/static/landing-page/become-a-kterer-icon.svg";
-import BecomeCustomerIcon from "@/static/landing-page/enjoy-homemade-food-icon.svg";
+import BecomeCustomerIcon from "@/static/landing-page/enjofy-homemade-food-icon.svg";
 import Disgusted from "@/static/landing-page/disgusted.png";
 import Family from "@/static/landing-page/family.png";
 import Number1Icon from "@/static/shared/number-1-icon.svg";
@@ -18,87 +17,110 @@ import WhiteLogo from "@/static/red-logo.svg";
 import LandingPicture from "@/static/home/landing_picture_new.jpg";
 
 const steps = [
-    {
-        name: "Click Order Now",
-        imgSrc: Number1Icon,
-    },
-    {
-        name: "Checkout with the Food of Your Choice",
-        imgSrc: Number2Icon,
-    },
-    {
-        name: "Enjoy a Delicious Homemade Meal",
-        imgSrc: Number3Icon,
-    },
+  {
+    name: "Click Order Now",
+    imgSrc: Number1Icon,
+  },
+  {
+    name: "Checkout with the Food of Your Choice",
+    imgSrc: Number2Icon,
+  },
+  {
+    name: "Enjoy a Delicious Homemade Meal",
+    imgSrc: Number3Icon,
+  },
 ];
 
 const PopularFoods = [
-    {
-        id: 1,
-        name: 'Chicken Biryani',
-        imageSrc: Biryani,
-        imageAlt: "Chicken Biryani",
-    },
-    {
-        id: 2,
-        name: 'Knafeh',
-        imageSrc: Knafeh,
-        imageAlt: "Knafeh",
-    },
-    {
-        id: 3,
-        name: "Rendang",
-        imageSrc: Rendang,
-        imageAlt: "Rendang",
-    },
-    {
-        id: 4,
-        name: "Ramen",
-        imageSrc: Ramen,
-        imageAlt: "Ramen",
-    },
-    {
-        id: 5,
-        name: "Lasagna",
-        imageSrc: Lasagna,
-        imageAlt: "Lasagna",
-    },
-    {
-        id: 6,
-        name: "Pad Thai",
-        imageSrc: PadThai,
-        imageAlt: "Pad Thai",
-    },
+  {
+    id: 1,
+    name: "Chicken Biryani",
+    imageSrc: Biryani,
+    imageAlt: "Chicken Biryani",
+  },
+  {
+    id: 2,
+    name: "Knafeh",
+    imageSrc: Knafeh,
+    imageAlt: "Knafeh",
+  },
+  {
+    id: 3,
+    name: "Rendang",
+    imageSrc: Rendang,
+    imageAlt: "Rendang",
+  },
+  {
+    id: 4,
+    name: "Ramen",
+    imageSrc: Ramen,
+    imageAlt: "Ramen",
+  },
+  {
+    id: 5,
+    name: "Lasagna",
+    imageSrc: Lasagna,
+    imageAlt: "Lasagna",
+  },
+  {
+    id: 6,
+    name: "Pad Thai",
+    imageSrc: PadThai,
+    imageAlt: "Pad Thai",
+  },
 ];
 
 const BecomeTypes = [
-    {
-        title: "Become A Kterer",
-        description: "Make money online making the things you love",
-        imageSrc: BecomeKtererIcon,
-        buttonText: "Start Earning",
-        href: "/become-a-kterer",
-    },
-    {
-        title: "Enjoy Homemade Food",
-        description: "Eat homemade food wherever and whenever you want",
-        imageSrc: BecomeCustomerIcon,
-        buttonText: "Enjoy Now",
-        href: "/",
-    },
+  {
+    title: "Become A Kterer",
+    description: "Make money online making the things you love",
+    imageSrc: BecomeKtererIcon,
+    buttonText: "Start Earning",
+    href: "/become-a-kterer",
+  },
+  {
+    title: "Enjoy Homemade Food",
+    description: "Eat homemade food wherever and whenever you want",
+    imageSrc: BecomeCustomerIcon,
+    buttonText: "Enjoy Now",
+    href: "/",
+  },
 ];
-
+ */
 export default function Home() {
-    return (
-        <>
-            {/* Section 1 */}
+  return (
+    <>
+      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center font-nunito">
+        <img
+          src="/cooking.svg"
+          alt="Browse & Order"
+          className="w-40 h-40 mb-5 object-contain"
+          draggable={false}
+        />
+
+        {/* Main Text */}
+        <h1 className="text-2xl sm:text-3xl font-bold text-black text-center mb-3">
+          Hold up, Kterings is Cooking – check back later
+        </h1>
+        <p className="text-lg text-gray-700 text-center mb-1">Launching soon</p>
+        <p className="mb-2 text-gray-700 text-center">
+          If you have questions, comments, or requests, please contact us:
+        </p>
+        <a
+          href="mailto:info@kterings.com"
+          className="bg-[#BF1E2E] text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-[#a51625] transition"
+        >
+          Contact Us
+        </a>
+      </div>
+      {/* 
             <section className="w-full relative overflow-x-hidden">
                 <Image src={LandingPicture} className="w-full h-[70vh] md:h-[100vh] object-cover"
                        alt="hero section food image"/>
                 <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-2">
                     <div className="hidden md:flex flex-1"></div>
                     <div className="flex justify-center md:justify-start">
-                        {/* <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24 "/> */}
+                        {/* <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24 "/> 
                     </div>
 
                     <div className="flex space-x-2 md:space-x-4 flex-1 justify-end">
@@ -120,7 +142,7 @@ export default function Home() {
                         </SignUpButton>
                     </div>
                 </div>
-                {/* Center Content */}
+                {/* Center Content
                 <div
                     className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
                     <Image src={WhiteLogo} alt="Kterings Logo" className="z-10 h-16 w-16 md:h-24 md:w-24 mb-10"/>
@@ -138,7 +160,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Section 2 */}
+            {/* Section 2 
             <div className="bg-white max-w-7xl mx-auto">
                 <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900">
@@ -169,7 +191,7 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Section 3 */}
+            {/* Section 3 
             <section className="bg-white dark:bg-gray-900 max-w-7xl mx-auto">
                 <div className="container px-6 py-12 mx-auto flex justify-center">
                     <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 sm:gap-32">
@@ -200,7 +222,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Section 4 */}
+            {/* Section 4 
             <section className="max-w-7xl mx-auto">
                 <div className="mx-auto max-w-screen-xl px-4 py-12 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
@@ -224,7 +246,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Section 5 */}
+            {/* Section 5 
             <section className="max-w-7xl mx-auto">
                 <div className="bg-white py-12">
                     <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -268,7 +290,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Section 6 */}
+            {/* Section 6 
             <section className="max-w-7xl mx-auto">
                 <div className="mx-auto max-w-screen-xl px-4 py-12 sm:py-12 sm:px-6 lg:py-24 lg:px-8">
                     <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
@@ -302,7 +324,7 @@ export default function Home() {
                         </SignUpButton>
                     </div>
                 </div>
-            </section>
-        </>
-    );
+            </section> */}
+    </>
+  );
 }
