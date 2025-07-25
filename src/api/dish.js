@@ -1,4 +1,4 @@
-const BASE_URL = "/api/dishes"; // or your full backend URL if needed
+const BASE_URL = "http://localhost:5000/api/dishes"; // or your full backend URL if needed
 
 export async function fetchAllDishes() {
   try {
@@ -8,6 +8,21 @@ export async function fetchAllDishes() {
     return [];
   }
 }
+
+export const fetchDishBySlug = async (slug) => {
+  try {
+    const res = await fetch(`http://localhost:5000/api/dishes/slug/${slug}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch dish by slug");
+    }
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching dish by slug:", error);
+    return null;
+  }
+};
+
 
 export async function fetchDishesByCategory(category) {
   try {

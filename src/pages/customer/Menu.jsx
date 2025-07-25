@@ -15,7 +15,8 @@ const Menu = () => {
   const [dishes, setDishes] = useState([]);
   const [allDishes, setAllDishes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
   const [searchTerm, setSearchTerm] = useState("");
 
   // Load all dishes initially
@@ -32,33 +33,41 @@ const Menu = () => {
   };
 
   // Handle category click
-  const handleCategorySelect = async (category) => {
-    if (selectedCategory === category) {
-      setSelectedCategory(null);
-      setDishes(allDishes);
-      return;
-    }
 
-    setLoading(true);
-    const filtered = await fetchDishesByCategory(category);
-    setDishes(filtered);
-    setSelectedCategory(category);
-    setLoading(false);
-  };
+  const handleCategorySelect = async (categoryId) => {
+  if (!categoryId || categoryId === 'all') {
+    setSelectedCategory('all');
+    setDishes(allDishes);
+    return;
+  }
+
+  if (selectedCategory === categoryId) return;
+
+  setLoading(true);
+  const filtered = await fetchDishesByCategory(categoryId);
+  setDishes(filtered);
+  setSelectedCategory(categoryId);
+  setLoading(false);
+};
+
 
   // Handle search filter
-  const handleSearch = (text) => {
-    setSearchTerm(text);
-    if (!text) {
-      setDishes(selectedCategory ? dishes : allDishes);
-      return;
-    }
+ const handleSearch = (text) => {
+  setSearchTerm(text);
 
-    const filtered = (selectedCategory ? dishes : allDishes).filter((dish) =>
-      dish.name.toLowerCase().includes(text.toLowerCase())
-    );
-    setDishes(filtered);
-  };
+  const base = selectedCategory === 'all' ? allDishes : dishes;
+
+  if (!text) {
+    setDishes(base);
+    return;
+  }
+
+  const filtered = base.filter((dish) =>
+    dish.name.toLowerCase().includes(text.toLowerCase())
+  );
+  setDishes(filtered);
+};
+
 
   return (
     <>

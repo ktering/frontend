@@ -1,5 +1,4 @@
-// src/data/categories.js
-
+import allImg from '../category-images/all.jpeg';
 import trendingImg from '../category-images/trending.jpg';
 import asianImg from '../category-images/asian.jpg';
 import middleEasternImg from '../category-images/eastern.jpg';
@@ -8,6 +7,7 @@ import veganImg from '../category-images/vegan.jpg';
 import dessertsImg from '../category-images/dessert.jpg';
 
 const categories = [
+  { id: 'all', name: 'All', image: allImg },
   { id: 'trending', name: 'Trending', image: trendingImg },
   { id: 'asian', name: 'Asian', image: asianImg },
   { id: 'middle-eastern', name: 'Middle Eastern', image: middleEasternImg },
