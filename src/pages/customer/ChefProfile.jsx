@@ -26,38 +26,40 @@ export default function ChefProfile() {
   if (!chef) return <div className="py-24 text-center text-red-500">Chef not found.</div>;
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="">
       <Header />
-      <main className="max-w-5xl mx-auto px-4 py-10">
         {/* Chef Info */}
-        <section className="bg-white rounded-xl shadow p-6 mb-10">
-          <div className="flex flex-col gap-1 mb-2">
-            <h1 className="text-2xl font-bold">{chef.name}</h1>
-            <span className="text-green-600 text-sm font-medium">Home Chef</span>
-          </div>
-          {chef.bio && <p className="text-gray-700 mb-3">{chef.bio}</p>}
-          {/* Example rating */}
-          <div className="flex items-center gap-2 mb-1">
-            {/* Show 4.5 stars, hardcoded for now, replace with chef.rating if you have */}
-            <div className="flex text-yellow-400">
-              {[...Array(5)].map((_, i) => (
-                <svg key={i} className={`w-5 h-5 ${i < 4 ? "" : "text-gray-300"}`} fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.966a1 1 0 00.95.69h4.181c.969 0 1.371 1.24.588 1.81l-3.386 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.921-.755 1.688-1.538 1.118l-3.386-2.46a1 1 0 00-1.175 0l-3.386 2.46c-.783.57-1.838-.197-1.538-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.049 9.393c-.783-.57-.38-1.81.588-1.81h4.181a1 1 0 00.95-.69l1.286-3.966z" />
-                </svg>
-              ))}
-            </div>
-            <span className="text-gray-600 text-sm">4.5 (23 reviews)</span>
-          </div>
-          {/* Add more chef info if needed, e.g. kitchenLocation, specialties, etc. */}
-        </section>
-
+        {/* Profile Banner + Avatar + Name */}
+<section className="w-3/4 mx-auto my-6">
+  {/* Banner */}
+  <div className="w-full h-36 md:h-48 overflow-hidden rounded-t-xl bg-gray-200">
+    <img
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      alt="Banner"
+      className="w-full h-full object-cover"
+    />
+  </div>
+  <div className="flex p-10 gap-1 items-center  ">
+    <img
+      src={chef.profileImageUrl || "/default-chef.jpg"}
+      alt={chef.name}
+      className="w-24 h-24 rounded-lg object-cover bg-white"
+    />
+    <div className="pl-8">
+        <p className="text-2xl font-semibold text-gray-900">{chef.name}</p>
+        
+      <div className="text-gray-500 text-base mt-1">Home Chef</div>
+      {chef.bio && <p className="text-gray-700 mt-2 max-w-md">{chef.bio}</p>}
+    </div>
+    
+  </div>
         {/* Dishes */}
-        <section className="mb-12">
+        <section className="p-10">
           <h2 className="text-xl font-semibold mb-5">Dishes by {chef.name}</h2>
           {dishes.length === 0 ? (
             <div className="text-gray-500">No dishes yet.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {dishes.map((dish) => (
                 <FoodItemCard
                   key={dish._id}
@@ -71,15 +73,15 @@ export default function ChefProfile() {
             </div>
           )}
         </section>
-
         {/* Reviews - placeholder, since your backend doesn't have reviews yet */}
-        {/* <section>
+         {/* <section>
           <h2 className="text-xl font-semibold mb-4">Customer Reviews</h2>
           <div className="space-y-4">
             <div className="text-gray-500">No reviews yet.</div>
           </div>
-        </section> */}
-      </main>
+        </section>  */}
+</section>
+
       <Footer />
     </div>
   );
