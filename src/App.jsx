@@ -11,7 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           {/* add id here for chef once backend works */}
-          <Route path="/chef" element={<ChefProfile />} />
+          <Route path="/chefs/:chefId" element={<ChefProfile />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/dish/:slug" element={<DishDetail />} />
         </Routes>
