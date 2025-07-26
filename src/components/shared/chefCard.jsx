@@ -4,7 +4,11 @@ const ChefCard = ({ chef, onClick, children }) => (
     onClick={onClick}
   >
     <div className="w-20 h-20 mb-3 rounded-full bg-primary/10 flex items-center justify-center text-3xl font-bold text-primary group-hover:scale-105 transition">
-      {chef.name?.[0] || "?"}
+      <img
+        src={chef.profileImageUrl || "/default-chef.jpg"}
+        alt={chef.name}
+        className="w-full h-full object-cover rounded-full"
+      />
     </div>
     <h2 className="text-lg font-bold mb-1 text-center group-hover:text-primary">
       {chef.name}

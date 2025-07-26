@@ -41,7 +41,7 @@ export default function ChefProfile() {
   </div>
   <div className="flex p-10 gap-1 items-center  ">
     <img
-      src={chef.profileImageUrl || "/default-chef.jpg"}
+      src={chef.profileImageUrl}
       alt={chef.name}
       className="w-24 h-24 rounded-lg object-cover bg-white"
     />
