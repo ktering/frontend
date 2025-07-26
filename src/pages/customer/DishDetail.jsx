@@ -35,7 +35,6 @@ const DishDetail = () => {
       <div className="flex items-center gap-2 text-xs text-gray-700 mb-1" onClick={(e) => {
             e.stopPropagation(); // Prevents navigating to dish
             if (dish.chefId) {
-              console.log("Chef ID:", dish.chefId);
               navigate(`/chefs/${dish.chefId._id}`);
             }
           }}>
