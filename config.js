@@ -1,2 +1,2 @@
 // src/api/config.js
-export const API_BASE = import.meta.env.BACKEND_URL || "http://localhost:5000";
+export const API_BASE = import.meta.env.VITE_BACKEND_URL;
