@@ -1,25 +1,30 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   fetchAllDishes,
   fetchDishesByCategory,
-  fetchAllCategories,
 } from "../../api/dish";
 
-// Components
 import DishList from "../../components/customer/Menu/DishList";
-import SearchBar from "../../components/customer/Menu/SearchBar";
 import CategorySection from "../../components/customer/home/CategorySection";
 import Header from "../../components/customer/Header";
+
+const ITEMS_PER_PAGE = 12;
 
 const Menu = () => {
   const [dishes, setDishes] = useState([]);
   const [allDishes, setAllDishes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const totalPages = Math.ceil(dishes.length / ITEMS_PER_PAGE);
+  const currentDishes = dishes.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
-  // Load all dishes initially
   useEffect(() => {
     loadAllDishes();
   }, []);
@@ -27,65 +32,175 @@ const Menu = () => {
   const loadAllDishes = async () => {
     setLoading(true);
     const data = await fetchAllDishes();
-    setDishes(data);
     setAllDishes(data);
+    setDishes(data);
     setLoading(false);
   };
 
-  // Handle category click
-
   const handleCategorySelect = async (categoryId) => {
-  if (!categoryId || categoryId === 'all') {
-    setSelectedCategory('all');
-    setDishes(allDishes);
-    return;
-  }
+    let filteredCategoryDishes = [];
 
-  if (selectedCategory === categoryId) return;
+    if (!categoryId || categoryId === "all") {
+      filteredCategoryDishes = allDishes;
+      setSelectedCategory("all");
+    } else {
+      setLoading(true);
+      filteredCategoryDishes = await fetchDishesByCategory(categoryId);
+      setSelectedCategory(categoryId);
+      setLoading(false);
+    }
 
-  setLoading(true);
-  const filtered = await fetchDishesByCategory(categoryId);
-  setDishes(filtered);
-  setSelectedCategory(categoryId);
-  setLoading(false);
-};
+    applyFilter(selectedFilter, filteredCategoryDishes);
+    setCurrentPage(1);
+  };
 
+  const applyFilter = (filterValue, baseDishes) => {
+    let filtered = [...baseDishes];
 
-  // Handle search filter
- const handleSearch = (text) => {
-  setSearchTerm(text);
+    switch (filterValue) {
+      case "noNuts":
+        filtered = filtered.filter((dish) => !dish.containsNuts);
+        break;
+      case "halal":
+        filtered = filtered.filter((dish) => dish.halal);
+        break;
+      case "kosher":
+        filtered = filtered.filter((dish) => dish.kosher);
+        break;
+      default:
+        break;
+    }
 
-  const base = selectedCategory === 'all' ? allDishes : dishes;
+    setDishes(filtered);
+  };
 
-  if (!text) {
-    setDishes(base);
-    return;
-  }
+  const handleFilterChange = (value) => {
+    setSelectedFilter(value);
 
-  const filtered = base.filter((dish) =>
-    dish.name.toLowerCase().includes(text.toLowerCase())
-  );
-  setDishes(filtered);
-};
+    const base =
+      selectedCategory === "all"
+        ? allDishes
+        : allDishes.filter((dish) => dish.category === selectedCategory);
 
+    applyFilter(value, base);
+    setCurrentPage(1);
+  };
+
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    setCurrentPage(1);
+
+    const base = selectedCategory === "all" ? allDishes : dishes;
+
+    if (!text) {
+      setDishes(base);
+      return;
+    }
+
+    const filtered = base.filter((dish) =>
+      dish.name.toLowerCase().includes(text.toLowerCase())
+    );
+    setDishes(filtered);
+  };
 
   return (
     <>
-    <Header/>
-    <div className="px-4 py-6 max-w-7xl mx-auto font-nunito">
-      <h1 className="text-2xl font-bold text-center mb-4 text-primary">
-        Explore Our Delicious Menu
-      </h1>
+      <Header />
+      <div className="px-4 py-6 max-w-7xl mx-auto font-nunito">
 
-      {/* Search Bar */}
-      {/* <SearchBar onSearch={handleSearch} /> */}
+        {/* Heading + Filter Dropdown */}
+        <div className="w-[80%] mx-auto flex flex-row flex-wrap justify-between items-center gap-3 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-primary whitespace-nowrap">
+            Menu
+          </h1>
 
-      {/* Category Filters */}
-      <CategorySection onSelectCategory={handleCategorySelect} selected={selectedCategory} />
+          <div className="relative w-full max-w-[140px] sm:max-w-[200px] sm:w-auto">
+            <select
+              value={selectedFilter}
+              onChange={(e) => handleFilterChange(e.target.value)}
+              className="text-sm w-full appearance-none px-4 pr-10 py-2 rounded-full border border-primary/40 bg-white text-gray-800 shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+            >
+              <option value="all">All Dishes</option>
+              <option value="noNuts">Nut-Free</option>
+              <option value="halal">Halal Only</option>
+              <option value="kosher">Kosher Only</option>
+            </select>
 
-      {/* Dish List */}
-      <DishList dishes={dishes} loading={loading} />
-    </div>
+            {/* Arrow icon */}
+            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+
+        {/* Category Filters */}
+        <CategorySection
+          onSelectCategory={handleCategorySelect}
+          selected={selectedCategory}
+        />
+
+        {/* Dish List */}
+        <DishList dishes={currentDishes} loading={loading} />
+
+        {/* Pagination */}
+        {!loading && totalPages > 1 && (
+          <div className="flex justify-center items-center mt-8 gap-1 flex-wrap">
+            {/* Prev */}
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              className={`w-9 h-9 flex items-center justify-center rounded-full border ${currentPage === 1
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"
+                }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Page Numbers */}
+            {[...Array(totalPages)].map((_, i) => {
+              const pageNum = i + 1;
+              const isActive = pageNum === currentPage;
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`w-9 h-9 rounded-full border text-sm font-medium ${isActive
+                      ? "bg-primary text-white border-primary"
+                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                    }`}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+
+            {/* Next */}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              className={`w-9 h-9 flex items-center justify-center rounded-full border ${currentPage === totalPages
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"
+                }`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </div>
     </>
   );
 };
