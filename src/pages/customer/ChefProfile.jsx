@@ -30,57 +30,54 @@ export default function ChefProfile() {
       <Header />
         {/* Chef Info */}
         {/* Profile Banner + Avatar + Name */}
-<section className="w-3/4 mx-auto my-6">
+<section className="max-w-5xl mx-auto my-8 bg-white rounded-xl shadow-sm overflow-hidden">
   {/* Banner */}
-  <div className="w-full h-36 md:h-48 overflow-hidden rounded-t-xl bg-gray-200">
+  <div className="relative w-full h-48 md:h-60">
     <img
-      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80"
       alt="Banner"
       className="w-full h-full object-cover"
     />
+    <div className="absolute left-10 -bottom-16 flex items-center">
+      <img
+        src={chef.profileImageUrl|| "/default-chef.jpg"} // Fallback image if no profile image
+        alt={chef.name}
+        className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-white shadow-md object-cover bg-gray-100"
+      />
+    </div>
   </div>
-  <div className="flex p-10 gap-1 items-center  ">
-    <img
-      src={chef.profileImageUrl || "/default-chef.jpg"}
-      alt={chef.name}
-      className="w-24 h-24 rounded-lg object-cover bg-white"
-    />
-    <div className="pl-8">
-        <p className="text-2xl font-semibold text-gray-900">{chef.name}</p>
-        
-      <div className="text-gray-500 text-base mt-1">Home Chef</div>
-      {chef.bio && <p className="text-gray-700 mt-2 max-w-md">{chef.bio}</p>}
+
+  {/* Chef Info */}
+  <div className="mt-20 md:mt-20 px-6 md:px-10 flex flex-col md:flex-row md:items-center md:gap-8">
+    <div>
+      <h1 className="text-3xl font-bold text-gray-900">{chef.name}</h1>
+      <p className="text-gray-500 text-base mt-1">Home Chef</p>
+      {chef.bio && <p className="text-gray-700 mt-3 max-w-xl">{chef.bio}</p>}
     </div>
-    
-    </div>
-        {/* Dishes */}
-        <section className="p-10">
-          <h2 className="text-xl font-semibold mb-5">Dishes by {chef.name}</h2>
-          {dishes.length === 0 ? (
-            <div className="text-gray-500">No dishes yet.</div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {dishes.map((dish) => (
-                <FoodItemCard
-                  key={dish._id}
-                  item={{
-                    ...dish,
-                    chef: undefined, // hide chef name on this page
-                    prepTime: dish.averagePrepTime ? `${dish.averagePrepTime} min` : "",
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-        {/* Reviews - placeholder, since your backend doesn't have reviews yet */}
-         {/* <section>
-          <h2 className="text-xl font-semibold mb-4">Customer Reviews</h2>
-          <div className="space-y-4">
-            <div className="text-gray-500">No reviews yet.</div>
-          </div>
-        </section>  */}
-      </section>
+  </div>
+
+  {/* Dishes */}
+  <section className="px-6 md:px-10 py-10">
+    <h2 className="text-2xl font-semibold mb-5">Dishes by {chef.name}</h2>
+    {dishes.length === 0 ? (
+      <div className="text-gray-500">No dishes yet.</div>
+    ) : (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {dishes.map((dish) => (
+          <FoodItemCard
+            key={dish._id}
+            item={{
+              ...dish,
+              chef: undefined,
+              prepTime: dish.averagePrepTime ? `${dish.averagePrepTime} min` : "",
+            }}
+          />
+        ))}
+      </div>
+    )}
+  </section>
+</section>
+
       <Footer />
     </div>
   );

@@ -20,11 +20,11 @@ export default function AllChefs() {
     <Header />
       <div className="max-w-6xl mx-auto px-4 py-10">
         <h1 className="text-3xl font-bold mb-8 text-primary text-center">
-          Meet Our Chefs
+          Meet Our Kterers
         </h1>
         {loading ? (
           <div className="text-center text-gray-500 py-20">
-            Loading chefs...
+            Loading Kterers...
           </div>
         ) : chefs.length === 0 ? (
           <div className="text-center text-gray-400">No chefs found.</div>
