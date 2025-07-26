@@ -5,3 +5,8 @@ export async function getChefById(id) {
   if (!res.ok) throw new Error("Chef not found");
   return res.json();
 }
+export async function getAllChefs() {
+  const res = await fetch(`${API_BASE}/api/chefs`);
+  if (!res.ok) throw new Error("Failed to fetch chefs");
+  return res.json();
+}

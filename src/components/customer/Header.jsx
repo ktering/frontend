@@ -17,18 +17,12 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white px-4 sm:px-10 py-3 m-1">
+    <header className="bg-white px-4 sm:px-10 py-4 mb-3 shadow">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
         {/* Logo */}
         <a href="/" className="font-bold text-2xl tracking-wider flex-shrink-0">
           <img src="/red-logo.svg" alt="Mateam logo" className="h-9 w-auto inline-block align-middle mr-2" />
         </a>
-
-        {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-7">
-          <a href="/menu" className="text-black hover:text-primary font-medium transition-colors">Explore Menu</a>
-          <a href="/chefs" className="text-black hover:text-primary font-medium transition-colors">Explore Chefs</a>
-        </nav>
 
         {/* Desktop Search */}
         <form
@@ -48,6 +42,12 @@ export default function Header() {
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
           />
         </form>
+        {/* Desktop Nav */}
+        <nav className="hidden lg:flex items-center gap-7">
+          <a href="/menu" className="text-black hover:text-primary font-medium transition-colors">Explore Menu</a>
+          <a href="/chefs" className="text-black hover:text-primary font-medium transition-colors">Explore Chefs</a>
+        </nav>
+
 
         {/* Desktop Actions */}
         <div className="hidden lg:flex items-center gap-2">

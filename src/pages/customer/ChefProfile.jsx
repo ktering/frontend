@@ -52,7 +52,7 @@ export default function ChefProfile() {
       {chef.bio && <p className="text-gray-700 mt-2 max-w-md">{chef.bio}</p>}
     </div>
     
-  </div>
+    </div>
         {/* Dishes */}
         <section className="p-10">
           <h2 className="text-xl font-semibold mb-5">Dishes by {chef.name}</h2>
@@ -80,8 +80,7 @@ export default function ChefProfile() {
             <div className="text-gray-500">No reviews yet.</div>
           </div>
         </section>  */}
-</section>
-
+      </section>
       <Footer />
     </div>
   );
