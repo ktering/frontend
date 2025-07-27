@@ -18,14 +18,15 @@ const FoodGridSection = ({ limit = 8, showButton = true }) => {
       </div>
 
       {showButton && (
-        <div className="text-center mt-8">
-          <Link to="/menu">
-            <button className="bg-primary hover:bg-primary/90 text-white text-sm font-medium px-6 py-2 rounded-full transition-transform duration-200 transform hover:scale-105 active:scale-95">
-              View Full Menu
-            </button>
-          </Link>
-        </div>
-      )}
+  <div className="text-center mt-8">
+    <Link to="/menu">
+      <button className="bg-primary text-white text-sm font-medium px-6 py-2 rounded-full transition-colors duration-200 border border-primary hover:bg-white hover:text-primary">
+        View Full Menu
+      </button>
+    </Link>
+  </div>
+)}
+
     </>
   );
 };

@@ -45,13 +45,14 @@ export default function AboutSection() {
                     </ul>
 
                     <div className="mt-6">
-                        <Link to="/menu">
-                            <button className="group bg-primary hover:bg-primary/90 text-white text-sm font-medium px-6 py-2 rounded-full transition-transform duration-200 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 mx-auto">
-                                Start Your Order
-                                <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
-                            </button>
-                        </Link>
-                    </div>
+  <Link to="/menu">
+    <button className="group bg-primary text-white text-sm font-medium px-6 py-2 rounded-full border border-primary transition-colors duration-200 flex items-center justify-center gap-2 mx-auto hover:bg-white hover:text-primary">
+      Start Your Order
+      <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+    </button>
+  </Link>
+</div>
+
                 </div>
 
                 {/* RIGHT SIDE: IMAGE COLLAGE */}

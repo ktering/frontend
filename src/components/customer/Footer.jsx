@@ -110,13 +110,25 @@ const Footer = () => {
           </h2>
 
           <Link to="/menu">
-            <button className="bg-primary hover:bg-primary/90 text-white text-sm sm:text-base font-medium px-5 py-2 rounded-full flex items-center justify-center gap-2 mx-auto transition duration-200 shadow hover:shadow-md hover:scale-105 active:scale-95">
-              Explore the menu
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mt-[1px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </button>
-          </Link>
+  <button className="group bg-primary text-white text-sm sm:text-base font-medium px-5 py-2 rounded-full flex items-center justify-center gap-2 mx-auto transition duration-200 shadow hover:bg-white hover:text-primary hover:border hover:border-primary hover:shadow-md hover:scale-105 active:scale-95">
+    Explore the menu
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-4 h-4 mt-[1px] transition-transform duration-200 group-hover:translate-x-1"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M17 8l4 4m0 0l-4 4m4-4H3"
+      />
+    </svg>
+  </button>
+</Link>
+
         </div>
       </div>
 

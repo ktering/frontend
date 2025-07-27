@@ -6,6 +6,13 @@ import { useNavigate } from "react-router-dom";
 const FoodItemCard = ({ item }) => {
   const navigate = useNavigate();
 
+  const formatCategoryName = (category) => {
+  return category
+    .replace(/-/g, ' ')          // replace dashes with spaces
+    .replace(/\b\w/g, c => c.toUpperCase()); // capitalize first letter of each word
+};
+
+
   return (
     <div
       onClick={() => navigate(`/dish/${item.slug}`)}
@@ -20,7 +27,7 @@ const FoodItemCard = ({ item }) => {
           className="w-full h-full object-cover rounded-t-xl"
         />
         <span className="absolute top-2 right-2 bg-primary text-white text-[11px] px-2 py-[2px] rounded-full font-medium">
-          {item.category}
+          {formatCategoryName(item.category)}
         </span>
       </div>
 

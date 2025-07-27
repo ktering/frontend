@@ -32,6 +32,7 @@ export async function fetchDishBySlug(slug) {
 export async function fetchDishesByCategory(category) {
   try {
     const res = await fetch(`${API_BASE}/api/dishes/category/${category}`);
+    console.log("Fetching dishes by category:", category);
     return await res.json();
   } catch {
     return [];

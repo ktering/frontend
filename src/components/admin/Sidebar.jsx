@@ -13,7 +13,7 @@ export default function Sidebar() {
         <Link to="/supervised/chefs" className="flex items-center gap-3 text-gray-700 hover:text-red-500">
           <FaUserTie /> Chefs
         </Link>
-        <Link to="/admin/dishes" className="flex items-center gap-3 text-gray-700 hover:text-red-500">
+        <Link to="/supervised/dishes" className="flex items-center gap-3 text-gray-700 hover:text-red-500">
           <FaUtensils /> Dishes
         </Link>
         <Link to="/admin/orders" className="flex items-center gap-3 text-gray-700 hover:text-red-500">
