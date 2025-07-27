@@ -153,53 +153,75 @@ const Menu = () => {
         <DishList dishes={currentDishes} loading={loading} />
 
         {/* Pagination */}
-        {!loading && totalPages > 1 && (
-          <div className="flex justify-center items-center mt-8 gap-1 flex-wrap">
-            {/* Prev */}
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className={`w-9 h-9 flex items-center justify-center rounded-full border ${currentPage === 1
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"
-                }`}
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
+       {!loading && totalPages > 1 && (
+  <div className="flex justify-center items-center mt-8 gap-1 flex-wrap">
+    {/* Prev */}
+    <button
+      disabled={currentPage === 1}
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 
+      ${
+        currentPage === 1
+          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+          : "bg-white text-gray-700 border-gray-300 hover:bg-primary hover:text-white hover:border-primary"
+      }`}
+    >
+      <ChevronLeft className="w-4 h-4" />
+    </button>
 
-            {/* Page Numbers */}
-            {[...Array(totalPages)].map((_, i) => {
-              const pageNum = i + 1;
-              const isActive = pageNum === currentPage;
-              return (
-                <button
-                  key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)}
-                  className={`w-9 h-9 rounded-full border text-sm font-medium ${isActive
-                      ? "bg-primary text-white border-primary"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                    }`}
-                >
-                  {pageNum}
-                </button>
-              );
-            })}
-
-            {/* Next */}
+    {/* Smart Pagination */}
+    {Array.from({ length: totalPages }, (_, i) => i + 1)
+      .filter((page) => {
+        if (totalPages <= 5) return true;
+        if (
+          page === 1 ||
+          page === totalPages ||
+          Math.abs(currentPage - page) <= 1
+        )
+          return true;
+        return false;
+      })
+      .map((page, idx, arr) => {
+        const showDots = idx > 0 && page - arr[idx - 1] > 1;
+        return (
+          <div key={page} className="flex items-center">
+            {showDots && (
+              <span className="px-2 text-gray-500 select-none">...</span>
+            )}
             <button
-              disabled={currentPage === totalPages}
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              className={`w-9 h-9 flex items-center justify-center rounded-full border ${currentPage === totalPages
-                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  : "bg-white text-gray-700 hover:bg-gray-100 border-gray-300"
-                }`}
+              onClick={() => setCurrentPage(page)}
+              className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 
+              ${
+                page === currentPage
+                  ? "bg-primary text-white border-primary"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-primary hover:text-white hover:border-primary"
+              }`}
             >
-              <ChevronRight className="w-4 h-4" />
+              {page}
             </button>
           </div>
-        )}
+        );
+      })}
+
+    {/* Next */}
+    <button
+      disabled={currentPage === totalPages}
+      onClick={() =>
+        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+      }
+      className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 
+      ${
+        currentPage === totalPages
+          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+          : "bg-white text-gray-700 border-gray-300 hover:bg-primary hover:text-white hover:border-primary"
+      }`}
+    >
+      <ChevronRight className="w-4 h-4" />
+    </button>
+  </div>
+)}
+
+
       </div>
     </>
   );
