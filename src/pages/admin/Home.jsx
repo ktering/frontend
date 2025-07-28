@@ -1,7 +1,10 @@
 import Sidebar from "../../components/admin/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex bg-gray-50 min-h-screen">
       {/* Sidebar */}
@@ -46,7 +49,7 @@ export default function AdminDashboard() {
         <div className="bg-white p-6 rounded-lg shadow mb-8">
           <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
           <div className="flex gap-4 flex-wrap">
-            <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+            <button onClick={() => navigate("/supervised/chefs/new")} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
               + Add Chef
             </button>
             <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
