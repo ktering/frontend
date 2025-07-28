@@ -1,9 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+//customer imports
 import Home from './pages/customer/Home';
 import ChefProfile from './pages/customer/ChefProfile';
 import Menu from './pages/customer/Menu';
 import DishDetail from './pages/customer/DishDetail';
 import Chefs from './pages/customer/AllChefs';
+//admin imports
 import AdminChefs from './pages/admin/AllChefs';
 import Admin from './pages/admin/Home';
 import AllDishes from './pages/admin/AllDishes';
@@ -11,6 +13,7 @@ import AddDishForm from './pages/admin/AddDishForm';
 import AddChefForm from './pages/admin/AddChefForm';
 import EditChefForm from './pages/admin/EditChefForm';
 import AdminChefProfile from './pages/admin/ChefProfile';
+import AdminLogin from './components/shared/loginCard';
 
 function App() {
   return (
@@ -25,13 +28,14 @@ function App() {
             <Route path="/chefs" element={<Chefs />} />
             <Route path="/dish/:slug" element={<DishDetail />} />
             {/* admin */}
-            <Route path="/supervised" element={<Admin />} />
+            <Route path="/supervised/dashboard" element={<Admin />} />
             <Route path="/supervised/chefs" element={<AdminChefs />} />
             <Route path="/supervised/chefs/new" element={<AddChefForm />} />
             <Route path="/supervised/chefs/:id/edit" element={<EditChefForm />} />
             <Route path="/supervised/chefs/:chefId" element={<AdminChefProfile />} />
             <Route path="/supervised/dishes" element={<AllDishes />} />
             <Route path="/supervised/dishes/new" element={<AddDishForm />} />
+            <Route path="/supervised" element={<AdminLogin />} />
 
           </Routes>
         </div>
