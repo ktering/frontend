@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // for /chefs/:chefId route
 import { getChefById } from "../../api/chef"; // adjust the import path as needed
 import { getDishesByChef } from "../../api/dish";
-import FoodItemCard from "../../components/customer/home/FoodItemCard"; // adjust the import path as needed
-import Header from "../../components/customer/Header";
-import Footer from "../../components/customer/Footer";
-
+import FoodItemCard from "../../components/customer/home/FoodItemCard"; 
 export default function ChefProfile() {
   const { chefId } = useParams();
   const [chef, setChef] = useState(null);
@@ -27,9 +24,6 @@ export default function ChefProfile() {
 
   return (
     <div className="">
-      <Header />
-        {/* Chef Info */}
-        {/* Profile Banner + Avatar + Name */}
 <section className="max-w-5xl mx-auto my-8 bg-white rounded-xl shadow-sm overflow-hidden">
   {/* Banner */}
   <div className="relative w-full h-48 md:h-60">
@@ -77,8 +71,6 @@ export default function ChefProfile() {
     )}
   </section>
 </section>
-
-      <Footer />
     </div>
   );
 }
