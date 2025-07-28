@@ -34,7 +34,6 @@ function App() {
             <Route path="/supervised/chefs/new" element={<AddChefForm />} />
             <Route path="/supervised/chefs/:id/edit" element={<EditChefForm />} />
             <Route path="/supervised/chefs/:chefId" element={<AdminChefProfile />} />
-            <Route path="/supervised/dishes" element={<AllDishes />} />
             <Route path="/supervised/dishes/new" element={<AddDishForm />} />
             <Route path="/supervised/dishes/edit/:id" element={<EditDishPage />} />
 
