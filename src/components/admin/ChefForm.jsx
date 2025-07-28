@@ -21,12 +21,13 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
     isActive: true,
   });
 
+  const [specialties, setSpecialties] = useState([""]); // Dynamic specialties array
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [modal, setModal] = useState({ success: false, error: "" });
   const navigate = useNavigate();
 
-  // Populate form when editing
+  // Populate form and specialties when editing
   useEffect(() => {
     if (isEdit && initialData) {
       setForm({
@@ -45,9 +46,11 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
         isActive: initialData.isActive ?? true,
       });
       setPreview(initialData.photoUrl || null);
+      setSpecialties(initialData.specialties?.length ? initialData.specialties : [""]);
     }
   }, [isEdit, initialData]);
 
+  // Handle text & checkbox changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
@@ -56,12 +59,29 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
     }));
   };
 
+  // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
     setPreview(URL.createObjectURL(file));
   };
 
+  // Handle specialties
+  const handleSpecialtyChange = (index, value) => {
+    const updated = [...specialties];
+    updated[index] = value;
+    setSpecialties(updated);
+  };
+
+  const addSpecialtyField = () => {
+    setSpecialties([...specialties, ""]);
+  };
+
+  const removeSpecialty = (index) => {
+    setSpecialties(specialties.filter((_, i) => i !== index));
+  };
+
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -69,6 +89,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
     Object.keys(form).forEach((key) => {
       formData.append(key, form[key]);
     });
+    formData.append("specialties", JSON.stringify(specialties.filter((s) => s.trim() !== "")));
 
     if (image) formData.append("photo", image);
 
@@ -127,6 +148,37 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
                 onChange={handleChange}
                 className="w-full border rounded px-3 py-2"
               />
+            </div>
+
+            {/* Specialties */}
+            <div>
+              <label className="font-semibold block mb-1">Specialties</label>
+              {specialties.map((spec, idx) => (
+                <div key={idx} className="flex gap-2 items-center mt-2">
+                  <input
+                    value={spec}
+                    onChange={(e) => handleSpecialtyChange(idx, e.target.value)}
+                    placeholder={`Specialty #${idx + 1}`}
+                    className="w-full border rounded px-3 py-2"
+                  />
+                  {specialties.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeSpecialty(idx)}
+                      className="bg-red-600 text-white px-2 py-1 rounded"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addSpecialtyField}
+                className="bg-primary text-white px-4 py-2 rounded-full mt-2"
+              >
+                + Add Another Specialty
+              </button>
             </div>
 
             {/* Experience */}
