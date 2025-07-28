@@ -6,8 +6,10 @@ import DishDetail from './pages/customer/DishDetail';
 import Chefs from './pages/customer/AllChefs';
 import AdminChefs from './pages/admin/AllChefs';
 import Admin from './pages/admin/Home';
-import AllDishes from './pages/admin/AllDishes';
 import AddDishForm from './pages/admin/AddDishForm';
+import DishesByCategory from './pages/admin/DishesByCategory';
+import DishesByChef from './pages/admin/DishesByChef';
+import EditDishPage from './pages/admin/EditDishPage';
 
 function App() {
   return (
@@ -24,8 +26,10 @@ function App() {
             {/* admin */}
             <Route path="/supervised" element={<Admin />} />
             <Route path="/supervised/chefs" element={<AdminChefs />} />
-            <Route path="/supervised/dishes" element={<AllDishes />} />
+            <Route path="/supervised/dishes/category" element={<DishesByCategory />} />
+            <Route path="/supervised/dishes/chef" element={<DishesByChef />} />
             <Route path="/supervised/dishes/new" element={<AddDishForm />} />
+            <Route path="/supervised/dishes/edit/:id" element={<EditDishPage />} />
 
           </Routes>
         </div>
