@@ -8,8 +8,10 @@ import Chefs from './pages/customer/AllChefs';
 //admin imports
 import AdminChefs from './pages/admin/AllChefs';
 import Admin from './pages/admin/Home';
-import AllDishes from './pages/admin/AllDishes';
 import AddDishForm from './pages/admin/AddDishForm';
+import DishesByCategory from './pages/admin/DishesByCategory';
+import DishesByChef from './pages/admin/DishesByChef';
+import EditDishPage from './pages/admin/EditDishPage';
 import AddChefForm from './pages/admin/AddChefForm';
 import EditChefForm from './pages/admin/EditChefForm';
 import AdminChefProfile from './pages/admin/ChefProfile';
@@ -28,14 +30,16 @@ function App() {
             <Route path="/chefs" element={<Chefs />} />
             <Route path="/dish/:slug" element={<DishDetail />} />
             {/* admin */}
-            <Route path="/supervised/dashboard" element={<Admin />} />
+            <Route path="/supervised/" element={<Admin />} />
             <Route path="/supervised/chefs" element={<AdminChefs />} />
+            <Route path="/supervised/dishes/category" element={<DishesByCategory />} />
+            <Route path="/supervised/dishes/chef" element={<DishesByChef />} />
             <Route path="/supervised/chefs/new" element={<AddChefForm />} />
             <Route path="/supervised/chefs/:id/edit" element={<EditChefForm />} />
             <Route path="/supervised/chefs/:chefId" element={<AdminChefProfile />} />
-            <Route path="/supervised/dishes" element={<AllDishes />} />
             <Route path="/supervised/dishes/new" element={<AddDishForm />} />
-            <Route path="/supervised" element={<AdminLogin />} />
+            <Route path="/supervised/dishes/edit/:id" element={<EditDishPage />} />
+            <Route path="/supervised/login" element={<AdminLogin />} />
 
           </Routes>
         </div>

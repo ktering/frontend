@@ -85,68 +85,79 @@ const DishDetail = () => {
                             )}
                         </div>
 
-                        <div>
-                            <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                                Description:
-                            </h3>
-                            <p className="text-gray-700 text-sm leading-relaxed">
-                                {dish.description}
-                            </p>
-                        </div>
-
-                        <div
-                            className="flex items-center gap-2 mt-2 text-sm cursor-pointer"
-                            onClick={(e) => {
-                                e.stopPropagation(); // Prevents bubbling
-                                if (dish.chefId?._id) {
-                                    navigate(`/chefs/${dish.chefId._id}`);
-                                }
-                            }}
-                        >
-                            <div className="bg-gray-200 p-2 rounded-full">
-                                <ChefHat className="w-5 h-5 text-gray-800" />
+                        {/* Description */}
+                        {dish.description && (
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                                    Description:
+                                </h3>
+                                <p className="text-gray-700 text-sm leading-relaxed">
+                                    {dish.description}
+                                </p>
                             </div>
-                            <span className="text-gray-800 font-medium hover:underline">
-                                {dish.chefId?.name || "Unknown Chef"}
-                            </span>
-                        </div>
+                        )}
 
-
-                        <div className="mt-4">
-                            <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                                Ingredients:
-                            </h3>
-                            <div className="flex flex-wrap gap-2">
-                                {dish.ingredients?.map((ing, idx) => (
-                                    <span
-                                        key={idx}
-                                        className="px-3 py-1 rounded-full bg-gray-100 text-xs border"
-                                    >
-                                        {ing}
-                                    </span>
-                                ))}
+                        {/* Chef */}
+                        {dish.chefId && (
+                            <div
+                                className="flex items-center gap-2 mt-2 text-sm cursor-pointer"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (dish.chefId?._id) {
+                                        navigate(`/chefs/${dish.chefId._id}`);
+                                    }
+                                }}
+                            >
+                                <div className="bg-gray-200 p-2 rounded-full">
+                                    <ChefHat className="w-5 h-5 text-gray-800" />
+                                </div>
+                                <span className="text-gray-800 font-medium hover:underline">
+                                    {dish.chefId?.name || "Unknown Chef"}
+                                </span>
                             </div>
-                        </div>
+                        )}
 
-                        <div className="flex items-center gap-4 mt-4 flex-wrap text-sm text-gray-700">
-                            {isChickenDish && dish.meatType && (
-                                <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-full border border-orange-200 text-orange-800">
-                                    <Drumstick className="w-4 h-4" />
-                                    {dish.meatType}
+                        {/* Ingredients */}
+                        {dish.ingredients?.length > 0 && (
+                            <div className="mt-4">
+                                <h3 className="text-sm font-semibold text-gray-700 mb-1">
+                                    Ingredients:
+                                </h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {dish.ingredients.map((ing, idx) => (
+                                        <span
+                                            key={idx}
+                                            className="px-3 py-1 rounded-full bg-gray-100 text-xs border"
+                                        >
+                                            {ing}
+                                        </span>
+                                    ))}
                                 </div>
-                            )}
-                            {dish.containsNuts && (
-                                <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full border border-yellow-200 text-yellow-800">
-                                    <GiPeanut className="w-4 h-4" />
-                                    Contains Nuts
-                                </div>
-                            )}
-                            {dish.ethnicType && (
-                                <div className="bg-indigo-50 text-indigo-800 border border-indigo-200 px-2 py-1 rounded-full text-sm">
-                                    Cuisine: {dish.ethnicType}
-                                </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
+
+                        {/* Metadata Labels */}
+                        {(isChickenDish && dish.meatType) || dish.containsNuts || dish.ethnicType ? (
+                            <div className="flex items-center gap-4 mt-4 flex-wrap text-sm text-gray-700">
+                                {isChickenDish && dish.meatType && (
+                                    <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-full border border-orange-200 text-orange-800">
+                                        <Drumstick className="w-4 h-4" />
+                                        {dish.meatType}
+                                    </div>
+                                )}
+                                {dish.containsNuts && (
+                                    <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full border border-yellow-200 text-yellow-800">
+                                        <GiPeanut className="w-4 h-4" />
+                                        Contains Nuts
+                                    </div>
+                                )}
+                                {dish.ethnicType && (
+                                    <div className="bg-indigo-50 text-indigo-800 border border-indigo-200 px-2 py-1 rounded-full text-sm">
+                                        Cuisine: {dish.ethnicType}
+                                    </div>
+                                )}
+                            </div>
+                        ) : null}
 
                         <hr className="border-t border-gray-200 my-4" />
 
