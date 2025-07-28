@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { getAllChefs } from "../../api/chef";
+import { getAllChefs,deleteChef } from "../../api/chef";
 import ChefsGrid from "../../components/shared/chefGrid";
 import Sidebar from "../../components/admin/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminChefsPage() {
   const [chefs, setChefs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllChefs()
@@ -14,12 +16,19 @@ export default function AdminChefsPage() {
   }, []);
 
   const handleEdit = (chef) => {
-    alert(`Edit ${chef.name}`);
+    navigate(`/supervised/chefs/${chef._id}/edit`);
   };
 
-  const handleDelete = (chef) => {
-    alert(`Delete ${chef.name}`);
-  };
+  const handleDelete = async (chef) => {
+  if (window.confirm(`Are you sure you want to delete ${chef.name}?`)) {
+    try {
+      await deleteChef(chef._id);
+      setChefs((prevChefs) => prevChefs.filter((c) => c._id !== chef._id));
+    } catch (err) {
+      alert("Error deleting chef: " + err.message);
+    }
+  }
+};
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -31,7 +40,7 @@ export default function AdminChefsPage() {
         {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Manage Chefs</h1>
-          <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+          <button onClick={() => navigate("/supervised/chefs/new")} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
             + Add Chef
           </button>
         </div>
