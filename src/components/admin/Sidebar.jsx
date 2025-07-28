@@ -7,7 +7,7 @@ export default function Sidebar() {
     <aside className="w-64 bg-white h-screen border-r border-gray-200 p-4 fixed">
       <div className="text-2xl font-bold text-red-500 mb-8">Kterings Admin</div>
       <nav className="space-y-4">
-        <Link to="/admin" className="flex items-center gap-3 text-gray-700 hover:text-red-500">
+        <Link to="/supervised" className="flex items-center gap-3 text-gray-700 hover:text-red-500">
           <FaChartBar /> Dashboard
         </Link>
         <Link to="/supervised/chefs" className="flex items-center gap-3 text-gray-700 hover:text-red-500">

@@ -53,7 +53,7 @@ export default function AdminChefsPage() {
         ) : (
           <ChefsGrid
             chefs={chefs}
-            onChefClick={handleEdit}
+            onChefClick={(chef) => navigate(`/supervised/chefs/${chef._id}`)}
             renderActions={(chef) => (
               <div className="flex gap-2 mt-4">
                 <button
