@@ -6,10 +6,10 @@ const AdminDishCard = ({ item, onEdit, onDelete }) => {
   const navigate = useNavigate();
 
   const formatCategoryName = (category) => {
-  return category
-    .replace(/-/g, ' ')          // replace dashes with spaces
-    .replace(/\b\w/g, c => c.toUpperCase()); // capitalize first letter of each word
-};
+    return category
+      .replace(/-/g, ' ')          // replace dashes with spaces
+      .replace(/\b\w/g, c => c.toUpperCase()); // capitalize first letter of each word
+  };
 
 
   return (
@@ -58,12 +58,13 @@ const AdminDishCard = ({ item, onEdit, onDelete }) => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onEdit(item);
+              navigate(`/supervised/dishes/edit/${item._id}`);
             }}
             className="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium px-4 py-1 rounded-full"
           >
             Edit
           </button>
+
           <button
             onClick={(e) => {
               e.stopPropagation();
