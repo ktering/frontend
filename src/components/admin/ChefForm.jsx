@@ -1,7 +1,7 @@
 // src/components/admin/ChefForm.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createChefAdmin, updateChefAdmin } from "../../api/chef";
+import { createChef, updateChef } from "../../api/chef";
 import Sidebar from "../../components/admin/Sidebar";
 
 export default function ChefForm({ initialData = null, isEdit = false }) {
@@ -74,9 +74,9 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
 
     try {
       if (isEdit) {
-        await updateChefAdmin(initialData._id, formData);
+        await updateChef(initialData._id, formData);
       } else {
-        await createChefAdmin(formData);
+        await createChef(formData);
       }
       setModal({ success: true, error: "" });
       setTimeout(() => navigate("/supervised/chefs"), 2000);
