@@ -109,7 +109,6 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
   return (
     <div className="flex">
       <Sidebar />
-
       <div className="ml-64 w-full bg-gray-100 min-h-screen py-8 px-4">
         <div className="w-full max-w-4xl bg-white mx-auto p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-primary text-center mb-6">
@@ -158,7 +157,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
                   <input
                     value={spec}
                     onChange={(e) => handleSpecialtyChange(idx, e.target.value)}
-                    placeholder={`Specialty #${idx + 1}`}
+                    placeholder={`Specialty #${idx + 1} (e.g. Italian, Vegan)`}
                     className="w-full border rounded px-3 py-2"
                   />
                   {specialties.length > 1 && (

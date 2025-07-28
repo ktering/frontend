@@ -10,6 +10,7 @@ import AllDishes from './pages/admin/AllDishes';
 import AddDishForm from './pages/admin/AddDishForm';
 import AddChefForm from './pages/admin/AddChefForm';
 import EditChefForm from './pages/admin/EditChefForm';
+import AdminChefProfile from './pages/admin/ChefProfile';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/supervised/chefs" element={<AdminChefs />} />
             <Route path="/supervised/chefs/new" element={<AddChefForm />} />
             <Route path="/supervised/chefs/:id/edit" element={<EditChefForm />} />
+            <Route path="/supervised/chefs/:chefId" element={<AdminChefProfile />} />
             <Route path="/supervised/dishes" element={<AllDishes />} />
             <Route path="/supervised/dishes/new" element={<AddDishForm />} />
 
