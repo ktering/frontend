@@ -22,7 +22,7 @@ export default function AdminDashboard() {
               className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400"
             />
             <img
-              src="https://i.pravatar.cc/40"
+              src="/admin-pfp.png"
               alt="Admin Avatar"
               className="w-10 h-10 rounded-full object-cover"
             />

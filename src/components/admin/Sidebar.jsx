@@ -1,6 +1,7 @@
 // components/admin/Sidebar.jsx
 import { FaUtensils, FaUserTie, FaChartBar, FaShoppingCart } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
+import { logoutUser } from "../../api/adminAuth";
 import { useState } from "react";
 
 export default function Sidebar() {
@@ -13,7 +14,7 @@ export default function Sidebar() {
     <aside className="w-64 bg-white h-screen border-r border-gray-200 p-4 fixed">
       <div className="text-2xl font-bold text-red-500 mb-8">Kterings Admin</div>
       <nav className="space-y-4">
-        <Link to="/supervised" className="flex items-center gap-3 text-gray-700 hover:text-red-500">
+        <Link to="/supervised/dashboard" className="flex items-center gap-3 text-gray-700 hover:text-red-500">
           <FaChartBar /> Dashboard
         </Link>
 
@@ -56,6 +57,9 @@ export default function Sidebar() {
         <Link to="/admin/orders" className="flex items-center gap-3 hover:text-red-500">
           <FaShoppingCart /> Orders
         </Link>
+        <button onClick={logoutUser} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+          Logout
+        </button>
       </nav>
     </aside>
   );
