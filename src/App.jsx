@@ -16,6 +16,7 @@ import EditDishPage from './pages/admin/EditDishPage';
 import AddChefForm from './pages/admin/AddChefForm';
 import EditChefForm from './pages/admin/EditChefForm';
 import AdminChefProfile from './pages/admin/ChefProfile';
+import Cart from './pages/customer/Cart';
 import AdminLogin from './pages/admin/AdminLogin';
 
 function App() {
@@ -31,45 +32,48 @@ function App() {
             <Route path="/chefs" element={<Chefs />} />
             <Route path="/dish/:slug" element={<DishDetail />} />
             {/* admin */}
-             {/* Admin Login */}
-        <Route path="/supervised/login" element={<AdminLogin />} />
-        <Route
-          path="/supervised/"
-          element={<ProtectedRoute><Admin /></ProtectedRoute>}
-        />
-        <Route
-          path="/supervised/chefs"
-          element={<ProtectedRoute><AdminChefs /></ProtectedRoute>}
-        />
-        <Route
-          path="/supervised/dishes/category"
-          element={<ProtectedRoute><DishesByCategory /></ProtectedRoute>}
-        />
-        <Route
-          path="/supervised/dishes/chef"
-          element={<ProtectedRoute><DishesByChef /></ProtectedRoute>}
-        />
-        <Route
-          path="/supervised/chefs/new"
-          element={<ProtectedRoute><AddChefForm /></ProtectedRoute>}
-        />
-        <Route
-          path="/supervised/chefs/:id/edit"
-          element={<ProtectedRoute><EditChefForm /></ProtectedRoute>}
-        />
-        <Route
-          path="/supervised/chefs/:chefId"
-          element={<ProtectedRoute><AdminChefProfile /></ProtectedRoute>}
-        />
-        <Route
-          path="/supervised/dishes/new"
-          element={<ProtectedRoute><AddDishForm /></ProtectedRoute>}
-        />
-        <Route
-          path="/supervised/dishes/edit/:id"
-          element={<ProtectedRoute><EditDishPage /></ProtectedRoute>}
-        />
-
+            {/* Admin Login */}
+            <Route path="/supervised/login" element={<AdminLogin />} />
+            <Route
+              path="/supervised/"
+              element={<ProtectedRoute><Admin /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/chefs"
+              element={<ProtectedRoute><AdminChefs /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/dishes/category"
+              element={<ProtectedRoute><DishesByCategory /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/dishes/chef"
+              element={<ProtectedRoute><DishesByChef /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/chefs/new"
+              element={<ProtectedRoute><AddChefForm /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/chefs/:id/edit"
+              element={<ProtectedRoute><EditChefForm /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/chefs/:chefId"
+              element={<ProtectedRoute><AdminChefProfile /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/dishes/new"
+              element={<ProtectedRoute><AddDishForm /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/dishes/edit/:id"
+              element={<ProtectedRoute><EditDishPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/cart"
+              element={<Cart />}
+              />
           </Routes>
         </div>
       </Router>

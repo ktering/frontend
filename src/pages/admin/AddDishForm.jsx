@@ -199,7 +199,7 @@ export default function AddDishForm() {
                             {/* Average Prep Time */}
                             <hr className="my-4" />
                             {!optionalFields.averagePrepTime && (
-                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, averagePrepTime: true }))} className="bg-primary text-white px-4 py-2 rounded-full">Add Average Prep Time</button>
+                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, averagePrepTime: true }))} className="bg-primary text-white px-4 py-2 rounded-full">+ Add Average Prep Time</button>
                             )}
                             {optionalFields.averagePrepTime && (
                                 <div className="mt-4">
@@ -211,7 +211,7 @@ export default function AddDishForm() {
                             {/* Average Delivery Time */}
                             <hr className="my-4" />
                             {!optionalFields.averageDeliveryTime && (
-                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, averageDeliveryTime: true }))} className="bg-primary text-white px-4 py-2 rounded-full">Add Average Delivery Time</button>
+                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, averageDeliveryTime: true }))} className="bg-primary text-white px-4 py-2 rounded-full">+ Add Average Delivery Time</button>
                             )}
                             {optionalFields.averageDeliveryTime && (
                                 <div className="mt-4">
@@ -223,7 +223,7 @@ export default function AddDishForm() {
                             {/* Tags */}
                             <hr className="my-4" />
                             {!optionalFields.tags && (
-                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, tags: true }))} className="bg-primary text-white px-4 py-2 rounded-full">Add Tags</button>
+                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, tags: true }))} className="bg-primary text-white px-4 py-2 rounded-full">+ Add Tags</button>
                             )}
                             {optionalFields.tags && (
                                 <div className="mt-4">
@@ -241,7 +241,7 @@ export default function AddDishForm() {
                             {/* Ingredients */}
                             <hr className="my-4" />
                             {!optionalFields.ingredients && (
-                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, ingredients: true }))} className="bg-primary text-white px-4 py-2 rounded-full">Add Ingredients</button>
+                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, ingredients: true }))} className="bg-primary text-white px-4 py-2 rounded-full">+ Add Ingredients</button>
                             )}
                             {optionalFields.ingredients && (
                                 <div className="mt-4">
@@ -259,7 +259,7 @@ export default function AddDishForm() {
                             {/* Meat Type */}
                             <hr className="my-4" />
                             {!optionalFields.meatType && (
-                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, meatType: true }))} className="bg-primary text-white px-4 py-2 rounded-full">Add Meat Type</button>
+                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, meatType: true }))} className="bg-primary text-white px-4 py-2 rounded-full">+ Add Meat Type</button>
                             )}
                             {optionalFields.meatType && (
                                 <>
@@ -275,7 +275,7 @@ export default function AddDishForm() {
                             {/* Ethnic Type */}
                             <hr className="my-4" />
                             {!optionalFields.ethnicType && (
-                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, ethnicType: true }))} className="bg-primary text-white px-4 py-2 rounded-full">Add Ethnic Type</button>
+                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, ethnicType: true }))} className="bg-primary text-white px-4 py-2 rounded-full">+ Add Ethnic Type</button>
                             )}
                             {optionalFields.ethnicType && (
                                 <>
