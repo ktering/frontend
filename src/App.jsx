@@ -5,6 +5,8 @@ import ChefProfile from './pages/customer/ChefProfile';
 import Menu from './pages/customer/Menu';
 import DishDetail from './pages/customer/DishDetail';
 import Chefs from './pages/customer/AllChefs';
+import Cart from './pages/customer/Cart';
+import Checkout from './pages/customer/Checkout';
 //admin imports
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import AdminChefs from './pages/admin/AllChefs';
@@ -16,7 +18,6 @@ import EditDishPage from './pages/admin/EditDishPage';
 import AddChefForm from './pages/admin/AddChefForm';
 import EditChefForm from './pages/admin/EditChefForm';
 import AdminChefProfile from './pages/admin/ChefProfile';
-import Cart from './pages/customer/Cart';
 import AdminLogin from './pages/admin/AdminLogin';
 
 function App() {
@@ -31,6 +32,14 @@ function App() {
             <Route path="/menu" element={<Menu />} />
             <Route path="/chefs" element={<Chefs />} />
             <Route path="/dish/:slug" element={<DishDetail />} />
+            <Route
+              path="/cart"
+              element={<Cart />}
+              />
+            <Route
+              path="/checkout"
+              element={<Checkout />}
+              />
             {/* admin */}
             {/* Admin Login */}
             <Route path="/supervised/login" element={<AdminLogin />} />
@@ -70,10 +79,6 @@ function App() {
               path="/supervised/dishes/edit/:id"
               element={<ProtectedRoute><EditDishPage /></ProtectedRoute>}
             />
-            <Route
-              path="/cart"
-              element={<Cart />}
-              />
           </Routes>
         </div>
       </Router>
