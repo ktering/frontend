@@ -268,6 +268,7 @@ export default function EditDishForm() {
                                     </button>
                                 </div>
                             )}
+                            
                             <hr className="my-4" />
                             {!optionalFields.tags ? (
                                 <button
@@ -330,35 +331,35 @@ export default function EditDishForm() {
                         <button type="submit" className="bg-primary hover:bg-primary/90 text-white font-bold w-full py-3 rounded-full mt-4">Update Dish</button>
                     </form>
 
-                     {/* Success Modal */}
+                    {/* Success Modal */}
                     {modal.success && (
-  <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/40 font-nunito">
-    <div className="bg-white border border-green-300 rounded-2xl shadow-xl max-w-md w-full px-6 py-8 text-center animate-fade-in">
-      {/* Icon */}
-      <div className="flex justify-center mb-4">
-        <svg
-          className="w-12 h-12 text-green-600"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
-      </div>
-      {/* Message */}
-      <h2 className="text-xl font-bold text-green-600 mb-2">Dish Updated Successfully!</h2>
-      <p className="text-gray-600">Your dish changes have been saved.</p>
-      {/* Button */}
-      <button
-        onClick={() => setModal({ success: false, error: "" })}
-        className="mt-6 inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-semibold transition"
-      >
-        Done
-      </button>
-    </div>
-  </div>
-)}
+                        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/40 font-nunito">
+                            <div className="bg-white border border-green-300 rounded-2xl shadow-xl max-w-md w-full px-6 py-8 text-center animate-fade-in">
+                                {/* Icon */}
+                                <div className="flex justify-center mb-4">
+                                    <svg
+                                        className="w-12 h-12 text-green-600"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                {/* Message */}
+                                <h2 className="text-xl font-bold text-green-600 mb-2">Dish Updated Successfully!</h2>
+                                <p className="text-gray-600">Your dish changes have been saved.</p>
+                                {/* Button */}
+                                <button
+                                    onClick={() => setModal({ success: false, error: "" })}
+                                    className="mt-6 inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-semibold transition"
+                                >
+                                    Done
+                                </button>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Error Modal */}
                     {modal.error && (

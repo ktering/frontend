@@ -4,6 +4,8 @@ import { fetchDishBySlug } from "../../api/dish";
 import { ChefHat, Drumstick, Minus, Plus } from "lucide-react";
 import { GiPeanut } from "react-icons/gi";
 import Header from "../../components/customer/Header";
+import { useCart } from "../../context/CartContext";
+import CartDrawer from "../../components/customer/cart/CartDrawer";
 
 const DishDetail = () => {
     const { slug } = useParams();
@@ -11,6 +13,18 @@ const DishDetail = () => {
     const [dish, setDish] = useState(null);
     const [loading, setLoading] = useState(true);
     const [quantity, setQuantity] = useState(1);
+    const { addToCart } = useCart();
+    const [isCartOpen, setIsCartOpen] = useState(false);
+
+    const handleAddToCart = (e) => {
+        e.stopPropagation();
+
+        addToCart({ ...dish, quantity }); // Corrected: use dish, not item
+        setIsCartOpen(true);
+
+        // Auto-close drawer after 1.5s
+        // setTimeout(() => setIsCartOpen(false), 1500);
+    };
 
     useEffect(() => {
         const loadDish = async () => {
@@ -190,7 +204,7 @@ const DishDetail = () => {
                             </div>
 
                             <button
-                                onClick={() => console.log("Add to cart:", dish.slug, quantity)}
+                                onClick={handleAddToCart}
                                 className="flex-1 bg-primary text-white text-sm font-semibold px-4 py-2 rounded-full transition duration-200 hover:bg-primary/90 flex items-center justify-center gap-2"
                             >
                                 Add to Cart →
@@ -199,6 +213,9 @@ const DishDetail = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Temporary Cart Drawer */}
+            <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
         </>
     );
 };

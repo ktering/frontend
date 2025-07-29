@@ -13,6 +13,7 @@ import EditDishPage from './pages/admin/EditDishPage';
 import AddChefForm from './pages/admin/AddChefForm';
 import EditChefForm from './pages/admin/EditChefForm';
 import AdminChefProfile from './pages/admin/ChefProfile';
+import Cart from './pages/customer/Cart';
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
             <Route path="/supervised/chefs/:chefId" element={<AdminChefProfile />} />
             <Route path="/supervised/dishes/new" element={<AddDishForm />} />
             <Route path="/supervised/dishes/edit/:id" element={<EditDishPage />} />
-
+            <Route path="/cart" element={<Cart />} />
           </Routes>
         </div>
       </Router>
