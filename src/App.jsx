@@ -71,8 +71,8 @@ function App() {
               element={<ProtectedRoute><EditDishPage /></ProtectedRoute>}
             />
             <Route
-              path="/supervised/cart"
-              element={<ProtectedRoute><Cart /></ProtectedRoute>}
+              path="/cart"
+              element={<Cart />}
               />
           </Routes>
         </div>
