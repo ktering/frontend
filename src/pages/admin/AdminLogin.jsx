@@ -1,19 +1,17 @@
+// src/pages/admin/AdminLogin.jsx
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { loginAdmin } from "../../api/auth";
-import LoginForm from "../../components/shared/LoginForm";
+import { loginUser } from "../../api/adminAuth";
+import LoginCard from "../../components/shared/loginCard";
 
-export default function AdminLoginPage() {
+export default function AdminLogin() {
   const navigate = useNavigate();
 
-  const handleLogin = async (credentials) => {
-    const data = await loginAdmin(credentials);
-    localStorage.setItem("adminToken", data.token); // Save token
-    navigate("/supervised"); // Redirect after login
+  const handleAdminLogin = async (credentials) => {
+    const res = await loginUser({...credentials, role: "admin"});
+    localStorage.setItem("authToken", res.token);
+    navigate("/supervised");
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <LoginForm onSubmit={handleLogin} title="Admin Login" />
-    </div>
-  );
+  return <LoginCard title="Admin Login" onSubmit={handleAdminLogin} />;
 }
