@@ -18,12 +18,10 @@ export default function CheckoutPage() {
           <p className="text-gray-600 text-center">Your cart is empty.</p>
         ) : (
           <div className="grid md:grid-cols-[2fr_1fr] gap-8">
-            {/* Left side - Customer Info */}
             <div>
               <CustomerForm />
             </div>
 
-            {/* Right side - Order Summary */}
             <div>
               <OrderSummary />
             </div>
