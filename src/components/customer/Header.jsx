@@ -63,7 +63,7 @@ export default function Header() {
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-2 relative">
             <a
-              href="/order"
+              href="/menu"
               className="bg-primary text-white px-5 py-2 rounded-full font-medium shadow hover:bg-white hover:text-primary hover:border border-primary transition-colors text-sm"
             >
               Order Now

@@ -1,4 +1,3 @@
-import React from "react";
 import { useCart } from "../../../context/CartContext";
 
 export default function OrderSummary() {
@@ -35,17 +34,14 @@ export default function OrderSummary() {
         ))}
       </div>
 
-      {/* Divider */}
       <div className="my-4 border-t border-gray-200"></div>
 
-      {/* Note */}
       {note && (
         <p className="text-xs text-gray-600 mb-2">
-          <strong>Note to chefs:</strong> {note}
+          <strong>Note:</strong> {note}
         </p>
       )}
 
-      {/* Price Details */}
       <div className="space-y-1 text-sm">
         <div className="flex justify-between text-gray-700">
           <span>Subtotal</span>

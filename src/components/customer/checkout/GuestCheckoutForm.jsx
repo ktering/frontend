@@ -7,17 +7,19 @@ export default function CustomerForm() {
     phone: "",
     address: "",
   });
-
-  // Load saved info from localStorage
+   const [saveInfo, setSaveInfo] = useState(false);
   useEffect(() => {
     const savedInfo = localStorage.getItem("kterings_customer_info");
     if (savedInfo) setCustomer(JSON.parse(savedInfo));
   }, []);
 
-  // Save info to localStorage
-  useEffect(() => {
-    localStorage.setItem("kterings_customer_info", JSON.stringify(customer));
-  }, [customer]);
+   useEffect(() => {
+    if (saveInfo) {
+      localStorage.setItem("kterings_customer_info", JSON.stringify(customer));
+    } else {
+      localStorage.removeItem("kterings_customer_info");
+    }
+  }, [customer, saveInfo]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,7 +40,7 @@ export default function CustomerForm() {
             name="name"
             value={customer.name}
             onChange={handleChange}
-            placeholder="John Doe"
+            placeholder="Asad Nauman"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
             required
           />
@@ -53,7 +55,7 @@ export default function CustomerForm() {
             name="email"
             value={customer.email}
             onChange={handleChange}
-            placeholder="john@example.com"
+            placeholder="asad@gmail.com"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
             required
           />
@@ -87,6 +89,19 @@ export default function CustomerForm() {
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary resize-none"
             required
           ></textarea>
+        </div>
+        {/* Save Info Toggle */}
+        <div className="flex items-center gap-2 mt-4">
+          <input
+            type="checkbox"
+            id="saveInfo"
+            checked={saveInfo}
+            onChange={(e) => setSaveInfo(e.target.checked)}
+            className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+          />
+          <label htmlFor="saveInfo" className="text-sm text-gray-700 cursor-pointer">
+            Save my information for next time
+          </label>
         </div>
       </form>
     </div>
