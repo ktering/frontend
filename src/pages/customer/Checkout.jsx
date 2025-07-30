@@ -6,21 +6,10 @@ import CustomerForm from "../../components/customer/checkout/GuestCheckoutForm";
 
 export default function CheckoutPage() {
   const { cart } = useCart();
+
   return (
     <>
-          <>
-            <header className="bg-white px-4 sm:px-10 py-4 shadow-sm font-nunito">
-                <div className=" lg:flex items-center gap-2 relative">
-                  <a
-                    href="/cart"
-                    className="bg-primary text-white px-5 py-2 rounded-full font-medium shadow hover:bg-white hover:text-primary hover:border border-primary transition-colors text-sm"
-                  >
-                    ←  Back to Cart
-                  </a>
-                </div>
-            </header>
-          </>
-      
+      <Header />
       <div className="max-w-6xl mx-auto px-4 py-8 font-nunito">
         <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-6">
           Checkout
