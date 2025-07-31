@@ -47,7 +47,7 @@ export default function HeroSection() {
           <b>Craving</b> something special? Enjoy <b>fresh</b>, <b>homemade</b> meals from local chefs ,<b> delivered </b> right to your door!</p>
           <div className="flex items-center gap-3 sm:gap-4 mb-8 sm:mb-10 justify-center md:justify-start">
   {/* ORDER NOW button: always visible, centered on mobile */}
-  <button onClick={navigate("/menu")} className="bg-primary text-white font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors text-base sm:text-lg mx-auto ">
+  <button onClick={()=>navigate("/menu")} className="bg-primary text-white font-bold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full shadow hover:bg-white hover:border border-primary hover:text-primary transition-colors text-base sm:text-lg mx-auto ">
     ORDER NOW
   </button>
   {/* Arrow + Text: hidden on small screens, shown on md+ */}
