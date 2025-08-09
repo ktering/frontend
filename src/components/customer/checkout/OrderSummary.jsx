@@ -4,8 +4,9 @@ export default function OrderSummary() {
   const { cart, note } = useCart();
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deliveryFee = 2.5; // Edit delivery here 
-  const total = subtotal + deliveryFee;
+  const deliveryFee = 5; // Edit delivery here 
+  const serviceFee=2.99;
+  const total = subtotal + deliveryFee+serviceFee;
 
   return (
     <div className="border rounded-lg p-5 bg-white shadow-sm">
@@ -46,6 +47,10 @@ export default function OrderSummary() {
         <div className="flex justify-between text-gray-700">
           <span>Subtotal</span>
           <span>${subtotal.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between text-gray-600">
+          <span>Fees & Estimated Tax</span>
+          <span>${serviceFee.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-gray-700">
           <span>Delivery Fee</span>

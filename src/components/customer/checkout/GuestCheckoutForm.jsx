@@ -11,14 +11,12 @@ const validateAddress = (value) => {
     : "We currently only deliver within Windsor, Ontario.";
 };
 
-// Convert to E.164 internally for Twilio
 const normalizeToE164CA = (v) => {
   const digits = v.replace(/\D/g, "");
   if (digits.length === 10) return `+1${digits}`;
   if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
   return v.trim();
 };
-
 const validatePhone = (value) => {
   if (!value.trim()) return "Phone number is required.";
   const normalized = normalizeToE164CA(value);
@@ -27,20 +25,17 @@ const validatePhone = (value) => {
     : "Enter a valid phone number, e.g., 519-555-0123 or +1 519-555-0123.";
 };
 
-export default function CustomerForm() {
+export default function GuestCheckoutForm({ onProceed, payLabel = "Proceed to Pay", disabled = false }) {
   const [customer, setCustomer] = useState(() => {
     const saved = localStorage.getItem(INFO_KEY);
-    return saved
-      ? JSON.parse(saved)
-      : { name: "", email: "", phone: "", address: "" };
+    return saved ? JSON.parse(saved) : { name: "", email: "", phone: "", address: "" };
   });
-
   const [saveInfo, setSaveInfo] = useState(() => {
     const savedFlag = localStorage.getItem(SAVE_KEY);
     return savedFlag ? JSON.parse(savedFlag) : false;
   });
-
   const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (saveInfo) {
@@ -61,7 +56,7 @@ export default function CustomerForm() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCustomer((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // clear field error
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const validateAll = () => {
@@ -76,21 +71,27 @@ export default function CustomerForm() {
     return nextErrors;
   };
 
-  const handleProceedToPay = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (disabled || submitting) return;
+
     const nextErrors = validateAll();
     const hasErrors = Object.values(nextErrors).some(Boolean);
     if (hasErrors) return;
 
     // Convert phone for Twilio internally (not shown to user)
     const payload = { ...customer, phone: normalizeToE164CA(customer.phone) };
-    console.log("Proceeding with:", payload);
 
-    // call your payment API here with `payload`
+    try {
+      setSubmitting(true);
+      // delegate to parent (CheckoutPage) to call Stripe API and redirect
+      await onProceed?.(payload);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const baseInput =
-    "w-full border rounded-lg px-3 py-2 text-sm focus:outline-none";
+  const baseInput = "w-full border rounded-lg px-3 py-2 text-sm focus:outline-none";
   const validCls = "border-gray-300 focus:border-primary";
   const errorCls = "border-red-500 focus:border-red-600";
 
@@ -98,8 +99,7 @@ export default function CustomerForm() {
     <div className="border rounded-lg p-5 bg-white shadow-sm">
       <h2 className="text-lg font-semibold mb-4 text-gray-800">Customer Information</h2>
 
-      <form className="space-y-4" onSubmit={handleProceedToPay}>
-        {/* Full Name */}
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
           <input
@@ -141,7 +141,6 @@ export default function CustomerForm() {
           {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
         </div>
 
-        {/* Address */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
           <textarea
@@ -155,7 +154,6 @@ export default function CustomerForm() {
           {errors.address && <p className="mt-1 text-xs text-red-600">{errors.address}</p>}
         </div>
 
-        {/* Save Info */}
         <div className="flex items-center gap-2 mt-4">
           <input
             type="checkbox"
@@ -169,13 +167,15 @@ export default function CustomerForm() {
           </label>
         </div>
 
-        {/* Proceed Button */}
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full md:w-auto px-4 py-2 rounded-lg bg-primary text-white"
+            disabled={disabled || submitting}
+            className={`w-full md:w-auto px-4 py-2 rounded-lg text-white ${
+              disabled || submitting ? "bg-primary/70 cursor-not-allowed" : "bg-primary hover:bg-primary/90"
+            }`}
           >
-            Proceed to Pay
+            {submitting ? "Redirecting…" : payLabel}
           </button>
         </div>
       </form>

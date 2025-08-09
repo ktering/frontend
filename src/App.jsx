@@ -7,6 +7,8 @@ import DishDetail from './pages/customer/DishDetail';
 import Chefs from './pages/customer/AllChefs';
 import Cart from './pages/customer/Cart';
 import Checkout from './pages/customer/Checkout';
+import Success from './pages/customer/Success';
+import Cancel from './pages/customer/Cancel';
 //admin imports
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import AdminChefs from './pages/admin/AllChefs';
@@ -40,6 +42,8 @@ function App() {
               path="/checkout"
               element={<Checkout />}
               />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
             {/* admin */}
             {/* Admin Login */}
             <Route path="/supervised/login" element={<AdminLogin />} />
