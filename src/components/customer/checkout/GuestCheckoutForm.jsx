@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from "react";
 
-export default function CustomerForm() {
-  const [customer, setCustomer] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-  });
-   const [saveInfo, setSaveInfo] = useState(false);
-  useEffect(() => {
-    const savedInfo = localStorage.getItem("kterings_customer_info");
-    if (savedInfo) setCustomer(JSON.parse(savedInfo));
-  }, []);
+const INFO_KEY = "kterings_customer_info";
+const SAVE_KEY = "kterings_customer_save"; 
 
-   useEffect(() => {
+export default function CustomerForm() {
+  const [customer, setCustomer] = useState(() => {
+    const saved = localStorage.getItem(INFO_KEY);
+    return saved
+      ? JSON.parse(saved)
+      : { name: "", email: "", phone: "", address: "" };
+  });
+
+  const [saveInfo, setSaveInfo] = useState(() => {
+    const savedFlag = localStorage.getItem(SAVE_KEY);
+    return savedFlag ? JSON.parse(savedFlag) : false;
+  });
+
+  useEffect(() => {
     if (saveInfo) {
-      localStorage.setItem("kterings_customer_info", JSON.stringify(customer));
+      localStorage.setItem(SAVE_KEY, "true");
+      localStorage.setItem(INFO_KEY, JSON.stringify(customer));
     } else {
-      localStorage.removeItem("kterings_customer_info");
+      localStorage.setItem(SAVE_KEY, "false");
+      localStorage.removeItem(INFO_KEY);
+    }
+  }, [saveInfo]);
+
+  useEffect(() => {
+    if (saveInfo) {
+      localStorage.setItem(INFO_KEY, JSON.stringify(customer));
     }
   }, [customer, saveInfo]);
 
@@ -28,7 +39,9 @@ export default function CustomerForm() {
 
   return (
     <div className="border rounded-lg p-5 bg-white shadow-sm">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800">Customer Information</h2>
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">
+        Customer Information
+      </h2>
 
       <form className="space-y-4">
         <div>
@@ -40,7 +53,7 @@ export default function CustomerForm() {
             name="name"
             value={customer.name}
             onChange={handleChange}
-            placeholder="Asad Nauman"
+            placeholder="John Doe"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
             required
           />
@@ -55,7 +68,7 @@ export default function CustomerForm() {
             name="email"
             value={customer.email}
             onChange={handleChange}
-            placeholder="asad@gmail.com"
+            placeholder="johndoe@gmail.com"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
             required
           />
@@ -88,8 +101,9 @@ export default function CustomerForm() {
             placeholder="1234 Elm Street, Windsor, ON"
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary resize-none"
             required
-          ></textarea>
+          />
         </div>
+
         {/* Save Info Toggle */}
         <div className="flex items-center gap-2 mt-4">
           <input

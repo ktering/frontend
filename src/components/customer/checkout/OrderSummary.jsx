@@ -4,7 +4,7 @@ export default function OrderSummary() {
   const { cart, note } = useCart();
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deliveryFee = 3.5; // Edit delivery here 
+  const deliveryFee = 2.5; // Edit delivery here 
   const total = subtotal + deliveryFee;
 
   return (
