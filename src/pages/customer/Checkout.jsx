@@ -13,8 +13,8 @@ export default function CheckoutPage() {
     () => cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [cart]
   );
-  const deliveryFee = 5; 
-  const platformFee = 2.9; 
+  const deliveryFee = 3.99; 
+  const platformFee = 2.99; 
   const total = subtotal + deliveryFee+platformFee;
 
   const handleProceed = async (validatedCustomer) => {
