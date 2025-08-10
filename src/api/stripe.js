@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export async function createCheckoutSession(payload) {
   const res = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
