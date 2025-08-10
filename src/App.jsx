@@ -21,7 +21,9 @@ import AddChefForm from './pages/admin/AddChefForm';
 import EditChefForm from './pages/admin/EditChefForm';
 import AdminChefProfile from './pages/admin/ChefProfile';
 import AdminLogin from './pages/admin/AdminLogin';
-
+// Chef imports
+import Login from './pages/chef/Login';
+import ChefDashboard from './pages/chef/ChefDashboard';
 function App() {
   return (
     <div>
@@ -44,6 +46,10 @@ function App() {
               />
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />
+            {/* chef */}
+            <Route path="/chef/login" element={<Login />} />
+            <Route
+              path="/chef-dashboard"  element={<ChefDashboard/>}/>
             {/* admin */}
             {/* Admin Login */}
             <Route path="/supervised/login" element={<AdminLogin />} />
