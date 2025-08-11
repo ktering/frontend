@@ -7,6 +7,8 @@ import Sidebar from "../../components/admin/Sidebar";
 export default function ChefForm({ initialData = null, isEdit = false }) {
   const [form, setForm] = useState({
     name: "",
+    username: "",
+    password: "",
     bio: "",
     ethnicity: "",
     experienceUnit: "",
@@ -26,12 +28,15 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
   const [preview, setPreview] = useState(null);
   const [modal, setModal] = useState({ success: false, error: "" });
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   // Populate form and specialties when editing
   useEffect(() => {
     if (isEdit && initialData) {
       setForm({
         name: initialData.name || "",
+        username: initialData.username || "",
+        password: "", // Password should not be pre-filled for security
         bio: initialData.bio || "",
         ethnicity: initialData.ethnicity || "",
         experienceUnit: initialData.experienceUnit || "",
@@ -126,6 +131,44 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
                 className="w-full border rounded px-3 py-2"
               />
             </div>
+
+            {/* Username */}
+            <div>
+              <label className="font-semibold block mb-1">Username *</label>
+              <input
+                name="username"
+                required
+                value={form.username}
+                onChange={handleChange}
+                className="w-full border rounded px-3 py-2"
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="font-semibold block mb-1">
+                Password {isEdit && <span className="text-sm text-gray-500">(Leave blank to keep current)</span>}
+              </label>
+             <input
+  type={showPassword ? "text" : "password"}
+  name="password"
+  value={form.password}
+  onChange={handleChange}
+  className="w-full border rounded px-3 py-2"
+  placeholder={isEdit ? "••••••••" : ""}
+  {...(!isEdit && { required: true })}
+/>
+<label className="flex items-center gap-2 mt-1">
+  <input
+    type="checkbox"
+    checked={showPassword}
+    onChange={() => setShowPassword(!showPassword)}
+  />
+  Show password
+</label>
+            </div>
+
+
 
             {/* Bio */}
             <div>
