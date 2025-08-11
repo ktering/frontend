@@ -12,7 +12,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
     bio: "",
     ethnicity: "",
     experienceUnit: "",
-    experienceValue: "",
+    experienceValue: 0,
     streetAddress: "",
     city: "",
     apartment: "",
@@ -22,7 +22,9 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
     isVerified: false,
     isActive: true,
   });
-
+// top of component
+  const E164 = /^\+[1-9]\d{1,14}$/;
+  const [phoneError, setPhoneError] = useState(""); 
   const [specialties, setSpecialties] = useState([""]); // Dynamic specialties array
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -191,6 +193,38 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
                 className="w-full border rounded px-3 py-2"
               />
             </div>
+
+            {/* Phone number */}
+<div>
+  <label className="font-semibold block mb-1">
+    Phone <span className="text-sm text-gray-500">e.g. +14165551234 or +923001234567</span>
+  </label>
+  <input
+    name="phone"
+    inputMode="tel"
+    placeholder="+14165551234"
+    value={form.phone}
+    onChange={(e) => {
+      // allow only "+" and digits
+      const raw = e.target.value.replace(/[^\d+]/g, "");
+      setForm(f => ({ ...f, phone: raw }));
+
+      // live validation (optional: only when something typed)
+      if (raw && !E164.test(raw)) {
+        setPhoneError("Use E.164 format, e.g. +14165551234");
+      } else {
+        setPhoneError("");
+      }
+    }}
+    onBlur={() => {
+      if (form.phone && !E164.test(form.phone)) {
+        setPhoneError("Use E.164 format, e.g. +14165551234");
+      }
+    }}
+    className={`w-full border rounded px-3 py-2 ${phoneError ? "border-red-500" : ""}`}
+  />
+  {phoneError && <p className="text-red-600 text-sm mt-1">{phoneError}</p>}
+</div>
 
             {/* Specialties */}
             <div>
