@@ -1,61 +1,19 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
-
-// export default function Sidebar({ isOpen, setIsOpen }) {
-//   return (
-//     <div
-//       className={`fixed top-0 left-0 h-full w-64 bg-primary text-white p-6 
-//         transform transition-transform duration-300 z-50
-//         ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-//         md:translate-x-0`}
-//     >
-//       <h2 className="text-2xl font-bold mb-8">Chef Panel</h2>
-//       <nav className="space-y-4">
-//         <Link to="/chef-dashboard" className="block hover:text-gray-200">Dashboard</Link>
-//         <Link to="/chef-orders" className="block hover:text-gray-200">Orders</Link>
-//         <Link to="/chef-menu" className="block hover:text-gray-200">Menu</Link>
-//         <Link to="/chef-earnings" className="block hover:text-gray-200">Earnings</Link>
-//       </nav>
-//     </div>
-//   );
-// }
-
-// import React from "react";
-// import { Link } from "react-router-dom";
-
-// export default function Sidebar({ isOpen, setIsOpen }) {
-//   return (
-//     <div
-//       className={`fixed top-0 left-0 h-full w-64 bg-primary text-white p-6 
-//         transform transition-transform duration-300 z-50
-//         ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-//         md:translate-x-0`}
-//     >
-//       {/* Close button for mobile */}
-//       <button
-//         className="absolute top-4 right-4 md:hidden text-white text-2xl"
-//         onClick={() => setIsOpen(false)}
-//         aria-label="Close sidebar"
-//       >
-//         &times;
-//       </button>
-//       <h2 className="text-2xl font-bold mb-8">Chef Panel</h2>
-//       <nav className="space-y-4">
-//         <Link to="/chef-dashboard" className="block hover:text-gray-200">Dashboard</Link>
-//         <Link to="/chef-orders" className="block hover:text-gray-200">Orders</Link>
-//         <Link to="/chef-menu" className="block hover:text-gray-200">Menu</Link>
-//         <Link to="/chef-earnings" className="block hover:text-gray-200">Earnings</Link>
-//       </nav>
-//     </div>
-//   );
-// }
-
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { FaTachometerAlt, FaClipboardList, FaUtensils, FaDollarSign } from "react-icons/fa";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   const chefName = localStorage.getItem("chefName") || "Chef";
   const chefInitial = chefName.trim().charAt(0).toUpperCase();
+  const location = useLocation();
+
+  // List of nav items with icons
+  const navItems = [
+    { path: "/chef-dashboard", label: "Dashboard", icon: <FaTachometerAlt className="inline-block mr-3 text-lg" /> },
+    { path: "/chef-orders", label: "Orders", icon: <FaClipboardList className="inline-block mr-3 text-lg" /> },
+    { path: "/chef-menu", label: "Menu", icon: <FaUtensils className="inline-block mr-3 text-lg" /> },
+    { path: "/chef-earnings", label: "Earnings", icon: <FaDollarSign className="inline-block mr-3 text-lg" /> },
+  ];
 
   return (
     <div
@@ -77,10 +35,29 @@ export default function Sidebar({ isOpen, setIsOpen }) {
       <div className="flex-1 p-6">
         <h2 className="text-2xl font-bold mb-8">Chef Panel</h2>
         <nav className="space-y-4">
-          <Link to="/chef-dashboard" className="block hover:text-gray-200">Dashboard</Link>
-          <Link to="/chef-orders" className="block hover:text-gray-200">Orders</Link>
-          <Link to="/chef-menu" className="block hover:text-gray-200">Menu</Link>
-          <Link to="/chef-earnings" className="block hover:text-gray-200">Earnings</Link>
+          {navItems.map(({ path, label, icon }) => {
+            const isActive = location.pathname === path;
+            return (
+              <Link
+                key={path}
+                to={path}
+                className={`block relative px-4 py-2 rounded-r-full transition-colors duration-300 flex items-center
+                  ${isActive 
+                    ? "bg-white text-primary font-semibold"
+                    : "hover:text-gray-200"
+                  }`}
+              >
+                {/* Left side highlight bar */}
+                {isActive && (
+                  <span className="absolute top-0 left-0 h-full w-2 bg-white rounded-r-full"></span>
+                )}
+                {/* Icon */}
+                {icon}
+                {/* Label */}
+                {label}
+              </Link>
+            );
+          })}
         </nav>
       </div>
 

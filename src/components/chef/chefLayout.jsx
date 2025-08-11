@@ -48,7 +48,7 @@ export default function ChefLayout({ children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 w-full">
       {/* Sidebar */}
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
@@ -68,7 +68,8 @@ export default function ChefLayout({ children }) {
         <div className="bg-white shadow-md p-4 flex items-center justify-between md:hidden">
           {/* Chef name */}
           <h1 className="font-bold text-lg text-primary">
-            {localStorage.getItem("chefName") || "Chef"}
+            {/* {localStorage.getItem("chefName") || "Chef"} */}
+            Chef Dashboard
           </h1>
 
           {/* Hamburger */}
