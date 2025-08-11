@@ -1,16 +1,17 @@
 import React from "react";
+import ChefLayout from "../../components/chef/chefLayout";
 
 export default function ChefDashboard() {
-  const chefName = localStorage.getItem("chefName") || "Chef";
-
   return (
-    <div className="font-nunito max-w-lg mx-auto mt-20 p-6 bg-white rounded-lg shadow-md text-center">
-      <h1 className="text-3xl font-bold text-primary mb-4">
-        Welcome, {chefName} 👨‍🍳
-      </h1>
-      <p className="text-gray-600">
-        This is your dashboard. We'll add stats, orders, and profile settings tomorrow!
-      </p>
-    </div>
+    <ChefLayout>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Example Stat Cards */}
+        <div className="bg-white shadow rounded p-6">Orders Today</div>
+        <div className="bg-white shadow rounded p-6">Pending Orders</div>
+        <div className="bg-white shadow rounded p-6">Total Dishes</div>
+        <div className="bg-white shadow rounded p-6">Customers</div>
+        <div className="bg-white shadow rounded p-6">Earnings</div>
+      </div>
+    </ChefLayout>
   );
 }
