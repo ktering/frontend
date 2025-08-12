@@ -1,4 +1,4 @@
-import StatusBadge from "./StatusBadge";
+import StatusBadge from "./StatusBadge" ;
 
 function maskPhone(phone) {
   if (!phone) return "";

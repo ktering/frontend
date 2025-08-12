@@ -1,4 +1,5 @@
-// --- tiny jwt decoder (no deps) ---
+import { API_BASE } from "../../config";
+
 function parseJwt(token) {
   try {
     return JSON.parse(atob(token.split(".")[1]));
@@ -8,7 +9,7 @@ function parseJwt(token) {
 }
 
 function getToken() {
-  return localStorage.getItem("chefToken"); // <- use the same key you set after login
+  return localStorage.getItem("token"); // <- use the same key you set after login
 }
 
 function authHeaders() {
@@ -49,7 +50,7 @@ function shapeOrdersForChef(orders, chefId) {
 
 export async function fetchChefOrders(status) {
   const qs = status ? `?status=${encodeURIComponent(status)}` : "";
-  const res = await fetch(`/api/orders/chef${qs}`, { headers: { ...authHeaders() } });
+  const res = await fetch(`${API_BASE}/api/orders/my${qs}`, { headers: { ...authHeaders() } });
   if (!res.ok) {
     // try to parse server message
     let err;
@@ -63,7 +64,7 @@ export async function fetchChefOrders(status) {
 }
 
 export async function sendOrderAction(orderId, action) {
-  const res = await fetch(`/api/orders/${orderId}/status`, {
+  const res = await fetch(`${API_BASE}/api/orders/${orderId}/status`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({ action }),

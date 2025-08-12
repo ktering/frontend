@@ -22,6 +22,7 @@ import EditChefForm from './pages/admin/EditChefForm';
 import AdminChefProfile from './pages/admin/ChefProfile';
 import AdminLogin from './pages/admin/AdminLogin';
 // Chef imports
+import ChefProtectedRoute from './components/chef/ProtectedRoute';
 import Login from './pages/chef/Login';
 import ChefDashboard from './pages/chef/ChefDashboard';
 import ChefOrders from './pages/chef/Orders';
@@ -51,10 +52,10 @@ function App() {
             {/* chef */}
             <Route path="/chef/login" element={<Login />} />
             <Route
-              path="/chef-dashboard"  element={<ChefDashboard/>}/>
+              path="/chef-dashboard"  element={<ChefProtectedRoute><ChefDashboard/></ChefProtectedRoute>}/>
               
             <Route
-              path="/chef-orders"  element={<ChefOrders/>}/>
+              path="/chef-orders"  element={<ChefProtectedRoute><ChefOrders/></ChefProtectedRoute>}/>
 
             {/* admin */}
             <Route path="/supervised/login" element={<AdminLogin />} />

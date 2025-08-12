@@ -1,12 +1,13 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaTachometerAlt, FaClipboardList, FaUtensils, FaDollarSign } from "react-icons/fa";
+import { logoutUser } from "../../api/chefAuth";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   const chefName = localStorage.getItem("chefName") || "Chef";
   const chefInitial = chefName.trim().charAt(0).toUpperCase();
   const location = useLocation();
-
+  
   // List of nav items with icons
   const navItems = [
     { path: "/chef-dashboard", label: "Dashboard", icon: <FaTachometerAlt className="inline-block mr-3 text-lg" /> },
@@ -60,7 +61,9 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           })}
         </nav>
       </div>
-
+      <button onClick={logoutUser} className="bg-white w-fit mx-auto text-primary p-2 rounded-sm text-center text-lg">
+          Logout
+        </button>
       {/* Bottom chef info */}
       <div className="p-4 border-t border-white/30 flex items-center space-x-3">
         <div className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center font-bold text-lg">
