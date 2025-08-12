@@ -22,3 +22,7 @@ export async function loginChef(username, password) {
     throw err;
   }
 }
+export function logoutUser() {
+  localStorage.removeItem("token");
+}
+
