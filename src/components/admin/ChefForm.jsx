@@ -15,6 +15,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
     experienceValue: 0,
     streetAddress: "",
     city: "",
+    phone: "",
     apartment: "",
     province: "",
     country: "",
@@ -48,6 +49,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
         apartment: initialData.apartment || "",
         province: initialData.province || "",
         country: initialData.country || "",
+        phone: initialData.phone || "",
         postalCode: initialData.postalCode || "",
         isVerified: initialData.isVerified || false,
         isActive: initialData.isActive ?? true,
@@ -152,26 +154,23 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
                 Password {isEdit && <span className="text-sm text-gray-500">(Leave blank to keep current)</span>}
               </label>
              <input
-  type={showPassword ? "text" : "password"}
-  name="password"
-  value={form.password}
-  onChange={handleChange}
-  className="w-full border rounded px-3 py-2"
-  placeholder={isEdit ? "••••••••" : ""}
-  {...(!isEdit && { required: true })}
-/>
-<label className="flex items-center gap-2 mt-1">
-  <input
-    type="checkbox"
-    checked={showPassword}
-    onChange={() => setShowPassword(!showPassword)}
-  />
-  Show password
-</label>
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              className="w-full border rounded px-3 py-2"
+              placeholder={isEdit ? "••••••••" : ""}
+              {...(!isEdit && { required: true })}
+            />
+            <label className="flex items-center gap-2 mt-1">
+            <input
+              type="checkbox"
+              checked={showPassword}
+              onChange={() => setShowPassword(!showPassword)}
+            />
+            Show password
+            </label>
             </div>
-
-
-
             {/* Bio */}
             <div>
               <label className="font-semibold block mb-1">Bio</label>
@@ -195,36 +194,37 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
             </div>
 
             {/* Phone number */}
-<div>
-  <label className="font-semibold block mb-1">
-    Phone <span className="text-sm text-gray-500">e.g. +14165551234 or +923001234567</span>
-  </label>
-  <input
-    name="phone"
-    inputMode="tel"
-    placeholder="+14165551234"
-    value={form.phone}
-    onChange={(e) => {
-      // allow only "+" and digits
-      const raw = e.target.value.replace(/[^\d+]/g, "");
-      setForm(f => ({ ...f, phone: raw }));
+            <div>
+              <label className="font-semibold block mb-1">
+              Phone *<span className="text-sm text-gray-500"></span>
+              </label>
+              <input
+                name="phone"
+                required
+                inputMode="tel"
+                placeholder="+14165551234"
+                value={form.phone}
+                onChange={(e) => {
+                // allow only "+" and digits
+                const raw = e.target.value.replace(/[^\d+]/g, "");
+                setForm(f => ({ ...f, phone: raw }));
 
-      // live validation (optional: only when something typed)
-      if (raw && !E164.test(raw)) {
-        setPhoneError("Use E.164 format, e.g. +14165551234");
-      } else {
-        setPhoneError("");
-      }
-    }}
-    onBlur={() => {
-      if (form.phone && !E164.test(form.phone)) {
-        setPhoneError("Use E.164 format, e.g. +14165551234");
-      }
-    }}
-    className={`w-full border rounded px-3 py-2 ${phoneError ? "border-red-500" : ""}`}
-  />
-  {phoneError && <p className="text-red-600 text-sm mt-1">{phoneError}</p>}
-</div>
+                // live validation (optional: only when something typed)
+                if (raw && !E164.test(raw)) {
+                  setPhoneError("Use E.164 format, e.g. +14165551234");
+            } else {
+              setPhoneError("");
+            }
+            }}
+            onBlur={() => {
+            if (form.phone && !E164.test(form.phone)) {
+            setPhoneError("Use E.164 format, e.g. +14165551234");
+            }
+            }}
+            className={`w-full border rounded px-3 py-2 ${phoneError ? "border-red-500" : ""}`}
+            />
+            {phoneError && <p className="text-red-600 text-sm mt-1">{phoneError}</p>}
+          </div>
 
             {/* Specialties */}
             <div>
