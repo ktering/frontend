@@ -6,6 +6,7 @@ function maskPhone(phone) {
 }
 
 export default function OrderCard({ order, tab, onAccept, onReject, onDeliver }) {
+  //dynamically creating id- we should add id to db
   const idShort = String(order._id).slice(-6).toUpperCase();
   const when = new Date(order.createdAt).toLocaleString();
   const items = order.items || [];

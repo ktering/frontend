@@ -6,7 +6,7 @@ export default function ChefLayout({ children }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-100 w-full">
+    <div className="flex min-h-screen w-full">
       {/* Sidebar */}
       <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
 
