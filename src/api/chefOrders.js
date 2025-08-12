@@ -63,16 +63,19 @@ export async function fetchChefOrders(status) {
   return shapeOrdersForChef(serverOrders, chefId);
 }
 
-export async function sendOrderAction(orderId, action) {
+export async function sendOrderAction(orderId, payload) {
   const res = await fetch(`${API_BASE}/api/orders/${orderId}/status`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json", ...authHeaders() },
-    body: JSON.stringify({ action }),
+    body: JSON.stringify(payload), // payload as JSON object
   });
   if (!res.ok) {
     let err;
-    try { err = await res.json(); } catch {}
+    try {
+      err = await res.json();
+    } catch {}
     throw err || { message: "Failed to update order" };
   }
-  return res.json(); // { success, _id, status }
+  return res.json();
 }
+

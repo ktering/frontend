@@ -2,12 +2,11 @@ const TABS = [
   { key: "pending",   label: "Pending" },
   { key: "confirmed", label: "Confirmed" },
   { key: "delivered", label: "Past Orders" },
-  { key: "cancelled", label: "Cancelled" },
+  { key: "rejected", label: "Rejected" },
 ];
-
 export default function OrdersTabs({ active, onChange }) {
   return (
-    <div className="flex gap-2 mb-6 overflow-x-auto">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
       {TABS.map((t) => (
         <button
           key={t.key}
