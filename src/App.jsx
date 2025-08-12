@@ -26,6 +26,7 @@ import ChefProtectedRoute from './components/chef/ProtectedRoute';
 import Login from './pages/chef/Login';
 import ChefDashboard from './pages/chef/ChefDashboard';
 import ChefOrders from './pages/chef/Orders';
+import ChefDishes from './pages/chef/ChefDishes';
 function App() {
   return (
     <div>
@@ -56,6 +57,8 @@ function App() {
               
             <Route
               path="/chef-orders"  element={<ChefProtectedRoute><ChefOrders/></ChefProtectedRoute>}/>
+            <Route
+              path="/chef-dishes"  element={<ChefProtectedRoute><ChefDishes/></ChefProtectedRoute>}/>
 
             {/* admin */}
             <Route path="/supervised/login" element={<AdminLogin />} />
