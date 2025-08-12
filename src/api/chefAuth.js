@@ -1,7 +1,6 @@
 import { API_BASE } from "../../config";
 
 export async function loginChef(username, password) {
-  try {
     const res = await fetch(`${API_BASE}/api/chefs/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -18,9 +17,6 @@ export async function loginChef(username, password) {
     localStorage.setItem("token", data.token);
 
     return data;
-  } catch (err) {
-    throw err;
-  }
 }
 export function logoutUser() {
   localStorage.removeItem("token");
