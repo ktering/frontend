@@ -1,9 +1,9 @@
 import StatusBadge from "./StatusBadge" ;
 
-function maskPhone(phone) {
+/* function maskPhone(phone) {
   if (!phone) return "";
   return String(phone).replace(/.(?=.{4})/g, "•");
-}
+} */
 
 export default function OrderCard({ order, tab, onAccept, onReject, onDeliver }) {
   //dynamically creating id- we should add id to db
@@ -44,7 +44,7 @@ export default function OrderCard({ order, tab, onAccept, onReject, onDeliver })
           <div className="text-sm text-gray-500">Customer</div>
           <div className="font-medium">{order.customer?.name}</div>
           <div className="text-sm text-gray-600">{order.customer?.address}</div>
-          <div className="text-sm text-gray-600">{maskPhone(order.customer?.phone)}</div>
+          {/* <div className="text-sm text-gray-600">{maskPhone(order.customer?.phone)}</div> */}
         </div>
 
         <div className="sm:col-span-2">
@@ -91,7 +91,7 @@ export default function OrderCard({ order, tab, onAccept, onReject, onDeliver })
             onClick={onDeliver}
             className="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary/90"
           >
-            Mark Delivered
+            Order Completed
           </button>
         )}
       </div>
