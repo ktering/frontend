@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ChefLayout from "../../components/chef/ChefLayout";
+import ChefLayout from "../../components/chef/chefLayout";
 import OrdersTabs from "../../components/chef/orders/OrdersTab";
 import OrderCard from "../../components/chef/orders/OrderCard";
 import { fetchChefOrders, sendOrderAction } from "../../api/chefOrders";
