@@ -11,7 +11,7 @@ export default function EditDishForm() {
     const [form, setForm] = useState({
         name: "",
         description: "",
-        price: "",
+        originalChefPrice: "",
         category: "",
         averagePrepTime: "",
         averageDeliveryTime: "",
@@ -44,7 +44,7 @@ export default function EditDishForm() {
             setForm({
                 name: data.name || "",
                 description: data.description || "",
-                price: data.price || "",
+                originalChefPrice: data.originalChefPrice || "",
                 category: data.category || "",
                 averagePrepTime: data.averagePrepTime || "",
                 averageDeliveryTime: data.averageDeliveryTime || "",
@@ -154,8 +154,9 @@ export default function EditDishForm() {
                             <label className="font-semibold block mb-1">Description</label>
                             <textarea name="description" value={form.description} onChange={handleChange} className="w-full border rounded px-3 py-2" placeholder="Description" />
                             <hr className="my-4" />
-                            <label className="font-semibold block mb-1">Price</label>
-                            <input name="price" type="number" value={form.price} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="Price" />
+                            <label className="font-semibold block mb-1">Price *</label>
+                            <small className="text-gray-600">This is the price the chef will receive for this dish.</small>
+                            <input name="originalChefPrice" type="number" value={form.originalChefPrice} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="Original Chef Price" />
                             <hr className="my-4" />
                             <label className="font-semibold block mb-1">Category</label>
                             <select name="category" value={form.category} onChange={handleChange} className="w-full border rounded px-3 py-2">
