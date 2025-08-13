@@ -83,6 +83,17 @@ export default function Orders() {
     setRejectModalOpen(true);
   };
 
+  
+  const onDeliverClick = async (id) => {
+    try {
+      await sendOrderAction(id, { action: "deliver" }); // send "deliver" action to backend
+      setOrders((prev) => prev.filter((o) => o._id !== id)); // remove from current list optimistically
+      showSuccess("Order marked as ready for delivery.");
+    } catch (e) {
+      alert(e?.message || "Failed to mark order as ready for delivery.");
+    }
+  };
+
   // Confirm reject
   const confirmReject = async () => {
     if (!rejectOrderId) return;
@@ -121,6 +132,7 @@ export default function Orders() {
               tab={active}
               onAccept={() => onAcceptClick(o._id)}
               onReject={() => onRejectClick(o._id)}
+              onDeliver={() => onDeliverClick(o._id)}
             />
           ))}
         </div>
