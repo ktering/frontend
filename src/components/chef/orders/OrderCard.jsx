@@ -91,7 +91,7 @@ export default function OrderCard({ order, tab, onAccept, onReject, onDeliver })
             onClick={onDeliver}
             className="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary/90"
           >
-            Order Completed
+            Mark Order as Ready for Delivery
           </button>
         )}
       </div>
