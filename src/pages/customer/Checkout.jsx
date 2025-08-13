@@ -22,7 +22,7 @@ export default function CheckoutPage() {
     try {
       setBusy(true);
       const { url } = await createCheckoutSession({
-        cartItems: cart,
+        cartdishes: cart,
         customer: validatedCustomer,
         note,
       });
