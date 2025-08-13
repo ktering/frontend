@@ -11,7 +11,7 @@ export default function AddDishForm() {
     const [form, setForm] = useState({
         name: "",
         description: "",
-        price: "",
+        originalChefPrice: "",
         category: "",
         averagePrepTime: "",
         averageDeliveryTime: "",
@@ -94,7 +94,7 @@ export default function AddDishForm() {
         const formData = new FormData();
         formData.append("name", form.name);
         formData.append("description", form.description);
-        formData.append("price", form.price);
+        formData.append("originalChefPrice", form.originalChefPrice);
         formData.append("category", form.category);
         formData.append("averagePrepTime", form.averagePrepTime);
         formData.append("averageDeliveryTime", form.averageDeliveryTime);
@@ -154,7 +154,8 @@ export default function AddDishForm() {
 
                             <div>
                                 <label className="font-semibold block mb-1">Price *</label>
-                                <input name="price" type="number" value={form.price} onChange={handleChange} required className="w-full border rounded px-3 py-2" />
+                                <small className="text-gray-600">This is the price the chef will receive for this dish.</small>
+                                <input name="originalChefPrice" type="number" value={form.originalChefPrice} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="original Chef Price" />
                             </div>
 
                             <div>
