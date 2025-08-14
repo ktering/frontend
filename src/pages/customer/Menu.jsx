@@ -1,10 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import {
-  fetchAllDishes,
-  fetchDishesByCategory,
-} from "../../api/dish";
-
+import { useLocation } from "react-router-dom";
+import { fetchAllDishes, fetchDishesByCategory } from "../../api/dish";
 import DishList from "../../components/customer/Menu/DishList";
 import CategorySection from "../../components/customer/home/CategorySection";
 import Header from "../../components/customer/Header";
@@ -12,10 +9,14 @@ import Header from "../../components/customer/Header";
 const ITEMS_PER_PAGE = 12;
 
 const Menu = () => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const categoryFromQuery = queryParams.get("category") || "all";
+
   const [dishes, setDishes] = useState([]);
   const [allDishes, setAllDishes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState(categoryFromQuery);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -28,6 +29,12 @@ const Menu = () => {
   useEffect(() => {
     loadAllDishes();
   }, []);
+
+  useEffect(() => {
+    if (allDishes.length > 0) {
+      handleCategorySelect(categoryFromQuery);
+    }
+  }, [categoryFromQuery, allDishes]);
 
   const loadAllDishes = async () => {
     setLoading(true);
@@ -86,28 +93,10 @@ const Menu = () => {
     setCurrentPage(1);
   };
 
-  const handleSearch = (text) => {
-    setSearchTerm(text);
-    setCurrentPage(1);
-
-    const base = selectedCategory === "all" ? allDishes : dishes;
-
-    if (!text) {
-      setDishes(base);
-      return;
-    }
-
-    const filtered = base.filter((dish) =>
-      dish.name.toLowerCase().includes(text.toLowerCase())
-    );
-    setDishes(filtered);
-  };
-
   return (
     <>
       <Header />
       <div className="px-4 py-6 max-w-7xl mx-auto font-nunito">
-
         {/* Heading + Filter Dropdown */}
         <div className="w-[80%] mx-auto flex flex-row flex-wrap justify-between items-center gap-3 mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-primary whitespace-nowrap">
@@ -125,8 +114,6 @@ const Menu = () => {
               <option value="halal">Halal Only</option>
               <option value="kosher">Kosher Only</option>
             </select>
-
-            {/* Arrow icon */}
             <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
               <svg
                 className="w-4 h-4"
@@ -139,89 +126,79 @@ const Menu = () => {
               </svg>
             </div>
           </div>
-
         </div>
 
-
         {/* Category Filters */}
-        <CategorySection
-          onSelectCategory={handleCategorySelect}
-          selected={selectedCategory}
-        />
+        <CategorySection selected={selectedCategory} />
 
         {/* Dish List */}
         <DishList dishes={currentDishes} loading={loading} />
 
         {/* Pagination */}
-       {!loading && totalPages > 1 && (
-  <div className="flex justify-center items-center mt-8 gap-1 flex-wrap">
-    {/* Prev */}
-    <button
-      disabled={currentPage === 1}
-      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-      className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 
-      ${
-        currentPage === 1
-          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-          : "bg-white text-gray-700 border-gray-300 hover:bg-primary hover:text-white hover:border-primary"
-      }`}
-    >
-      <ChevronLeft className="w-4 h-4" />
-    </button>
-
-    {/* Smart Pagination */}
-    {Array.from({ length: totalPages }, (_, i) => i + 1)
-      .filter((page) => {
-        if (totalPages <= 5) return true;
-        if (
-          page === 1 ||
-          page === totalPages ||
-          Math.abs(currentPage - page) <= 1
-        )
-          return true;
-        return false;
-      })
-      .map((page, idx, arr) => {
-        const showDots = idx > 0 && page - arr[idx - 1] > 1;
-        return (
-          <div key={page} className="flex items-center">
-            {showDots && (
-              <span className="px-2 text-gray-500 select-none">...</span>
-            )}
+        {!loading && totalPages > 1 && (
+          <div className="flex justify-center items-center mt-8 gap-1 flex-wrap">
+            {/* Prev */}
             <button
-              onClick={() => setCurrentPage(page)}
-              className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 
-              ${
-                page === currentPage
-                  ? "bg-primary text-white border-primary"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 ${
+                currentPage === 1
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                   : "bg-white text-gray-700 border-gray-300 hover:bg-primary hover:text-white hover:border-primary"
               }`}
             >
-              {page}
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            {/* Smart Pagination */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter((page) => {
+                if (totalPages <= 5) return true;
+                if (
+                  page === 1 ||
+                  page === totalPages ||
+                  Math.abs(currentPage - page) <= 1
+                )
+                  return true;
+                return false;
+              })
+              .map((page, idx, arr) => {
+                const showDots = idx > 0 && page - arr[idx - 1] > 1;
+                return (
+                  <div key={page} className="flex items-center">
+                    {showDots && (
+                      <span className="px-2 text-gray-500 select-none">...</span>
+                    )}
+                    <button
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 ${
+                        page === currentPage
+                          ? "bg-primary text-white border-primary"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-primary hover:text-white hover:border-primary"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  </div>
+                );
+              })}
+
+            {/* Next */}
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 ${
+                currentPage === totalPages
+                  ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-white text-gray-700 border-gray-300 hover:bg-primary hover:text-white hover:border-primary"
+              }`}
+            >
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-        );
-      })}
-
-    {/* Next */}
-    <button
-      disabled={currentPage === totalPages}
-      onClick={() =>
-        setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-      }
-      className={`w-9 h-9 flex items-center justify-center rounded-full border text-sm font-medium transition-colors duration-200 
-      ${
-        currentPage === totalPages
-          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-          : "bg-white text-gray-700 border-gray-300 hover:bg-primary hover:text-white hover:border-primary"
-      }`}
-    >
-      <ChevronRight className="w-4 h-4" />
-    </button>
-  </div>
-)}
-
-
+        )}
       </div>
     </>
   );

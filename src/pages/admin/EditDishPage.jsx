@@ -86,12 +86,22 @@ export default function EditDishForm() {
 
     };
 
-    const handleChange = (e) => {
+   const handleChange = e => {
         const { name, value, type, checked } = e.target;
-        setForm((prev) => ({
-            ...prev,
-            [name]: type === "checkbox" ? checked : value
-        }));
+        if (name === "originalChefPrice") {
+            // Ensure the price is positive and a valid number
+            if (value === "" || (Number(value) >= 0 && !isNaN(value))) {
+                setForm(prev => ({
+                    ...prev,
+                    [name]: value
+                }));
+            }
+        } else {
+            setForm(prev => ({
+                ...prev,
+                [name]: type === "checkbox" ? checked : value
+            }));
+        }
     };
 
     const handleImageChange = (e) => {
@@ -118,6 +128,11 @@ export default function EditDishForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (Number(form.originalChefPrice) <= 0) {
+            setModal({ success: false, error: "Price must be a positive number greater than zero." });
+            return;
+        }
         const formData = new FormData();
         for (const key in form) {
             formData.append(key, form[key]);

@@ -54,10 +54,13 @@ const FoodItemCard = ({ item }) => {
             <span>{item.chefId?.name || "Unknown Chef"}</span>
           </div>
 
-          <div className="flex items-center gap-2 text-xs text-gray-700 mb-4">
-            <Clock className="w-4 h-4 text-gray-800" />
-            <span>{item.averagePrepTime || "N/A"}</span>
-          </div>
+          {item?.averagePrepTime && (
+            <div className="flex items-center gap-2 text-xs text-gray-700 mb-4">
+              <Clock className="w-4 h-4 text-gray-800" />
+              <span>{item.averagePrepTime}</span>
+            </div>
+          )}
+
 
           {/* Price + Button */}
           <div className="flex items-center justify-between mt-auto pt-2">
