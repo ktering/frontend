@@ -22,13 +22,15 @@ function fmtWhen(d) {
 }
 function statusChip(status) {
   const map = {
-    delivered: "text-green-600",
-    confirmed: "text-blue-600",
-    pending: "text-yellow-600",
-    cancelled: "text-red-600",
+    pending:          "text-yellow-600",
+    confirmed:        "text-blue-600",
+    ready_for_pickup: "text-indigo-600",
+    picked_up:        "text-purple-600",
+    delivered:        "text-green-600",
+    rejected:         "text-red-600",
   };
   const cls = map[status] || "text-gray-600";
-  const label = status?.[0]?.toUpperCase() + status?.slice(1);
+  const label = (status || "").replaceAll("_", " ");
   return <span className={`${cls} font-bold text-sm sm:text-base`}>{label}</span>;
 }
 
@@ -47,14 +49,13 @@ export default function ChefDashboard() {
       setLoading(true);
       setErr("");
       try {
-        // parallel fetches
+        // parallel fetches — backend already returns chef-slice only
         const [pending, delivered, allOrders, dishesRes] = await Promise.all([
           fetchChefOrders("pending"),
           fetchChefOrders("delivered"),
-          fetchChefOrders(), // all statuses for "Recent Orders"
+          fetchChefOrders(), // for “Recent Orders”
           chefId ? getDishesByChef(chefId) : Promise.resolve([]),
         ]);
-
         if (!alive) return;
 
         const recent3 = [...(allOrders || [])]
@@ -112,7 +113,7 @@ export default function ChefDashboard() {
         ))}
       </div>
 
-      {/* Recent Orders */}
+      {/* Recent Orders (chef slice) */}
       <div className="mt-12 px-4 sm:px-0">
         <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Recent Orders</h2>
         <div className="bg-white rounded-xl shadow p-4 sm:p-6">
@@ -123,16 +124,24 @@ export default function ChefDashboard() {
           ) : (
             <div className="flex flex-col gap-4">
               {recent.map((o, idx) => {
-                const items = o.items || [];
+                const items = o.chefOrder?.items || [];
                 const itemCount = items.reduce((s, i) => s + Number(i.quantity || 0), 0);
+                const chefStatus = o.chefOrder?.status;
                 return (
-                  <div key={o._id || idx} className={`flex flex-col sm:flex-row justify-between items-start sm:items-center ${idx < recent.length - 1 ? "border-b pb-3" : ""}`}>
+                  <div
+                    key={o.orderId || idx}
+                    className={`flex flex-col sm:flex-row justify-between items-start sm:items-center ${idx < recent.length - 1 ? "border-b pb-3" : ""}`}
+                  >
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 text-sm sm:text-base">Order #{shortId(o._id)}</span>
-                      <span className="text-gray-400 text-xs sm:text-sm">{itemCount} {itemCount === 1 ? "item" : "items"}</span>
+                      <span className="font-semibold text-gray-700 text-sm sm:text-base">
+                        Order #{shortId(o.orderId)}
+                      </span>
+                      <span className="text-gray-400 text-xs sm:text-sm">
+                        {itemCount} {itemCount === 1 ? "item" : "items"}
+                      </span>
                     </div>
                     <div className="flex items-center gap-4 mt-2 sm:mt-0">
-                      {statusChip(o.status)}
+                      {statusChip(chefStatus)}
                       <span className="text-gray-500 text-xs sm:text-sm">{fmtWhen(o.createdAt)}</span>
                     </div>
                   </div>
@@ -142,6 +151,6 @@ export default function ChefDashboard() {
           )}
         </div>
       </div>
-</ChefLayout>
+    </ChefLayout>
   );
 }
