@@ -13,23 +13,23 @@ export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
-  // Modal state for Accept prep time
+  // Accept prep time modal
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [prepTime, setPrepTime] = useState("");
 
-  // Modal state for Reject confirmation
+  // Reject confirmation modal
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [rejectOrderId, setRejectOrderId] = useState(null);
 
-  // Success message modal state
+  // Success toast
   const [successModal, setSuccessModal] = useState({ open: false, message: "" });
 
   const load = async (status) => {
     setLoading(true);
     setErr("");
     try {
-      const data = await fetchChefOrders(status);
+      const data = await fetchChefOrders(status); // backend already filters by chef + status
       setOrders(data);
     } catch (e) {
       setErr(e?.message || "Failed to load orders");
@@ -42,32 +42,28 @@ export default function Orders() {
     load(active);
   }, [active]);
 
-  // Show success modal with automatic timeout
   const showSuccess = (msg) => {
     setSuccessModal({ open: true, message: msg });
-    setTimeout(() => {
-      setSuccessModal({ open: false, message: "" });
-    }, 3000);
+    setTimeout(() => setSuccessModal({ open: false, message: "" }), 3000);
   };
 
-  // Open modal when Accept clicked
-  const onAcceptClick = (id) => {
-    setSelectedOrderId(id);
+  // Open Accept modal
+  const onAcceptClick = (orderId) => {
+    setSelectedOrderId(orderId);
     setPrepTime("");
     setModalOpen(true);
   };
 
-  // Submit prep time from modal
+  // Submit prep time
   const handlePrepTimeSubmit = async () => {
     const num = Number(prepTime);
     if (!num || num <= 0) {
       alert("Please enter a valid positive number for prep time.");
       return;
     }
-
     try {
       await sendOrderAction(selectedOrderId, { action: "accept", avgPrepTime: num });
-      setOrders((prev) => prev.filter((o) => o._id !== selectedOrderId));
+      setOrders((prev) => prev.filter((o) => o.orderId !== selectedOrderId)); // ← orderId
       showSuccess("Order accepted successfully.");
     } catch (e) {
       alert(e?.message || "Failed to accept order.");
@@ -77,17 +73,17 @@ export default function Orders() {
     }
   };
 
-  // Open reject confirmation modal
-  const onRejectClick = (id) => {
-    setRejectOrderId(id);
+  // Open Reject modal
+  const onRejectClick = (orderId) => {
+    setRejectOrderId(orderId);
     setRejectModalOpen(true);
   };
 
-  
-  const onDeliverClick = async (id) => {
+  // Mark ready for delivery
+  const onDeliverClick = async (orderId) => {
     try {
-      await sendOrderAction(id, { action: "deliver" }); // send "deliver" action to backend
-      setOrders((prev) => prev.filter((o) => o._id !== id)); // remove from current list optimistically
+      await sendOrderAction(orderId, { action: "deliver" });
+      setOrders((prev) => prev.filter((o) => o.orderId !== orderId)); // ← orderId
       showSuccess("Order marked as ready for delivery.");
     } catch (e) {
       alert(e?.message || "Failed to mark order as ready for delivery.");
@@ -99,7 +95,7 @@ export default function Orders() {
     if (!rejectOrderId) return;
     try {
       await sendOrderAction(rejectOrderId, { action: "reject" });
-      setOrders((prev) => prev.filter((o) => o._id !== rejectOrderId));
+      setOrders((prev) => prev.filter((o) => o.orderId !== rejectOrderId)); // ← orderId
       showSuccess("Order rejected successfully.");
     } catch (e) {
       alert(e?.message || "Failed to reject order.");
@@ -127,12 +123,12 @@ export default function Orders() {
         <div className="grid gap-4">
           {orders.map((o) => (
             <OrderCard
-              key={o._id}
-              order={o}
+              key={o.orderId}                   // ← orderId
+              order={o}                          // OrderCard should use o.chefOrder.status/items
               tab={active}
-              onAccept={() => onAcceptClick(o._id)}
-              onReject={() => onRejectClick(o._id)}
-              onDeliver={() => onDeliverClick(o._id)}
+              onAccept={() => onAcceptClick(o.orderId)}   // ← orderId
+              onReject={() => onRejectClick(o.orderId)}   // ← orderId
+              onDeliver={() => onDeliverClick(o.orderId)} // ← orderId
             />
           ))}
         </div>
@@ -148,7 +144,6 @@ export default function Orders() {
             className="bg-white rounded-lg p-6 w-80 relative font-nunito"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Cross */}
             <button
               className="absolute top-3 right-3 text-gray-400 hover:text-primary text-2xl font-bold"
               onClick={() => setModalOpen(false)}
@@ -158,9 +153,7 @@ export default function Orders() {
             </button>
 
             <h2 className="text-xl font-semibold mb-2 text-black">Enter Average Prep Time</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Please enter the time in <strong>minutes</strong>.
-            </p>
+            <p className="text-sm text-gray-600 mb-4">Please enter the time in <strong>minutes</strong>.</p>
             <input
               type="number"
               className="w-full border border-gray-300 rounded px-3 py-2 mb-1 text-black"
@@ -205,7 +198,6 @@ export default function Orders() {
             className="bg-white rounded-lg p-6 w-80 relative font-nunito"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Cross */}
             <button
               className="absolute top-3 right-3 text-gray-400 hover:text-primary text-2xl font-bold"
               onClick={() => setRejectModalOpen(false)}
@@ -215,9 +207,7 @@ export default function Orders() {
             </button>
 
             <h2 className="text-xl font-semibold mb-4 text-black">Confirm Reject Order</h2>
-            <p className="mb-6 text-black">
-              Are you sure you want to reject this order? This action cannot be undone.
-            </p>
+            <p className="mb-6 text-black">Are you sure you want to reject this order? This action cannot be undone.</p>
             <div className="flex justify-end gap-3">
               <button
                 className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400 text-black"
@@ -236,24 +226,20 @@ export default function Orders() {
         </div>
       )}
 
-      {/* Success Modal */}
+      {/* Success toast */}
       {successModal.open && (
         <div className="fixed bottom-6 right-6 bg-primary text-white px-6 py-3 rounded shadow-lg font-nunito z-50 animate-fadeInOut">
           {successModal.message}
         </div>
       )}
 
-      {/* Tailwind animation */}
       <style>{`
         @keyframes fadeInOut {
           0%, 100% {opacity: 0; transform: translateY(20px);}
           10%, 90% {opacity: 1; transform: translateY(0);}
         }
-        .animate-fadeInOut {
-          animation: fadeInOut 3s ease forwards;
-        }
+        .animate-fadeInOut { animation: fadeInOut 3s ease forwards; }
       `}</style>
     </ChefLayout>
   );
 }
-

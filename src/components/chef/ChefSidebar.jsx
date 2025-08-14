@@ -1,11 +1,19 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation,useNavigate } from "react-router-dom";
 import { FaTachometerAlt, FaClipboardList, FaUtensils, FaDollarSign,FaSignOutAlt  } from "react-icons/fa";
 import { logoutUser } from "../../api/chefAuth";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
+  const navigate = useNavigate();
   const chefName = localStorage.getItem("chefName") || "Chef";
   const chefInitial = chefName.trim().charAt(0).toUpperCase();
   const location = useLocation();
+  async function handleLogout() {
+    try {
+      await logoutUser();                 // must remove token, name, etc.
+    } finally {
+      navigate("/chef/login", { replace: true });   // or navigate("/chef/login", { replace: true })
+    }
+  }
   
   // List of nav items with icons
   const navItems = [
@@ -60,7 +68,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           })}
           <button
     type="button"
-    onClick={logoutUser}
+    onClick={handleLogout}
     className="w-full text-left block relative px-4 py-2 rounded-r-full transition-colors duration-300 flex items-center hover:text-gray-200"
   >
     <FaSignOutAlt className="inline-block mr-3 text-lg" />
