@@ -1,3 +1,5 @@
+//src/assets/data/categories.js
+
 import allImg from '../category-images/all.jpeg';
 import trendingImg from '../category-images/trending.jpg';
 import asianImg from '../category-images/asian.jpg';
