@@ -21,6 +21,7 @@ import AddChefForm from './pages/admin/AddChefForm';
 import EditChefForm from './pages/admin/EditChefForm';
 import AdminChefProfile from './pages/admin/ChefProfile';
 import AdminLogin from './pages/admin/AdminLogin';
+import OrdersAdmin from './pages/admin/Orders';
 // Chef imports
 import ChefProtectedRoute from './components/chef/ProtectedRoute';
 import Login from './pages/chef/Login';
@@ -100,6 +101,10 @@ function App() {
             <Route
               path="/supervised/dishes/edit/:id"
               element={<ProtectedRoute><EditDishPage /></ProtectedRoute>}
+            />
+            <Route
+              path="/supervised/orders"
+              element={<ProtectedRoute><OrdersAdmin /></ProtectedRoute>}
             />
           </Routes>
         </div>

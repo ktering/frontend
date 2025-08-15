@@ -14,10 +14,7 @@ export default function ChefDishCard({ item }) {
           <div className="flex flex-col">
 
           {typeof item.originalChefPrice === "number" && (
-            <span className="text-xs text-primary">Your Price: ${item.originalChefPrice.toFixed(2)}</span>
-          )}
-          {typeof item.price === "number" && (
-            <span className="text-xs text-primary">Price with tax: ${item.price.toFixed(2)}</span>
+            <span className="text-xs text-primary">Price: ${item.originalChefPrice.toFixed(2)}</span>
           )}
           </div>
         </div>
