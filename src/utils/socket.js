@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import {API_BASE} from "../config";
+import {API_BASE} from "../../config";
 
 const API_URL =
   import.meta.env.MODE === "production"
