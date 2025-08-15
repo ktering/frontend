@@ -1,20 +1,24 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
-
 export const useCart = () => useContext(CartContext);
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [note, setNote] = useState("");
 
-  // Load full cart (cart + note) from localStorage on first load
+  // Load cart from localStorage on first load
   useEffect(() => {
     const stored = localStorage.getItem("kterings_cart_full");
     if (stored) {
-      const parsed = JSON.parse(stored);
-      setCart(parsed.cart || []);
-      setNote(parsed.note || "");
+      try {
+        const parsed = JSON.parse(stored);
+        // Only set if parsed.cart exists and is non-empty
+        setCart(parsed.cart || []);
+        setNote(parsed.note || "");
+      } catch (err) {
+        console.error("Failed to parse localStorage:", err);
+      }
     }
   }, []);
 
@@ -27,18 +31,20 @@ export function CartProvider({ children }) {
   }, [cart, note]);
 
   // Add or increase quantity
- const addToCart = (item) => {
-  setCart((prev) => {
-    const existing = prev.find((x) => x._id === item._id);
-    if (existing) {
-      return prev.map((x) =>
-        x._id === item._id ? { ...x, quantity: x.quantity + (item.quantity || 1) } : x
-      );
-    } else {
-      return [...prev, { ...item, quantity: item.quantity || 1 }];
-    }
-  });
-};
+  const addToCart = (item) => {
+    setCart((prev) => {
+      const existing = prev.find((x) => x._id === item._id);
+      if (existing) {
+        return prev.map((x) =>
+          x._id === item._id
+            ? { ...x, quantity: x.quantity + (item.quantity || 1) }
+            : x
+        );
+      } else {
+        return [...prev, { ...item, quantity: item.quantity || 1 }];
+      }
+    });
+  };
 
   // Remove item
   const removeFromCart = (id) => {
@@ -52,15 +58,16 @@ export function CartProvider({ children }) {
     );
   };
 
-  // Clear cart
+  // Clear cart (state + localStorage)
   const clearCart = () => {
     setCart([]);
     setNote("");
+    localStorage.removeItem("kterings_cart_full");
   };
 
   return (
     <CartContext.Provider
-      value={{ cart, note, setNote, addToCart, removeFromCart, updateQuantity, clearCart }}
+      value={{ cart, note, setNote, setCart, addToCart, removeFromCart, updateQuantity, clearCart }}
     >
       {children}
     </CartContext.Provider>
