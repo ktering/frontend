@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, useMemo, useState } from "react";
+import { socket } from "./utils/socket";
+import { toast, Toaster } from "react-hot-toast";
 //customer imports
 import Home from './pages/customer/Home';
 import ChefProfile from './pages/customer/ChefProfile';
@@ -28,7 +31,46 @@ import ChefDashboard from './pages/chef/ChefDashboard';
 import ChefOrders from './pages/chef/Orders';
 import ChefDishes from './pages/chef/ChefDishes';
 import ChefEarnings from './pages/chef/Earnings';
+
+
+function getChefIdFromToken() {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload?.userId || null;
+  } catch {
+    return null;
+  }
+}
 function App() {
+
+  const chefId = useMemo(() => getChefIdFromToken(), []);
+  const [globalOrders, setGlobalOrders] = useState([]);
+
+  useEffect(() => {
+    if (!chefId) return;
+
+    // Connect socket globally
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("✅ Global socket connected");
+      socket.emit("joinDashboard", { role: "chef", userId: chefId });
+    });
+
+    socket.on("new_order", (order) => {
+      console.log("📥 New order received globally:", order);
+      toast.success(`New order #${order.orderCode}`);
+      setGlobalOrders((prev) => [order, ...prev]);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("new_order");
+    };
+  }, [chefId]);
+
   return (
     <div>
       <Router>

@@ -6,6 +6,8 @@ import Sidebar from "../../components/admin/Sidebar";
 
 export default function EditDishForm() {
     const { id } = useParams();
+    const [submitting, setSubmitting] = useState(false);
+
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
@@ -54,7 +56,8 @@ export default function EditDishForm() {
                 containsNuts: data.containsNuts || false,
                 meatType: data.meatType || "",
                 ethnicType: data.ethnicType || "",
-                chefId: data.chefId || ""
+                // chefId: data.chefId || ""
+                chefId: data.chefId?._id || "" 
             });
             const cleanedIngredients = Array.isArray(data.ingredients)
                 ? data.ingredients.filter(item => item.trim() !== "")
@@ -86,7 +89,7 @@ export default function EditDishForm() {
 
     };
 
-   const handleChange = e => {
+    const handleChange = e => {
         const { name, value, type, checked } = e.target;
         if (name === "originalChefPrice") {
             // Ensure the price is positive and a valid number
@@ -142,11 +145,15 @@ export default function EditDishForm() {
         if (optionalFields.tags) formData.append("tags", JSON.stringify(tags));
 
         try {
+            setSubmitting(true); // ← start loading
             await updateDishAdmin(id, formData);
             setModal({ success: true, error: "" });
             setTimeout(() => navigate("/supervised/dishes/chef"), 3000);
         } catch (err) {
             setModal({ success: false, error: err.message });
+        }
+        finally {
+            setSubmitting(false); // ← stop loading
         }
     };
 
@@ -185,12 +192,28 @@ export default function EditDishForm() {
                             </select>
                             <hr className="my-4" />
                             <label className="font-semibold block mb-1">Chef</label>
-                            <select name="chefId" value={form.chefId} onChange={handleChange} required className="w-full border rounded px-3 py-2">
-                                <option value="">-- Select Chef --</option>
-                                {chefs.map((chef) => (
-                                    <option key={chef._id} value={chef._id}>{chef.name}</option>
-                                ))}
-                            </select>
+                            <select
+    name="chefId"
+    value={form.chefId}
+    onChange={handleChange}
+    required
+    className="w-full border rounded px-3 py-2"
+    disabled={!!form.chefId} // ✅ disables if a chef is already assigned
+>
+    <option value="">-- Select Chef --</option>
+    {chefs.map(chef => (
+        <option key={chef._id} value={chef._id}>{chef.name}</option>
+    ))}
+</select>
+
+{form.chefId && (
+    <div className="mt-2 text-sm text-gray-600 italic">
+        Assigned chef: <span className="font-semibold text-primary">
+            {chefs.find(c => c._id === form.chefId)?.name || "Unknown Chef"}
+        </span>
+    </div>
+)}
+
                         </div>
 
 
@@ -208,7 +231,7 @@ export default function EditDishForm() {
                                     </select>
                                 </div>
                             ) : (
-                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, meatType: true }))} className="bg-primary text-white px-4 py-2 rounded-full mb-4 block">Add Meat Type</button>
+                                <button type="button" onClick={() => setOptionalFields(prev => ({ ...prev, meatType: true }))} className="bg-primary text-white px-4 py-2 rounded-full mb-4 block">+ Add Meat Type</button>
                             )}
 
 
@@ -284,7 +307,7 @@ export default function EditDishForm() {
                                     </button>
                                 </div>
                             )}
-                            
+
                             <hr className="my-4" />
                             {!optionalFields.tags ? (
                                 <button
@@ -344,7 +367,20 @@ export default function EditDishForm() {
                             </div>
                         </div>
 
-                        <button type="submit" className="bg-primary hover:bg-primary/90 text-white font-bold w-full py-3 rounded-full mt-4">Update Dish</button>
+                        <button
+                            type="submit"
+                            className="bg-primary hover:bg-primary/90 text-white font-bold w-full py-3 rounded-full mt-4 flex items-center justify-center gap-2 disabled:opacity-50"
+                            disabled={submitting}
+                        >
+                            {submitting && (
+                                <svg className="w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
+                                </svg>
+                            )}
+                            {submitting ? "Updating..." : "Update Dish"}
+                        </button>
+
                     </form>
 
                     {/* Success Modal */}
