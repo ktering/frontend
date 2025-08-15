@@ -12,6 +12,7 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const [actionLoading, setActionLoading] = useState({});
 
   // Accept prep time modal
   const [modalOpen, setModalOpen] = useState(false);
@@ -55,23 +56,46 @@ export default function Orders() {
   };
 
   // Submit prep time
+  // const handlePrepTimeSubmit = async () => {
+  //   const num = Number(prepTime);
+  //   if (!num || num <= 0) {
+  //     alert("Please enter a valid positive number for prep time.");
+  //     return;
+  //   }
+  //   try {
+  //     await sendOrderAction(selectedOrderId, { action: "accept", avgPrepTime: num });
+  //     setOrders((prev) => prev.filter((o) => o.orderId !== selectedOrderId)); // ← orderId
+  //     showSuccess("Order accepted successfully.");
+  //   } catch (e) {
+  //     alert(e?.message || "Failed to accept order.");
+  //   } finally {
+  //     setModalOpen(false);
+  //     setSelectedOrderId(null);
+  //   }
+  // };
+
   const handlePrepTimeSubmit = async () => {
-    const num = Number(prepTime);
-    if (!num || num <= 0) {
-      alert("Please enter a valid positive number for prep time.");
-      return;
-    }
-    try {
-      await sendOrderAction(selectedOrderId, { action: "accept", avgPrepTime: num });
-      setOrders((prev) => prev.filter((o) => o.orderId !== selectedOrderId)); // ← orderId
-      showSuccess("Order accepted successfully.");
-    } catch (e) {
-      alert(e?.message || "Failed to accept order.");
-    } finally {
-      setModalOpen(false);
-      setSelectedOrderId(null);
-    }
-  };
+  const num = Number(prepTime);
+  if (!num || num <= 0) {
+    alert("Please enter a valid positive number for prep time.");
+    return;
+  }
+
+  const key = `${selectedOrderId}-accept`;
+  setActionLoading(prev => ({ ...prev, [key]: true }));
+
+  try {
+    await sendOrderAction(selectedOrderId, { action: "accept", avgPrepTime: num });
+    setOrders(prev => prev.filter(o => o.orderId !== selectedOrderId));
+    showSuccess("Order accepted successfully.");
+  } catch (e) {
+    alert(e?.message || "Failed to accept order.");
+  } finally {
+    setActionLoading(prev => ({ ...prev, [key]: false }));
+    setModalOpen(false);
+    setSelectedOrderId(null);
+  }
+};
 
   // Open Reject modal
   const onRejectClick = (orderId) => {
@@ -80,30 +104,64 @@ export default function Orders() {
   };
 
   // Mark ready for delivery
+  // const onDeliverClick = async (orderId) => {
+  //   try {
+  //     await sendOrderAction(orderId, { action: "deliver" });
+  //     setOrders((prev) => prev.filter((o) => o.orderId !== orderId)); // ← orderId
+  //     showSuccess("Order marked as ready for delivery.");
+  //   } catch (e) {
+  //     alert(e?.message || "Failed to mark order as ready for delivery.");
+  //   }
+  // };
+
   const onDeliverClick = async (orderId) => {
-    try {
-      await sendOrderAction(orderId, { action: "deliver" });
-      setOrders((prev) => prev.filter((o) => o.orderId !== orderId)); // ← orderId
-      showSuccess("Order marked as ready for delivery.");
-    } catch (e) {
-      alert(e?.message || "Failed to mark order as ready for delivery.");
-    }
-  };
+  const key = `${orderId}-deliver`;
+  setActionLoading(prev => ({ ...prev, [key]: true }));
+
+  try {
+    await sendOrderAction(orderId, { action: "deliver" });
+    setOrders(prev => prev.filter(o => o.orderId !== orderId));
+    showSuccess("Order marked as ready for delivery.");
+  } catch (e) {
+    alert(e?.message || "Failed to mark order as ready for delivery.");
+  } finally {
+    setActionLoading(prev => ({ ...prev, [key]: false }));
+  }
+};
 
   // Confirm reject
+  // const confirmReject = async () => {
+  //   if (!rejectOrderId) return;
+  //   try {
+  //     await sendOrderAction(rejectOrderId, { action: "reject" });
+  //     setOrders((prev) => prev.filter((o) => o.orderId !== rejectOrderId)); // ← orderId
+  //     showSuccess("Order rejected successfully.");
+  //   } catch (e) {
+  //     alert(e?.message || "Failed to reject order.");
+  //   } finally {
+  //     setRejectModalOpen(false);
+  //     setRejectOrderId(null);
+  //   }
+  // };
+
   const confirmReject = async () => {
-    if (!rejectOrderId) return;
-    try {
-      await sendOrderAction(rejectOrderId, { action: "reject" });
-      setOrders((prev) => prev.filter((o) => o.orderId !== rejectOrderId)); // ← orderId
-      showSuccess("Order rejected successfully.");
-    } catch (e) {
-      alert(e?.message || "Failed to reject order.");
-    } finally {
-      setRejectModalOpen(false);
-      setRejectOrderId(null);
-    }
-  };
+  if (!rejectOrderId) return;
+
+  const key = `${rejectOrderId}-reject`;
+  setActionLoading(prev => ({ ...prev, [key]: true }));
+
+  try {
+    await sendOrderAction(rejectOrderId, { action: "reject" });
+    setOrders(prev => prev.filter(o => o.orderId !== rejectOrderId));
+    showSuccess("Order rejected successfully.");
+  } catch (e) {
+    alert(e?.message || "Failed to reject order.");
+  } finally {
+    setActionLoading(prev => ({ ...prev, [key]: false }));
+    setRejectModalOpen(false);
+    setRejectOrderId(null);
+  }
+};
 
   return (
     <ChefLayout>
@@ -122,14 +180,28 @@ export default function Orders() {
       ) : (
         <div className="grid gap-4">
           {orders.map((o) => (
+            // <OrderCard
+            //   key={o.orderId}                   // ← orderId
+            //   order={o}                          // OrderCard should use o.chefOrder.status/items
+            //   tab={active}
+            //   onAccept={() => onAcceptClick(o.orderId)}   // ← orderId
+            //   onReject={() => onRejectClick(o.orderId)}   // ← orderId
+            //   onDeliver={() => onDeliverClick(o.orderId)} // ← orderId
+            // />
             <OrderCard
-              key={o.orderId}                   // ← orderId
-              order={o}                          // OrderCard should use o.chefOrder.status/items
-              tab={active}
-              onAccept={() => onAcceptClick(o.orderId)}   // ← orderId
-              onReject={() => onRejectClick(o.orderId)}   // ← orderId
-              onDeliver={() => onDeliverClick(o.orderId)} // ← orderId
-            />
+  key={o.orderId}
+  order={o}
+  tab={active}
+  onAccept={() => onAcceptClick(o.orderId)}
+  onReject={() => onRejectClick(o.orderId)}
+  onDeliver={() => onDeliverClick(o.orderId)}
+  loading={{
+    accept: !!actionLoading[`${o.orderId}-accept`],
+    reject: !!actionLoading[`${o.orderId}-reject`],
+    deliver: !!actionLoading[`${o.orderId}-deliver`],
+  }}
+/>
+
           ))}
         </div>
       )}
@@ -177,12 +249,21 @@ export default function Orders() {
               >
                 Cancel
               </button>
-              <button
-                className="px-4 py-2 rounded bg-primary text-white hover:bg-red-700"
-                onClick={handlePrepTimeSubmit}
-              >
-                Submit
-              </button>
+             <button
+  className="px-4 py-2 rounded bg-primary text-white hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+  onClick={handlePrepTimeSubmit}
+  disabled={actionLoading[`${selectedOrderId}-accept`]}
+>
+  {actionLoading[`${selectedOrderId}-accept`] && (
+    <svg className="w-4 h-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
+    </svg>
+  )}
+  {actionLoading[`${selectedOrderId}-accept`] ? "Submitting..." : "Submit"}
+</button>
+
+
             </div>
           </div>
         </div>
@@ -215,12 +296,21 @@ export default function Orders() {
               >
                 Cancel
               </button>
-              <button
-                className="px-4 py-2 rounded bg-primary text-white hover:bg-red-700"
-                onClick={confirmReject}
-              >
-                Reject Order
-              </button>
+             <button
+  className="px-4 py-2 rounded bg-primary text-white hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+  onClick={confirmReject}
+  disabled={actionLoading[`${rejectOrderId}-reject`]}
+>
+  {actionLoading[`${rejectOrderId}-reject`] && (
+    <svg className="w-4 h-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
+    </svg>
+  )}
+  {actionLoading[`${rejectOrderId}-reject`] ? "Rejecting..." : "Reject Order"}
+</button>
+
+
             </div>
           </div>
         </div>
