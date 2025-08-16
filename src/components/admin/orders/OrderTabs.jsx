@@ -1,12 +1,14 @@
 export default function OrdersTabs({ active, onChange }) {
+  // components/admin/orders/AdminOrdersTabs.jsx
   const TABS = [
-    { key: "pending",          label: "Pending" },
-    { key: "confirmed",        label: "Confirmed" },
-    { key: "ready_for_pickup", label: "Ready for Pickup" },
-    { key: "picked_up",        label: "Out for Delivery" },
-    { key: "completed",        label: "Completed" },
-    { key: "rejected",         label: "Rejected" },
+  { key: "pending",          label: "Pending" },
+  { key: "confirmed",        label: "Confirmed" },        
+  { key: "ready_for_pickup", label: "Ready for Pickup" }, 
+  { key: "picked_up",        label: "Out for Delivery" }, 
+  { key: "delivered",        label: "Completed" },        
+  { key: "rejected",         label: "Rejected" },
   ];
+
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 mb-6">

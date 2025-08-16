@@ -82,7 +82,7 @@ export default function Orders() {
   // Mark ready for delivery
   const onDeliverClick = async (orderId) => {
     try {
-      await sendOrderAction(orderId, { action: "deliver" });
+      await sendOrderAction(orderId, { action: "mark_ready" });
       setOrders((prev) => prev.filter((o) => o.orderId !== orderId)); // ← orderId
       showSuccess("Order marked as ready for delivery.");
     } catch (e) {

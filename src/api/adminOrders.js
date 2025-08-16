@@ -9,8 +9,8 @@ function authHeaders() {
   return t ? { Authorization: `Bearer ${t}` } : {};
 }
 
-export async function fetchAdminOrders(status) {
-  const qs = status ? `?status=${encodeURIComponent(status)}` : "";
+export async function fetchAdminOrders(tab) {
+  const qs = tab ? `?tab=${encodeURIComponent(tab)}` : "";
   const res = await fetch(`${API_BASE}/api/orders/admin${qs}`, {
     headers: { ...authHeaders() }
   });
@@ -34,5 +34,14 @@ export async function sendAdminOrderAction(orderId, payload) {
     let err; try { err = await res.json(); } catch {}
     throw err || { message: "Failed to update order" };
   }
+  return res.json();
+}
+export async function sendAdminChefSliceAction(orderId, chefId, payload) {
+  const res = await fetch(`${API_BASE}/api/orders/admin/${orderId}/chef/${chefId}/status`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) { let err; try { err = await res.json(); } catch {}; throw err || { message: "Failed to update chef slice" }; }
   return res.json();
 }

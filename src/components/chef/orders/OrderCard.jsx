@@ -6,7 +6,7 @@ export default function OrderCard({ order, tab, onAccept, onReject, onDeliver })
   // ⬇️ Chef-centric slice from backend
   const chefOrder  = order.chefOrder || {};
   const items      = chefOrder.items || [];
-  const chefStatus = chefOrder.status || order.status;
+  const chefStatus = chefOrder.status;
 
   // ⬇️ What the chef will get (server-provided total for this chef)
   const chefPayoutTotal =

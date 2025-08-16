@@ -6,9 +6,13 @@ export default function StatusBadge({ status, label }) {
     picked_up:         "bg-purple-100 text-purple-800",
     delivered:         "bg-green-100 text-green-800",
     rejected:          "bg-red-100 text-red-700",
+
+  // Order-level extras for admin display
+    partially_confirmed: "bg-blue-50 text-blue-700",
+    partial_cancelled:   "bg-orange-50 text-orange-700",
     in_delivery:       "bg-sky-100 text-sky-800",
-    partial_cancelled: "bg-orange-100 text-orange-800",
-    cancelled:         "bg-red-100 text-red-700",
+    completed:           "bg-green-100 text-green-800",
+    cancelled:           "bg-red-100 text-red-700",
   };
   const cls = map[status] || "bg-gray-100 text-gray-700";
   const text = String(status || "").replaceAll("_", " ");
