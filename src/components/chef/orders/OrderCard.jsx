@@ -1,6 +1,6 @@
 import StatusBadge from "./StatusBadge";
 
-export default function OrderCard({ order, tab, onAccept, onReject, onDeliver }) {
+export default function OrderCard({ order, tab, onAccept, onReject, onDeliver, loading = {} }) {
   const when = new Date(order.createdAt).toLocaleString();
 
   // ⬇️ Chef-centric slice from backend
@@ -83,26 +83,36 @@ export default function OrderCard({ order, tab, onAccept, onReject, onDeliver })
           <>
             <button
               onClick={onAccept}
-              className="px-4 py-2 rounded-full bg-green-600 text-white hover:bg-green-700"
+              className="px-4 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
+              disabled={loading.accept} // ← disable while API call is running
             >
-              Accept
+              {loading.accept ? "Accepting..." : "Accept"} {/* ← show loading text */}
             </button>
             <button
               onClick={onReject}
-              className="px-4 py-2 rounded-full bg-red-600 text-white hover:bg-red-700"
+              className="px-4 py-2 rounded-full bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+              disabled={loading.reject} // ← disable while API call is running
             >
-              Reject
+              {loading.reject ? "Rejecting..." : "Reject"} {/* ← show loading text */}
             </button>
           </>
         )}
         {tab === "confirmed" && (
           <button
             onClick={onDeliver}
-            className="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary/90"
+            className="px-4 py-2 rounded-full bg-primary text-white hover:bg-primary/90 disabled:opacity-50 flex items-center justify-center gap-2"
+          disabled={loading.deliver} // ← disable while API call is running
           >
-            Mark Order as Ready for Pickup
+            {loading.deliver && (
+              <svg className="w-4 h-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
+              </svg>
+            )}
+            {loading.deliver ? "Updating..." : "Mark Order as Ready for Pickup"} {/* ← show loading text */}
           </button>
         )}
+
       </div>
     </div>
   );
