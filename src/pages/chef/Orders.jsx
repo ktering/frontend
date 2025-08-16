@@ -115,19 +115,14 @@ export default function Orders() {
   // };
 
   const onDeliverClick = async (orderId) => {
-  const key = `${orderId}-deliver`;
-  setActionLoading(prev => ({ ...prev, [key]: true }));
-
-  try {
-    await sendOrderAction(orderId, { action: "deliver" });
-    setOrders(prev => prev.filter(o => o.orderId !== orderId));
-    showSuccess("Order marked as ready for delivery.");
-  } catch (e) {
-    alert(e?.message || "Failed to mark order as ready for delivery.");
-  } finally {
-    setActionLoading(prev => ({ ...prev, [key]: false }));
-  }
-};
+    try {
+      await sendOrderAction(orderId, { action: "mark_ready" });
+      setOrders((prev) => prev.filter((o) => o.orderId !== orderId)); // ← orderId
+      showSuccess("Order marked as ready for delivery.");
+    } catch (e) {
+      alert(e?.message || "Failed to mark order as ready for delivery.");
+    }
+  };
 
   // Confirm reject
   // const confirmReject = async () => {

@@ -50,7 +50,7 @@ const AdminDishCard = ({ item, onEdit, onDelete }) => {
 
         {/* Price */}
         <p className="text-sm font-bold text-primary mb-3 text-left">
-          ${item.price ? item.price.toFixed(2) : "0.00"}
+          ${item.originalChefPrice ? item.originalChefPrice.toFixed(2) : "0.00"}
         </p>
 
         {/* Buttons Centered */}
