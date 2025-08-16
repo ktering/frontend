@@ -63,15 +63,25 @@ export default function ChefDashboard() {
 
       toast.success(`New order #${shortId(order.orderCode)} from ${order.customerName || "Customer"}`);
       notificationSound.play().catch(() => console.log("🔔 Sound blocked"));
-
       if ("Notification" in window && Notification.permission === "granted") {
         try {
-          new Notification(`New order #${shortId(order.orderCode)}`, {
-            body: `From: ${order.customerName || "Customer"}\nItems: ${order.chefOrder?.items?.length || 0}`,
-            icon: "/logo192.png",
-          });
-        } catch { /* ignore */ }
+          // Use service worker registration if available
+          if (navigator.serviceWorker?.controller) {
+            navigator.serviceWorker.getRegistration().then((reg) => {
+              reg?.showNotification(`New order #${shortId(order.orderCode)}`, {
+                body: `From: ${order.customerName || "Customer"}\nItems: ${order.chefOrder?.items?.length || 0}`,
+                icon: "/logo192.png",
+              });
+            });
+          } else {
+            // fallback to toast
+            toast.success(`New order #${shortId(order.orderCode)} from ${order.customerName || "Customer"}`);
+          }
+        } catch (err) {
+          console.log("🔔 Notification error:", err);
+        }
       }
+
     };
 
     socket.on("new_order", handleNewOrder);
@@ -93,8 +103,8 @@ export default function ChefDashboard() {
         if (!alive) return;
 
         const recent3 = [...(allOrders || [])]
-          .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0,3);
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 3);
 
         setCounts({
           pending: pending.length,
@@ -127,7 +137,7 @@ export default function ChefDashboard() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-0">
-          {stats.map(({id,title,value,icon}) => (
+          {stats.map(({ id, title, value, icon }) => (
             <div key={id} className="bg-white rounded-xl shadow-md p-4 sm:p-6 flex items-center gap-4 hover:shadow-lg transition-shadow border border-gray-100">
               <div className="p-3 rounded-full bg-gray-100 flex items-center justify-center shadow-sm">{icon}</div>
               <div className="flex-1 min-w-0">
@@ -143,25 +153,25 @@ export default function ChefDashboard() {
           <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Recent Orders</h2>
           <div className="bg-white rounded-xl shadow p-4 sm:p-6">
             {loading ? <div className="text-gray-500">Loading…</div> :
-            recent.length===0 ? <div className="text-gray-500">No recent orders.</div> :
-            <div className="flex flex-col gap-4">
-              {recent.map((o,idx)=>{
-                const items=o.chefOrder?.items||[];
-                const itemCount = items.reduce((s,i)=>s+Number(i.quantity||0),0);
-                return (
-                  <div key={o.orderId||idx} className={`flex flex-col sm:flex-row justify-between items-start sm:items-center ${idx<recent.length-1?"border-b pb-3":""}`}>
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-700 text-sm sm:text-base">Order #{shortId(o.orderId)}</span>
-                      <span className="text-gray-400 text-xs sm:text-sm">{itemCount} {itemCount===1?"item":"items"}</span>
-                    </div>
-                    <div className="flex items-center gap-4 mt-2 sm:mt-0">
-                      {statusChip(o.chefOrder?.status)}
-                      <span className="text-gray-500 text-xs sm:text-sm">{fmtWhen(o.createdAt)}</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>}
+              recent.length === 0 ? <div className="text-gray-500">No recent orders.</div> :
+                <div className="flex flex-col gap-4">
+                  {recent.map((o, idx) => {
+                    const items = o.chefOrder?.items || [];
+                    const itemCount = items.reduce((s, i) => s + Number(i.quantity || 0), 0);
+                    return (
+                      <div key={o.orderId || idx} className={`flex flex-col sm:flex-row justify-between items-start sm:items-center ${idx < recent.length - 1 ? "border-b pb-3" : ""}`}>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-gray-700 text-sm sm:text-base">Order #{shortId(o.orderId)}</span>
+                          <span className="text-gray-400 text-xs sm:text-sm">{itemCount} {itemCount === 1 ? "item" : "items"}</span>
+                        </div>
+                        <div className="flex items-center gap-4 mt-2 sm:mt-0">
+                          {statusChip(o.chefOrder?.status)}
+                          <span className="text-gray-500 text-xs sm:text-sm">{fmtWhen(o.createdAt)}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>}
           </div>
         </div>
       </ChefLayout>
