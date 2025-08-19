@@ -1,7 +1,7 @@
 import { API_BASE } from "../../config";
 
 export async function loginUser({ username, password, role }) {
-  const res = await fetch(`${API_BASE}/api/admin/login`, {
+  const res = await fetch(`${API_BASE}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password, role }),
