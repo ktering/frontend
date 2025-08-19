@@ -19,7 +19,8 @@ export function getToken() {
 
 export function logoutUser() {
   localStorage.removeItem("authToken");
-  localStorage.removeItem("userRole");
+  localStorage.removeItem("role");
+  localStorage.removeItem("driverName");
 }
 
 export function isLoggedIn() {

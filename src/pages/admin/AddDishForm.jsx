@@ -6,8 +6,6 @@ import Sidebar from "../../components/admin/Sidebar";
 
 export default function AddDishForm() {
     const [searchParams] = useSearchParams();
-    const [submitting, setSubmitting] = useState(false);
-
     const initialChefId = searchParams.get("chefId") || "";
 
     const [form, setForm] = useState({
@@ -47,23 +45,12 @@ export default function AddDishForm() {
         getAllChefs().then(setChefs);
     }, []);
 
-
     const handleChange = e => {
         const { name, value, type, checked } = e.target;
-        if (name === "originalChefPrice") {
-            // Ensure the price is positive and a valid number
-            if (value === "" || (Number(value) >= 0 && !isNaN(value))) {
-                setForm(prev => ({
-                    ...prev,
-                    [name]: value
-                }));
-            }
-        } else {
-            setForm(prev => ({
-                ...prev,
-                [name]: type === "checkbox" ? checked : value
-            }));
-        }
+        setForm(prev => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value
+        }));
     };
 
     const handleImageChange = e => {
@@ -104,10 +91,6 @@ export default function AddDishForm() {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        if (Number(form.originalChefPrice) <= 0) {
-            setModal({ success: false, error: "Price must be a positive number greater than zero." });
-            return;
-        }
         const formData = new FormData();
         formData.append("name", form.name);
         formData.append("description", form.description);
@@ -127,18 +110,12 @@ export default function AddDishForm() {
         if (optionalFields.ingredients) formData.append("ingredients", JSON.stringify(ingredients));
 
         try {
-
-            setSubmitting(true); // ← start loading
-
             await createDishAdmin(formData);
             setModal({ success: true, error: "" });
             setTimeout(() => navigate("/supervised/dishes/chef"), 3000);
         } catch (err) {
             setModal({ success: false, error: err.message });
         }
-        finally {
-        setSubmitting(false); // ← stop loading
-    }
     };
 
     return (
@@ -178,7 +155,7 @@ export default function AddDishForm() {
                             <div>
                                 <label className="font-semibold block mb-1">Price *</label>
                                 <small className="text-gray-600">This is the price the chef will receive for this dish.</small>
-                                <input name="originalChefPrice" type="number" value={form.originalChefPrice} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="original Chef Price" />
+                                <input name="originalChefPrice" type="number" value={form.originalChefPrice} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="Original Chef Price" />
                             </div>
 
                             <div>
@@ -337,20 +314,7 @@ export default function AddDishForm() {
                         </div>
 
 
-                        <button
-    type="submit"
-    className="bg-primary hover:bg-primary/90 text-white text-lg font-bold w-full mt-6 py-3 rounded-full flex items-center justify-center gap-2 disabled:opacity-50"
-    disabled={submitting} // ← disable while API is running
->
-    {submitting && (
-        <svg className="w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
-        </svg>
-    )}
-    {submitting ? "Submitting..." : "Submit Dish"}
-</button>
-
+                        <button type="submit" className="bg-primary hover:bg-primary/90 text-white text-lg font-bold w-full mt-6 py-3 rounded-full">Submit Dish</button>
                     </form>
 
                     {/* Success Modal */}

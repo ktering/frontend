@@ -55,25 +55,6 @@ export default function Orders() {
     setModalOpen(true);
   };
 
-  // Submit prep time
-  // const handlePrepTimeSubmit = async () => {
-  //   const num = Number(prepTime);
-  //   if (!num || num <= 0) {
-  //     alert("Please enter a valid positive number for prep time.");
-  //     return;
-  //   }
-  //   try {
-  //     await sendOrderAction(selectedOrderId, { action: "accept", avgPrepTime: num });
-  //     setOrders((prev) => prev.filter((o) => o.orderId !== selectedOrderId)); // ← orderId
-  //     showSuccess("Order accepted successfully.");
-  //   } catch (e) {
-  //     alert(e?.message || "Failed to accept order.");
-  //   } finally {
-  //     setModalOpen(false);
-  //     setSelectedOrderId(null);
-  //   }
-  // };
-
   const handlePrepTimeSubmit = async () => {
   const num = Number(prepTime);
   if (!num || num <= 0) {
@@ -103,17 +84,6 @@ export default function Orders() {
     setRejectModalOpen(true);
   };
 
-  // Mark ready for delivery
-  // const onDeliverClick = async (orderId) => {
-  //   try {
-  //     await sendOrderAction(orderId, { action: "deliver" });
-  //     setOrders((prev) => prev.filter((o) => o.orderId !== orderId)); // ← orderId
-  //     showSuccess("Order marked as ready for delivery.");
-  //   } catch (e) {
-  //     alert(e?.message || "Failed to mark order as ready for delivery.");
-  //   }
-  // };
-
   const onDeliverClick = async (orderId) => {
     try {
       await sendOrderAction(orderId, { action: "mark_ready" });
@@ -123,21 +93,6 @@ export default function Orders() {
       alert(e?.message || "Failed to mark order as ready for delivery.");
     }
   };
-
-  // Confirm reject
-  // const confirmReject = async () => {
-  //   if (!rejectOrderId) return;
-  //   try {
-  //     await sendOrderAction(rejectOrderId, { action: "reject" });
-  //     setOrders((prev) => prev.filter((o) => o.orderId !== rejectOrderId)); // ← orderId
-  //     showSuccess("Order rejected successfully.");
-  //   } catch (e) {
-  //     alert(e?.message || "Failed to reject order.");
-  //   } finally {
-  //     setRejectModalOpen(false);
-  //     setRejectOrderId(null);
-  //   }
-  // };
 
   const confirmReject = async () => {
   if (!rejectOrderId) return;
