@@ -3,12 +3,19 @@ import { FaUtensils, FaUserTie, FaChartBar, FaShoppingCart } from "react-icons/f
 import { Link, useLocation } from "react-router-dom";
 import { logoutUser } from "../../api/adminAuth";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Sidebar() {
+  const navigate = useNavigate();
   const location = useLocation();
   const [dishesOpen, setDishesOpen] = useState(
     location.pathname.startsWith("/supervised/dishes")
   );
+  async function handleLogout() {
+    try { await logoutUser(); }
+    finally { navigate("/supervised/login", { replace: true }); }
+  }
 
   return (
     <aside className="w-64 bg-white h-screen border-r border-gray-200 p-4 fixed">
@@ -57,7 +64,7 @@ export default function Sidebar() {
         <Link to="/supervised/orders" className="flex items-center gap-3 hover:text-red-500">
           <FaShoppingCart /> Orders
         </Link>
-        <button onClick={logoutUser} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+        <button onClick={handleLogout} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
           Logout
         </button>
       </nav>
