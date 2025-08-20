@@ -57,7 +57,7 @@ export default function AdminDashboard() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition">
-            <p className="text-gray-500 text-sm">Total Chefs</p>
+            <p className="text-gray-500 text-sm">Total Kterers</p>
             <h2 className="text-2xl font-bold text-gray-800 mt-2">{chefs.length}</h2>
           </div>
           <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition">
@@ -78,7 +78,7 @@ export default function AdminDashboard() {
               onClick={() => navigate("/supervised/chefs/new")}
               className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
             >
-              + Add Chef
+              + Add Kterer
             </button>
             <button
               onClick={() => navigate("/supervised/dishes/new")}
@@ -94,7 +94,7 @@ export default function AdminDashboard() {
 
         {/* Recent Chefs Section */}
         <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Recent Chefs</h2>
+          <h2 className="text-xl font-semibold mb-4">Recent Kterers</h2>
           <div className="overflow-x-auto">
             <table className="w-full border border-gray-200 rounded-lg">
               <thead className="bg-gray-100">
@@ -128,7 +128,7 @@ export default function AdminDashboard() {
                 ) : (
                   <tr>
                     <td colSpan="4" className="p-4 text-center text-gray-500">
-                      No chefs found.
+                      No Kterers found.
                     </td>
                   </tr>
                 )}

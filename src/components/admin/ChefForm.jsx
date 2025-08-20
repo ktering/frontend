@@ -121,7 +121,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
       <div className="ml-64 w-full bg-gray-100 min-h-screen py-8 px-4">
         <div className="w-full max-w-4xl bg-white mx-auto p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-primary text-center mb-6">
-            {isEdit ? "Edit Chef" : "Add New Chef"}
+            {isEdit ? "Edit Kterer" : "Add New Kterer"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name */}
@@ -377,7 +377,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
               type="submit"
               className="bg-primary hover:bg-primary/90 text-white text-lg font-bold w-full mt-6 py-3 rounded-full"
             >
-              {isEdit ? "Update Chef" : "Add Chef"}
+              {isEdit ? "Update Kterer" : "Add Kterer"}
             </button>
           </form>
 
@@ -386,7 +386,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
             <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 bg-black/40 font-nunito">
               <div className="bg-white border border-primary/20 rounded-2xl shadow-xl max-w-md w-full px-6 py-8 text-center animate-fade-in">
                 <h2 className="text-xl font-bold text-primary mb-2">
-                  {isEdit ? "Chef Updated Successfully!" : "Chef Added Successfully!"}
+                  {isEdit ? "Kterer Updated Successfully!" : "Kterer Added Successfully!"}
                 </h2>
                 <button
                   onClick={() => setModal({ success: false, error: "" })}

@@ -14,7 +14,7 @@ const AdminDishCard = ({ item, onEdit, onDelete }) => {
 
   return (
     <div
-      onClick={() => navigate(`/dish/${item.slug}`)}
+      onClick={() => navigate(`/supervised/dishes/${item.slug}`)}
       className="bg-white rounded-xl border border-gray-200 hover:border-primary/40 hover:scale-[1.01] transition-transform duration-100 ease-in-out w-full max-w-[270px] mx-auto flex flex-col cursor-pointer"
     >
       {/* Image */}
@@ -39,7 +39,7 @@ const AdminDishCard = ({ item, onEdit, onDelete }) => {
         {/* Chef */}
         <div className="flex items-center gap-2 text-xs text-gray-700 mb-1">
           <ChefHat className="w-4 h-4 text-gray-700" />
-          <span>{item.chefId?.name || "Unknown Chef"}</span>
+          <span>{item.chefId?.name || "Unknown Kterer"}</span>
         </div>
 
         {/* Prep Time */}

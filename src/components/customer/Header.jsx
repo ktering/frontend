@@ -57,7 +57,7 @@ export default function Header() {
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-7">
             <a href="/menu" className="text-black hover:text-primary font-medium transition-colors">Explore Menu</a>
-            <a href="/chefs" className="text-black hover:text-primary font-medium transition-colors">Explore Chefs</a>
+            <a href="/chefs" className="text-black hover:text-primary font-medium transition-colors">Explore Kterers</a>
           </nav>
 
           {/* Desktop Actions */}
@@ -147,7 +147,7 @@ export default function Header() {
 
               {/* Mobile Nav Links */}
               <a href="/menu" className="block py-2 px-2 text-black hover:text-primary font-medium rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>Explore Menu</a>
-              <a href="/chefs" className="block py-2 px-2 text-black hover:text-primary font-medium rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>Explore Chefs</a>
+              <a href="/chefs" className="block py-2 px-2 text-black hover:text-primary font-medium rounded transition-colors" onClick={() => setMobileMenuOpen(false)}>Explore Kterers</a>
               <a href="/order" className="block bg-primary text-white px-6 py-2 rounded-full font-semibold shadow hover:bg-white hover:text-primary hover:border border-primary transition-colors mt-2 text-center" onClick={() => setMobileMenuOpen(false)}>Order Now</a>
             </div>
           </div>

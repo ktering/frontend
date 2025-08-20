@@ -27,7 +27,7 @@ export default function AllChefs() {
             Loading Kterers...
           </div>
         ) : chefs.length === 0 ? (
-          <div className="text-center text-gray-400">No chefs found.</div>
+          <div className="text-center text-gray-400">No Kterer found.</div>
         ) : (
           <ChefsGrid
             chefs={chefs}

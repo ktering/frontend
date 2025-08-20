@@ -128,7 +128,7 @@ export default function AddDishForm() {
 
                     {initialChefId && (
                         <div className="mb-4 text-center text-sm text-gray-600 italic">
-                            Adding dish for chef: <span className="font-semibold text-primary">{chefs.find(c => c._id === initialChefId)?.name || initialChefId}</span>
+                            Adding dish for Kterer: <span className="font-semibold text-primary">{chefs.find(c => c._id === initialChefId)?.name || initialChefId}</span>
                         </div>
                     )}
 
@@ -154,8 +154,8 @@ export default function AddDishForm() {
 
                             <div>
                                 <label className="font-semibold block mb-1">Price *</label>
-                                <small className="text-gray-600">This is the price the chef will receive for this dish.</small>
-                                <input name="originalChefPrice" type="number" value={form.originalChefPrice} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="Original Chef Price" />
+                                <small className="text-gray-600">This is the price the Kterer will receive for this dish.</small>
+                                <input name="originalChefPrice" type="number" value={form.originalChefPrice} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="Original Kterer Price" />
                             </div>
 
                             <div>
@@ -172,7 +172,7 @@ export default function AddDishForm() {
                             </div>
 
                             <div>
-                                <label className="font-semibold block mb-1">Chef *</label>
+                                <label className="font-semibold block mb-1">Kterer *</label>
                                 <select
                                     name="chefId"
                                     value={form.chefId}
@@ -181,7 +181,7 @@ export default function AddDishForm() {
                                     disabled={!!initialChefId} // disables if preselected
                                     className={`w-full border rounded px-3 py-2 ${initialChefId ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                                 >
-                                    <option value="">-- Select Chef --</option>
+                                    <option value="">-- Select Kterer --</option>
                                     {chefs.map(chef => (
                                         <option key={chef._id} value={chef._id}>{chef.name}</option>
                                     ))}

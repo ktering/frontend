@@ -42,6 +42,6 @@ export async function sendAdminChefSliceAction(orderId, chefId, payload) {
     headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) { let err; try { err = await res.json(); } catch {}; throw err || { message: "Failed to update chef slice" }; }
+  if (!res.ok) { let err; try { err = await res.json(); } catch {}; throw err || { message: "Failed to update Kterer slice" }; }
   return res.json();
 }

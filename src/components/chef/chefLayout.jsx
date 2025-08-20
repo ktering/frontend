@@ -27,7 +27,7 @@ export default function ChefLayout({ children }) {
           {/* Chef name */}
           <h1 className="font-bold text-lg text-primary">
             {/* {localStorage.getItem("chefName") || "Chef"} */}
-            Chef Dashboard
+            Kterer Dashboard
           </h1>
 
           {/* Hamburger */}

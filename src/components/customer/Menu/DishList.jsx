@@ -16,7 +16,7 @@ const DishList = ({ dishes, loading }) => {
       <div className="text-center min-h-[300px] flex flex-col items-center justify-center text-gray-600">
         <Utensils className="w-12 h-12 text-primary mb-3" />
         <p className="text-lg font-semibold">We’re cooking something fresh!</p>
-        <p className="text-sm mt-1">Our chefs are adding delicious dishes soon. Stay tuned!</p>
+        <p className="text-sm mt-1">Our Kterers are adding delicious dishes soon. Stay tuned!</p>
       </div>
     );
   }

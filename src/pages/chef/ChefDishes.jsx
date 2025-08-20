@@ -15,7 +15,7 @@ function getChefIdFromToken() {
 
 export default function ChefDishes() {
   const chefId = useMemo(() => getChefIdFromToken(), []);
-  const chefName = localStorage.getItem("chefName") || "Chef";
+  const chefName = localStorage.getItem("chefName") || "Kterer";
 
   const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -177,8 +177,8 @@ export default function EditDishForm() {
                             <textarea name="description" value={form.description} onChange={handleChange} className="w-full border rounded px-3 py-2" placeholder="Description" />
                             <hr className="my-4" />
                             <label className="font-semibold block mb-1">Price *</label>
-                            <small className="text-gray-600">This is the price the chef will receive for this dish.</small>
-                            <input name="originalChefPrice" type="number" value={form.originalChefPrice} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="Original Chef Price" />
+                            <small className="text-gray-600">This is the price the Kterer will receive for this dish.</small>
+                            <input name="originalChefPrice" type="number" value={form.originalChefPrice} onChange={handleChange} required className="w-full border rounded px-3 py-2" placeholder="Original Kterer Price" />
                             <hr className="my-4" />
                             <label className="font-semibold block mb-1">Category</label>
                             <select name="category" value={form.category} onChange={handleChange} className="w-full border rounded px-3 py-2">
@@ -191,7 +191,7 @@ export default function EditDishForm() {
                                 <option value="desserts">Desserts</option>
                             </select>
                             <hr className="my-4" />
-                            <label className="font-semibold block mb-1">Chef</label>
+                            <label className="font-semibold block mb-1">Kterer</label>
                             <select
     name="chefId"
     value={form.chefId}
@@ -200,7 +200,7 @@ export default function EditDishForm() {
     className="w-full border rounded px-3 py-2"
     disabled={!!form.chefId} // ✅ disables if a chef is already assigned
 >
-    <option value="">-- Select Chef --</option>
+    <option value="">-- Select Kterer --</option>
     {chefs.map(chef => (
         <option key={chef._id} value={chef._id}>{chef.name}</option>
     ))}
@@ -208,8 +208,8 @@ export default function EditDishForm() {
 
 {form.chefId && (
     <div className="mt-2 text-sm text-gray-600 italic">
-        Assigned chef: <span className="font-semibold text-primary">
-            {chefs.find(c => c._id === form.chefId)?.name || "Unknown Chef"}
+        Assigned Kterer: <span className="font-semibold text-primary">
+            {chefs.find(c => c._id === form.chefId)?.name || "Unknown Kterer"}
         </span>
     </div>
 )}
