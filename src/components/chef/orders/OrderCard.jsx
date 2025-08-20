@@ -23,7 +23,7 @@ export default function OrderCard({ order, tab, onAccept, onReject, onDeliver, l
           <span className="font-semibold">#{order.orderCode.toUpperCase()}</span>
 
           {/* Show chef's own status */}
-          <StatusBadge status={chefStatus} label="Chef" />
+          <StatusBadge status={chefStatus} label="Kterer" />
 
           {/* Optionally show platform-wide status if you pass it */}
           {order.overallStatus && <StatusBadge status={order.chefOrder?.status} label="Order" />}

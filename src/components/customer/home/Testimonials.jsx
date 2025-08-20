@@ -13,7 +13,7 @@ const testimonials = [
   },
   {
     name: "Aarav Sharma",
-    quote: "Kterings connects you to the best home chefs. Everything is fresh and made with love.",
+    quote: "Kterings connects you to the best home Kterers. Everything is fresh and made with love.",
     orderLabel: "Ordered Karhai",
     orderLink: "/products/karhai",
   },

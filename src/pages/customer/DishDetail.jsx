@@ -126,7 +126,7 @@ const DishDetail = () => {
                                     <ChefHat className="w-5 h-5 text-gray-800" />
                                 </div>
                                 <span className="text-gray-800 font-medium hover:underline">
-                                    {dish.chefId?.name || "Unknown Chef"}
+                                    {dish.chefId?.name || "Unknown Kterer"}
                                 </span>
                             </div>
                         )}
