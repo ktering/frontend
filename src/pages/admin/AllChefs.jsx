@@ -25,7 +25,7 @@ export default function AdminChefsPage() {
       await deleteChef(chef._id);
       setChefs((prevChefs) => prevChefs.filter((c) => c._id !== chef._id));
     } catch (err) {
-      alert("Error deleting chef: " + err.message);
+      alert("Error deleting Kterer: " + err.message);
     }
   }
 };
@@ -39,17 +39,17 @@ export default function AdminChefsPage() {
       <main className="flex-1 ml-64 p-8">
         {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Manage Chefs</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Manage Kterers</h1>
           <button onClick={() => navigate("/supervised/chefs/new")} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-            + Add Chef
+            + Add Kterer
           </button>
         </div>
 
         {/* Content */}
         {loading ? (
-          <div className="text-center text-gray-500 py-20">Loading chefs...</div>
+          <div className="text-center text-gray-500 py-20">Loading Kterer...</div>
         ) : chefs.length === 0 ? (
-          <div className="text-center text-gray-400">No chefs found.</div>
+          <div className="text-center text-gray-400">No Kterer found.</div>
         ) : (
           <ChefsGrid
             chefs={chefs}

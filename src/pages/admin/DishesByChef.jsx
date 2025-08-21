@@ -62,12 +62,12 @@ const DishesByChef = () => {
 
             <main className="flex-1 ml-64 p-8 font-nunito">
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Manage Dishes by Chef</h1>
+                    <h1 className="text-3xl font-bold text-gray-900">Manage Dishes by Kterer</h1>
                 </div>
 
                 {/* Chef Selector */}
                 <div className="mb-6">
-                    <p className="text-sm font-semibold text-gray-700 mb-2">Select a Chef</p>
+                    <p className="text-sm font-semibold text-gray-700 mb-2">Select a Kterer</p>
                     <div className="flex flex-wrap gap-3">
                         {chefs.map((chef) => (
                             <button

@@ -26,13 +26,13 @@ export default function KteringsHowItWorks() {
           <div className="flex-1 flex flex-col items-center text-center px-4">
             <img
               src="/chef.svg"
-              alt="Chef Prepares"
+              alt="Kterer Prepares"
               className="w-40 h-40 mb-5 object-contain"
               draggable={false}
             />
-            <h4 className="text-lg sm:text-xl font-bold text-primary mb-2">Chef Prepares</h4>
+            <h4 className="text-lg sm:text-xl font-bold text-primary mb-2">Kterer Prepares</h4>
             <p className="text-black/80 text-sm sm:text-base">
-              A home-based chef (Kterer) cooks your meal fresh, just for you.
+              A home-based Kterer cooks your meal fresh, just for you.
             </p>
           </div>
           {/* Step 3 */}

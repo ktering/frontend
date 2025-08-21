@@ -27,7 +27,7 @@ export default function Sidebar() {
 
         {/* Chefs */}
         <Link to="/supervised/chefs" className="flex items-center gap-3 hover:text-red-500">
-          <FaUserTie /> Chefs
+          <FaUserTie /> Kterers
         </Link>
 
         {/* Dishes with Subitems */}
@@ -48,7 +48,7 @@ export default function Sidebar() {
                 to="/supervised/dishes/chef"
                 className="block py-1 px-2 rounded-md hover:bg-red-50 hover:text-red-600 transition"
               >
-                ➤ Manage by Chef
+                ➤ Manage by Kterer
               </Link>
               <Link
                 to="/supervised/dishes/category"

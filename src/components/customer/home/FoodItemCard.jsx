@@ -51,7 +51,7 @@ const FoodItemCard = ({ item }) => {
 
           <div className="flex items-center gap-2 text-xs text-gray-700 mb-1">
             <ChefHat className="w-4 h-4 text-gray-800" />
-            <span>{item.chefId?.name || "Unknown Chef"}</span>
+            <span>{item.chefId?.name || "Unknown Kterer"}</span>
           </div>
 
           {item?.averagePrepTime && (

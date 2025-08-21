@@ -35,7 +35,7 @@ function statusChip(status) {
 }
 
 export default function ChefDashboard() {
-  const chefName = localStorage.getItem("chefName") || "Chef";
+  const chefName = localStorage.getItem("chefName") || "Kterer";
   const chefId = useMemo(() => getChefIdFromToken(), []);
 
   const [counts, setCounts] = useState({ delivered: 0, pending: 0, dishes: 0 });

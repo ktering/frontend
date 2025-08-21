@@ -177,12 +177,12 @@ export default function Cart() {
                                 htmlFor="note"
                                 className="block text-sm font-medium text-gray-700 mb-1"
                             >
-                                Note to Chef:
+                                Note to Kterer:
                             </label>
                             <textarea
                                 id="note"
                                 rows={3}
-                                placeholder="Leave a message for the chef (optional)"
+                                placeholder="Leave a message for the Kterer (optional)"
                                 value={note}
                                 onChange={(e) => setNote(e.target.value)}
                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary resize-none"

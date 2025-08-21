@@ -18,7 +18,7 @@ export default function EditChefForm() {
   }, [id]);
 
   if (loading) return <div className="p-10 text-center">Loading...</div>;
-  if (!chefData) return <div className="p-10 text-center">Chef not found.</div>;
+  if (!chefData) return <div className="p-10 text-center">Kterer not found.</div>;
 
   return <ChefForm isEdit={true} initialData={chefData} />;
 }

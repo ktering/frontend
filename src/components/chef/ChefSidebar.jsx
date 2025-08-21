@@ -4,7 +4,7 @@ import { logoutUser } from "../../api/chefAuth";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   const navigate = useNavigate();
-  const chefName = localStorage.getItem("chefName") || "Chef";
+  const chefName = localStorage.getItem("chefName") || "Kterer";
   const chefInitial = chefName.trim().charAt(0).toUpperCase();
   const location = useLocation();
   async function handleLogout() {
@@ -41,7 +41,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
       {/* Sidebar content */}
       <div className="flex-1 p-6">
-        <h2 className="text-2xl font-bold mb-8">Chef Panel</h2>
+        <h2 className="text-2xl font-bold mb-8">Kterer Panel</h2>
         <nav className="space-y-4">
           {navItems.map(({ path, label, icon }) => {
             const isActive = location.pathname === path;

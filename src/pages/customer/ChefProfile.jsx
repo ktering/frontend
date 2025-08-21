@@ -23,7 +23,7 @@ export default function ChefProfile() {
   }, [chefId]);
 
   if (loading) return <div className="py-24 text-center text-gray-500">Loading...</div>;
-  if (!chef) return <div className="py-24 text-center text-red-500">Chef not found.</div>;
+  if (!chef) return <div className="py-24 text-center text-red-500">Kterer not found.</div>;
 
   return (
     <div className="">
@@ -51,7 +51,7 @@ export default function ChefProfile() {
   <div className="mt-20 md:mt-20 px-6 md:px-10 flex flex-col md:flex-row md:items-center md:gap-8">
     <div>
       <h1 className="text-3xl font-bold text-gray-900">{chef.name}</h1>
-      <p className="text-gray-500 text-base mt-1">Home Chef</p>
+      <p className="text-gray-500 text-base mt-1">Home Kterer</p>
       {chef.bio && <p className="text-gray-700 mt-3 max-w-xl">{chef.bio}</p>}
     </div>
   </div>

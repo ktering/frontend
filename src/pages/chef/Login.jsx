@@ -64,7 +64,7 @@ export default function Login() {
 
 
       <h2 className="text-2xl font-bold text-primary mb-6 text-center">
-        Chef Login
+        Kterer Login
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">

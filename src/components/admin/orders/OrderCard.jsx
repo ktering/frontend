@@ -42,12 +42,12 @@ export default function OrderCard({ slice, tab, onAssignDriver, onMarkDelivered 
           <ul className="text-sm text-gray-800 space-y-1">
             {(chefOrder.items || []).map((it, i) => (
               <li key={i}>
-                {it.name} × {it.quantity} — Chef rate: ${Number(it.chefOriginalPrice).toFixed(2)}
+                {it.name} × {it.quantity} — Kterer rate: ${Number(it.chefOriginalPrice).toFixed(2)}
               </li>
             ))}
           </ul>
           <div className="text-right text-sm text-gray-500">
-            Chef payout: ${Number(chefOrder.chefPayoutAmount || 0).toFixed(2)}
+            Kterer payout: ${Number(chefOrder.chefPayoutAmount || 0).toFixed(2)}
           </div>
         </div>
       </div>
