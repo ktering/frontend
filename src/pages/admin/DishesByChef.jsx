@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import AdminDishCard from "../../components/admin/AdminDishCard";
 import { deleteDishAdmin } from "../../api/admin";
+import { updateDishAvailability } from "../../api/dish"; 
 
 const DishesByChef = () => {
     const [chefs, setChefs] = useState([]);
@@ -13,6 +14,19 @@ const DishesByChef = () => {
     const [loading, setLoading] = useState(false);
     const [dishToDelete, setDishToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const handleToggleAvailability = async (dish) => {
+  try {
+    await updateDishAvailability(dish._id, !dish.available);
+    setDishes((prev) =>
+      prev.map((d) =>
+        d._id === dish._id ? { ...d, available: !dish.available } : d
+      )
+    );
+  } catch (err) {
+    console.error("Failed to update availability:", err.message);
+  }
+};
 
     const handleDelete = (dish) => {
         setDishToDelete(dish);
@@ -114,6 +128,7 @@ const DishesByChef = () => {
                                 item={dish}
                                 onEdit={handleEdit}
                                 onDelete={handleDelete}
+                                 onToggleAvailability={handleToggleAvailability}
                             />
                         ))}
                     </div>

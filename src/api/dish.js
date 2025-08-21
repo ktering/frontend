@@ -65,3 +65,17 @@ export async function fetchAllTags() {
     return [];
   }
 }
+
+export async function updateDishAvailability(id, available) {
+  const res = await fetch(`${API_BASE}/api/dishes/availability/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", },
+    body: JSON.stringify({ available })
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update availability");
+  }
+
+  return await res.json();
+}
