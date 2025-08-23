@@ -5,6 +5,9 @@ import { Link } from "react-router-dom";
 import Sidebar from "../../components/admin/Sidebar";
 import AdminDishCard from "../../components/admin/AdminDishCard";
 import { deleteDishAdmin } from "../../api/admin";
+import { updateDishAvailability } from "../../api/dish"; 
+import { useNavigate } from "react-router-dom";
+import AdminLayout from "../../components/admin/AdminLayout";
 
 const DishesByChef = () => {
     const [chefs, setChefs] = useState([]);
@@ -14,6 +17,19 @@ const DishesByChef = () => {
     const [dishToDelete, setDishToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+    const handleToggleAvailability = async (dish) => {
+  try {
+    await updateDishAvailability(dish._id, !dish.available);
+    setDishes((prev) =>
+      prev.map((d) =>
+        d._id === dish._id ? { ...d, available: !dish.available } : d
+      )
+    );
+  } catch (err) {
+    console.error("Failed to update availability:", err.message);
+  }
+};
+    const navigate = useNavigate();
     const handleDelete = (dish) => {
         setDishToDelete(dish);
         setShowDeleteModal(true);
@@ -57,10 +73,8 @@ const DishesByChef = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            <Sidebar />
-
-            <main className="flex-1 ml-64 p-8 font-nunito">
+        <AdminLayout>
+            <main className="">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Manage Dishes by Kterer</h1>
                 </div>
@@ -114,6 +128,7 @@ const DishesByChef = () => {
                                 item={dish}
                                 onEdit={handleEdit}
                                 onDelete={handleDelete}
+                                 onToggleAvailability={handleToggleAvailability}
                             />
                         ))}
                     </div>
@@ -147,7 +162,7 @@ const DishesByChef = () => {
                     </div>
                 </div>
             )}
-        </div>
+        </AdminLayout>
     );
 };
 

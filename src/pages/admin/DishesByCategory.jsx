@@ -3,11 +3,11 @@ import {
     fetchAllDishes,
     fetchDishesByCategory,
 } from "../../api/dish";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { deleteDishAdmin } from "../../api/admin";
-
-import Sidebar from "../../components/admin/Sidebar";
 import AdminDishCard from "../../components/admin/AdminDishCard";
+import { updateDishAvailability } from "../../api/dish";
+import AdminLayout from "../../components/admin/AdminLayout";
 
 const categories = [
     { id: "all", name: "All" },
@@ -18,7 +18,6 @@ const categories = [
     { id: "vegan", name: "Vegan" },
     { id: "desserts", name: "Desserts" },
 ];
-
 const DishesByCategory = () => {
     const [dishes, setDishes] = useState([]);
     const [allDishes, setAllDishes] = useState([]);
@@ -27,19 +26,32 @@ const DishesByCategory = () => {
     const [selectedFilter, setSelectedFilter] = useState("all");
     const [dishToDelete, setDishToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+    
     const handleDelete = (dish) => {
         setDishToDelete(dish);
         setShowDeleteModal(true);
     };
-
-    const confirmDelete = async () => {
-        if (!dishToDelete) return;
-
+    
+    const handleToggleAvailability = async (dish) => {
         try {
-            await deleteDishAdmin(dishToDelete._id);
-            setDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
-            setAllDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
+            await updateDishAvailability(dish._id, !dish.available);
+    setDishes((prev) =>
+        prev.map((d) =>
+            d._id === dish._id ? { ...d, available: !dish.available } : d
+)
+);
+} catch (err) {
+    console.error("Failed to update availability:", err.message);
+}
+};
+
+const confirmDelete = async () => {
+    if (!dishToDelete) return;
+    
+    try {
+        await deleteDishAdmin(dishToDelete._id);
+        setDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
+        setAllDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
         } catch (err) {
             console.error("Failed to delete dish:", err.message);
         } finally {
@@ -47,11 +59,11 @@ const DishesByCategory = () => {
             setDishToDelete(null);
         }
     };
-
+    
     useEffect(() => {
         loadDishes();
     }, []);
-
+    
     const loadDishes = async () => {
         setLoading(true);
         const data = await fetchAllDishes();
@@ -63,59 +75,58 @@ const DishesByCategory = () => {
     const handleCategorySelect = async (categoryId) => {
         setSelectedCategory(categoryId);
         let filtered = [];
-
+        
         if (categoryId === "all") {
             filtered = allDishes;
         } else {
             const result = await fetchDishesByCategory(categoryId);
             filtered = result;
         }
-
+        
         applyFilter(selectedFilter, filtered);
     };
-
+    
     const handleFilterChange = (value) => {
         setSelectedFilter(value);
         const base =
-            selectedCategory === "all"
-                ? allDishes
-                : allDishes.filter(
-                    (dish) =>
-                        dish.category.toLowerCase() === selectedCategory.toLowerCase()
-                );
-
+        selectedCategory === "all"
+        ? allDishes
+        : allDishes.filter(
+            (dish) =>
+                dish.category.toLowerCase() === selectedCategory.toLowerCase()
+        );
+        
         applyFilter(value, base);
     };
-
+    
     const applyFilter = (filterValue, base) => {
         let filtered = [...base];
-
+        
         switch (filterValue) {
             case "halal":
                 filtered = filtered.filter((dish) => dish.halal);
                 break;
-            case "kosher":
-                filtered = filtered.filter((dish) => dish.kosher);
-                break;
+                case "kosher":
+                    filtered = filtered.filter((dish) => dish.kosher);
+                    break;
             case "noNuts":
                 filtered = filtered.filter((dish) => !dish.containsNuts);
                 break;
-            default:
-                break;
+                default:
+                    break;
         }
 
         setDishes(filtered);
     };
-
+    
     const handleEdit = (dish) => {
         navigate(`/supervised/dishes/edit/${dish._id}`);
     };
-
+    
+    const navigate=useNavigate();
     return (
-        <div className="flex min-h-screen bg-gray-50">
-            <Sidebar />
-
-            <main className="flex-1 ml-64 p-8 font-nunito">
+        <AdminLayout>
+            <main className="">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Manage Dishes by Category</h1>
                     <Link to="/supervised/dishes/new">
@@ -185,6 +196,7 @@ const DishesByCategory = () => {
                                 item={dish}
                                 onEdit={handleEdit}
                                 onDelete={handleDelete}
+                                 onToggleAvailability={handleToggleAvailability}
                             />
                         ))}
                     </div>
@@ -218,8 +230,7 @@ const DishesByCategory = () => {
                     </div>
                 </div>
             )}
-
-        </div>
+        </AdminLayout>
     );
 };
 

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createChef, updateChef } from "../../api/chef";
-import Sidebar from "../../components/admin/Sidebar";
+import AdminLayout from "../../components/admin/AdminLayout";
 
 export default function ChefForm({ initialData = null, isEdit = false }) {
   const [form, setForm] = useState({
@@ -116,9 +116,7 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
   };
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="ml-64 w-full bg-gray-100 min-h-screen py-8 px-4">
+    <AdminLayout>
         <div className="w-full max-w-4xl bg-white mx-auto p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-primary text-center mb-6">
             {isEdit ? "Edit Kterer" : "Add New Kterer"}
@@ -414,7 +412,6 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </AdminLayout>
   );
 }

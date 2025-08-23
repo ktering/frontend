@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // for /chefs/:chefId route
 import { getChefById } from "../../api/chef"; // adjust the import path as needed
 import { getDishesByChef } from "../../api/dish";
-import FoodItemCard from "../../components/customer/home/FoodItemCard"; 
+import ChefDishCard from "../../components/chef/ChefDishCard"; 
 export default function ChefProfile() {
   const { chefId } = useParams();
   const [chef, setChef] = useState(null);
@@ -58,14 +58,10 @@ export default function ChefProfile() {
     ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {dishes.map((dish) => (
-          <FoodItemCard
+          <ChefDishCard
             key={dish._id}
-            item={{
-              ...dish,
-              chef: undefined,
-              prepTime: dish.averagePrepTime ? `${dish.averagePrepTime} min` : "",
-            }}
-          />
+            item={dish}
+            />
         ))}
       </div>
     )}

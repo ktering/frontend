@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import AdminOrdersTabs from "../../components/admin/orders/OrderTabs";
 import AdminOrderCard from "../../components/admin/orders/OrderCard";
 import { fetchAdminOrders, sendAdminChefSliceAction } from "../../api/adminOrders";
-import Sidebar from "../../components/admin/Sidebar";
+import AdminLayout from "../../components/admin/AdminLayout";
 
 export default function Orders() {
   const [active, setActive] = useState("ready_for_pickup");
@@ -78,12 +78,11 @@ const slices = buildChefSlices(orders, active);
 
 
   return (
-   <div className="flex bg-gray-50 min-h-screen">
-         {/* Sidebar */}
-         <Sidebar />
+   <AdminLayout>
+
    
          {/* Main Content */}
-      <main className="flex-1 ml-64 p-8">
+      <main className="">
       <h1 className="text-2xl font-bold mb-6">Manage Orders</h1>
       <AdminOrdersTabs active={active} onChange={setActive} />
 
@@ -96,17 +95,17 @@ const slices = buildChefSlices(orders, active);
       ) : (
         <div className="grid gap-4">
           {slices.map((s) => (
-      <AdminOrderCard
-        key={`${s.orderMeta.orderId}-${s.chefOrder.id}`}
-        slice={s}
-        tab={active}
-        onAssignDriver={(orderId, chefId) => handleAssignDriver(orderId, chefId)}
-        onMarkDelivered={(orderId, chefId) => handleMarkDelivered(orderId, chefId)}
-      />
-    ))}
+            <AdminOrderCard
+            key={`${s.orderMeta.orderId}-${s.chefOrder.id}`}
+            slice={s}
+            tab={active}
+            onAssignDriver={(orderId, chefId) => handleAssignDriver(orderId, chefId)}
+            onMarkDelivered={(orderId, chefId) => handleMarkDelivered(orderId, chefId)}
+            />
+          ))}
         </div>
       )}
     </main>
-    </div>
+  </AdminLayout>
   );
 }

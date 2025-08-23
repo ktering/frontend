@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { createDishAdmin } from "../../api/admin";
 import { getAllChefs } from "../../api/chef";
-import Sidebar from "../../components/admin/Sidebar";
+import AdminLayout from "../../components/admin/AdminLayout";
 
 export default function AddDishForm() {
     const [searchParams] = useSearchParams();
@@ -119,10 +119,9 @@ export default function AddDishForm() {
     };
 
     return (
-        <div className="flex">
-            <Sidebar />
+        <AdminLayout>
 
-            <div className="ml-64 w-full bg-gray-100 min-h-screen py-8 px-4">
+
                 <div className="w-full max-w-4xl bg-white mx-auto p-6 rounded-lg shadow-md">
                     <h2 className="text-2xl font-bold text-primary text-center mb-6">Add New Dish</h2>
 
@@ -340,7 +339,7 @@ export default function AddDishForm() {
                                 <button
                                     onClick={() => setModal({ success: false, error: "" })}
                                     className="mt-6 inline-block bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-semibold transition"
-                                >
+                                    >
                                     Done
                                 </button>
                             </div>
@@ -380,8 +379,7 @@ export default function AddDishForm() {
                         </div>
                     )}
                 </div>
-            </div>
-        </div>
+        </AdminLayout>
     );
 }
 
