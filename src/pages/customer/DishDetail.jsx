@@ -6,6 +6,24 @@ import { GiPeanut } from "react-icons/gi";
 import Header from "../../components/customer/Header";
 import { useCart } from "../../context/CartContext";
 import CartDrawer from "../../components/customer/cart/CartDrawer";
+import { ArrowLeft, Flame, Salad, CakeSlice, LayoutGrid } from "lucide-react";
+import { GiCarrot } from "react-icons/gi";
+import { FaBowlRice } from "react-icons/fa6";
+import React from "react";
+import { MdKebabDining } from "react-icons/md";
+import Footer from "../../components/customer/Footer";
+
+// Map icons to category IDs
+const iconsMap = {
+    all: LayoutGrid,
+    trending: Flame,
+    asian: FaBowlRice,
+    "middle-eastern": MdKebabDining,
+    vegetarian: GiCarrot,
+    vegan: Salad,
+    desserts: CakeSlice,
+};
+
 
 const DishDetail = () => {
     const { slug } = useParams();
@@ -15,6 +33,8 @@ const DishDetail = () => {
     const [quantity, setQuantity] = useState(1);
     const { addToCart } = useCart();
     const [isCartOpen, setIsCartOpen] = useState(false);
+
+
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
@@ -41,7 +61,7 @@ const DishDetail = () => {
 
     if (loading) return <p className="text-center mt-10">Loading dish...</p>;
     if (!dish) return <p className="text-center mt-10">Dish not found.</p>;
-
+    const categoryIcon = iconsMap[dish.category] || LayoutGrid;
     const isChickenDish = dish.ingredients?.some((ing) =>
         ing.toLowerCase().includes("chicken")
     );
@@ -59,7 +79,21 @@ const DishDetail = () => {
     return (
         <>
             <Header />
-            <div className="max-w-6xl mx-auto px-4 py-10 font-nunito">
+            <div className="max-w-6xl mx-auto px-4 py-10 font-nunito mb-[50px]">
+
+                <button
+                    onClick={() => navigate(`/menu?category=${dish.category || "all"}`)}
+                    className="flex items-center gap-2 mb-6 text-sm px-4 py-2 rounded-full border border-gray-300 hover:bg-gray-100 transition shadow-sm hover:shadow-md"
+                >
+                    <ArrowLeft className="w-4 h-4 text-primary" /> {/* arrow also in primary */}
+                    <span className="flex items-center gap-1">
+                        {categoryIcon && React.createElement(categoryIcon, { className: "w-4 h-4 text-primary" })}
+                        Back to {dish.category ? dish.category.replace(/-/g, " ") : "Menu"}
+                    </span>
+                </button>
+
+
+
                 {/* Image Section */}
                 <div className="w-full mb-6 md:hidden">
                     <div className="w-full h-[250px] sm:h-[300px] rounded-xl overflow-hidden shadow-md">
@@ -151,9 +185,9 @@ const DishDetail = () => {
                         )}
 
                         {/* Metadata Labels */}
-                        {(isChickenDish && dish.meatType) || dish.containsNuts || dish.ethnicType ? (
+                        { (dish.meatType) || dish.containsNuts || dish.ethnicType ? (
                             <div className="flex items-center gap-4 mt-4 flex-wrap text-sm text-gray-700">
-                                {isChickenDish && dish.meatType && (
+                                {dish.meatType && (
                                     <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-full border border-orange-200 text-orange-800">
                                         <Drumstick className="w-4 h-4" />
                                         {dish.meatType}
@@ -213,7 +247,7 @@ const DishDetail = () => {
                     </div>
                 </div>
             </div>
-
+            <Footer />
             {/* Temporary Cart Drawer */}
             <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
         </>

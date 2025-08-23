@@ -16,6 +16,8 @@ const DishesByChef = () => {
     const [loading, setLoading] = useState(false);
     const [dishToDelete, setDishToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
 
     const handleToggleAvailability = async (dish) => {
   try {
@@ -38,11 +40,13 @@ const DishesByChef = () => {
         if (!dishToDelete) return;
 
         try {
+            setDeleting(true); // start spinner
             await deleteDishAdmin(dishToDelete._id);
             setDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
         } catch (err) {
             console.error("Failed to delete dish:", err.message);
         } finally {
+            setDeleting(false); // stop spinner
             setShowDeleteModal(false);
             setDishToDelete(null);
         }
@@ -153,11 +157,19 @@ const DishesByChef = () => {
                                 Cancel
                             </button>
                             <button
-                                onClick={confirmDelete}
-                                className="px-4 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
-                            >
-                                Delete
-                            </button>
+    onClick={confirmDelete}
+    className="px-4 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600 flex items-center justify-center gap-2"
+    disabled={deleting}
+>
+    {deleting && (
+        <svg className="w-4 h-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
+        </svg>
+    )}
+    {deleting ? "Deleting..." : "Delete"}
+</button>
+
                         </div>
                     </div>
                 </div>

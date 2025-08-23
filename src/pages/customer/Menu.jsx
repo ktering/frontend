@@ -5,6 +5,7 @@ import { fetchAllDishes, fetchDishesByCategory } from "../../api/dish";
 import DishList from "../../components/customer/Menu/DishList";
 import CategorySection from "../../components/customer/home/CategorySection";
 import Header from "../../components/customer/Header";
+import Footer from "../../components/customer/Footer";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -134,6 +135,8 @@ const Menu = () => {
         {/* Dish List */}
         <DishList dishes={currentDishes} loading={loading} />
 
+        <Footer />
+
         {/* Pagination */}
         {!loading && totalPages > 1 && (
           <div className="flex justify-center items-center mt-8 gap-1 flex-wrap">
@@ -198,6 +201,8 @@ const Menu = () => {
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
+
+          
         )}
       </div>
     </>

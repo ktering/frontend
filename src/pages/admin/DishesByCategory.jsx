@@ -3,7 +3,7 @@ import {
     fetchAllDishes,
     fetchDishesByCategory,
 } from "../../api/dish";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { deleteDishAdmin } from "../../api/admin";
 import AdminDishCard from "../../components/admin/AdminDishCard";
 import { updateDishAvailability } from "../../api/dish";
@@ -26,44 +26,48 @@ const DishesByCategory = () => {
     const [selectedFilter, setSelectedFilter] = useState("all");
     const [dishToDelete, setDishToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    
+    const [deleting, setDeleting] = useState(false);
+
+
     const handleDelete = (dish) => {
         setDishToDelete(dish);
         setShowDeleteModal(true);
     };
-    
+
     const handleToggleAvailability = async (dish) => {
         try {
             await updateDishAvailability(dish._id, !dish.available);
-    setDishes((prev) =>
-        prev.map((d) =>
-            d._id === dish._id ? { ...d, available: !dish.available } : d
-)
-);
-} catch (err) {
-    console.error("Failed to update availability:", err.message);
-}
-};
+            setDishes((prev) =>
+                prev.map((d) =>
+                    d._id === dish._id ? { ...d, available: !dish.available } : d
+                )
+            );
+        } catch (err) {
+            console.error("Failed to update availability:", err.message);
+        }
+    };
 
-const confirmDelete = async () => {
-    if (!dishToDelete) return;
-    
-    try {
-        await deleteDishAdmin(dishToDelete._id);
-        setDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
-        setAllDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
+    const confirmDelete = async () => {
+        if (!dishToDelete) return;
+
+        try {
+            setDeleting(true); // start spinner
+            await deleteDishAdmin(dishToDelete._id);
+            setDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
+            setAllDishes((prev) => prev.filter((d) => d._id !== dishToDelete._id));
         } catch (err) {
             console.error("Failed to delete dish:", err.message);
         } finally {
+            setDeleting(false); // stop spinner
             setShowDeleteModal(false);
             setDishToDelete(null);
         }
     };
-    
+
     useEffect(() => {
         loadDishes();
     }, []);
-    
+
     const loadDishes = async () => {
         setLoading(true);
         const data = await fetchAllDishes();
@@ -75,55 +79,55 @@ const confirmDelete = async () => {
     const handleCategorySelect = async (categoryId) => {
         setSelectedCategory(categoryId);
         let filtered = [];
-        
+
         if (categoryId === "all") {
             filtered = allDishes;
         } else {
             const result = await fetchDishesByCategory(categoryId);
             filtered = result;
         }
-        
+
         applyFilter(selectedFilter, filtered);
     };
-    
+
     const handleFilterChange = (value) => {
         setSelectedFilter(value);
         const base =
-        selectedCategory === "all"
-        ? allDishes
-        : allDishes.filter(
-            (dish) =>
-                dish.category.toLowerCase() === selectedCategory.toLowerCase()
-        );
-        
+            selectedCategory === "all"
+                ? allDishes
+                : allDishes.filter(
+                    (dish) =>
+                        dish.category.toLowerCase() === selectedCategory.toLowerCase()
+                );
+
         applyFilter(value, base);
     };
-    
+
     const applyFilter = (filterValue, base) => {
         let filtered = [...base];
-        
+
         switch (filterValue) {
             case "halal":
                 filtered = filtered.filter((dish) => dish.halal);
                 break;
-                case "kosher":
-                    filtered = filtered.filter((dish) => dish.kosher);
-                    break;
+            case "kosher":
+                filtered = filtered.filter((dish) => dish.kosher);
+                break;
             case "noNuts":
                 filtered = filtered.filter((dish) => !dish.containsNuts);
                 break;
-                default:
-                    break;
+            default:
+                break;
         }
 
         setDishes(filtered);
     };
-    
+
     const handleEdit = (dish) => {
         navigate(`/supervised/dishes/edit/${dish._id}`);
     };
-    
-    const navigate=useNavigate();
+
+    const navigate = useNavigate();
     return (
         <AdminLayout>
             <main className="">
@@ -196,7 +200,7 @@ const confirmDelete = async () => {
                                 item={dish}
                                 onEdit={handleEdit}
                                 onDelete={handleDelete}
-                                 onToggleAvailability={handleToggleAvailability}
+                                onToggleAvailability={handleToggleAvailability}
                             />
                         ))}
                     </div>
@@ -222,10 +226,18 @@ const confirmDelete = async () => {
                             </button>
                             <button
                                 onClick={confirmDelete}
-                                className="px-4 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+                                className="px-4 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600 flex items-center justify-center gap-2"
+                                disabled={deleting}
                             >
-                                Delete
+                                {deleting && (
+                                    <svg className="w-4 h-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"></path>
+                                    </svg>
+                                )}
+                                {deleting ? "Deleting..." : "Delete"}
                             </button>
+
                         </div>
                     </div>
                 </div>
