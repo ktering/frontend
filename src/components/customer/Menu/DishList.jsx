@@ -25,7 +25,6 @@ const DishList = ({ dishes, loading }) => {
     <div className="w-4/5 mx-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {dishes
-  .filter((dish) => dish.available !== false) // show if true or undefined
   .map((dish) => (
     <FoodItemCard key={dish._id} item={dish} />
   ))}
