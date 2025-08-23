@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getAllChefs } from "../../api/chef";
 import { getDishById, updateDishAdmin } from "../../api/admin";
-import Sidebar from "../../components/admin/Sidebar";
-
+import AdminLayout from "../../components/admin/AdminLayout";
 export default function EditDishForm() {
     const { id } = useParams();
     const [submitting, setSubmitting] = useState(false);
@@ -158,9 +157,8 @@ export default function EditDishForm() {
     };
 
     return (
-        <div className="flex">
-            <Sidebar />
-            <div className="ml-64 w-full bg-gray-100 min-h-screen py-8 px-4">
+        <AdminLayout>
+
                 <div className="w-full max-w-4xl bg-white mx-auto p-6 rounded-lg shadow-md">
                     <h2 className="text-3xl font-bold text-primary text-center mb-6">Edit Dish</h2>
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -269,12 +267,12 @@ export default function EditDishForm() {
                             {!optionalFields.ingredients ? (
 
                                 <button
-                                    type="button"
-                                    onClick={() => {
-                                        setOptionalFields(prev => ({ ...prev, ingredients: true }));
-                                        setIngredients([""]); // add empty field directly
-                                    }}
-                                    className="bg-primary text-white px-4 py-2 rounded-full"
+                                type="button"
+                                onClick={() => {
+                                    setOptionalFields(prev => ({ ...prev, ingredients: true }));
+                                    setIngredients([""]); // add empty field directly
+                                }}
+                                className="bg-primary text-white px-4 py-2 rounded-full"
                                 >
                                     + Add Ingredients
                                 </button>
@@ -293,7 +291,7 @@ export default function EditDishForm() {
                                                 type="button"
                                                 onClick={() => removeFromList(setIngredients, idx)}
                                                 className="bg-red-600 text-white px-2 py-1 rounded"
-                                            >
+                                                >
                                                 Delete
                                             </button>
                                         </div>
@@ -336,7 +334,7 @@ export default function EditDishForm() {
                                                 type="button"
                                                 onClick={() => removeFromList(setTags, idx)}
                                                 className="bg-red-600 text-white px-2 py-1 rounded"
-                                            >
+                                                >
                                                 Delete
                                             </button>
                                         </div>
@@ -345,7 +343,7 @@ export default function EditDishForm() {
                                         type="button"
                                         onClick={() => addToList(setTags)}
                                         className="bg-primary text-white px-4 py-2 rounded-full mt-2"
-                                    >
+                                        >
                                         + Add Another Tag
                                     </button>
                                     <hr className="my-4" />
@@ -395,7 +393,7 @@ export default function EditDishForm() {
                                         stroke="currentColor"
                                         strokeWidth="2"
                                         viewBox="0 0 24 24"
-                                    >
+                                        >
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
@@ -445,8 +443,7 @@ export default function EditDishForm() {
                         </div>
                     )}
                 </div>
-            </div>
-        </div>
+        </AdminLayout>
     );
 }
 

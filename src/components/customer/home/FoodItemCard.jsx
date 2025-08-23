@@ -5,7 +5,7 @@ import { useState } from "react";
 import CartDrawer from "../../customer/cart/CartDrawer";
 
 const FoodItemCard = ({ item }) => {
-    const isSoldOut = item?.available === false;
+  const isSoldOut = item?.available === false;
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const [isCartOpen, setIsCartOpen] = useState(false);

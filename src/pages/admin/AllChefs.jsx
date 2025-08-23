@@ -3,6 +3,7 @@ import { getAllChefs,deleteChef } from "../../api/chef";
 import ChefsGrid from "../../components/shared/chefGrid";
 import Sidebar from "../../components/admin/Sidebar";
 import { useNavigate } from "react-router-dom";
+import AdminLayout from "../../components/admin/AdminLayout";
 
 export default function AdminChefsPage() {
   const [chefs, setChefs] = useState([]);
@@ -31,12 +32,10 @@ export default function AdminChefsPage() {
 };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
-      <Sidebar />
+    <AdminLayout>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 p-8">
+      <main className="">
         {/* Page Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Manage Kterers</h1>
@@ -79,6 +78,6 @@ export default function AdminChefsPage() {
           />
         )}
       </main>
-    </div>
+    </AdminLayout>
   );
 }

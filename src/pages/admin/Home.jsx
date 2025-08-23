@@ -1,11 +1,12 @@
 // pages/admin/AdminDashboard.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/admin/Sidebar";
+import Sidebar from "../../components/admin/AdminLayout";
 
 // API calls
 import { fetchAllDishes } from "../../api/dish";
 import { getAllChefs } from "../../api/chef";
+import AdminLayout from "../../components/admin/AdminLayout";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -31,15 +32,12 @@ export default function AdminDashboard() {
   }, []);
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
-      {/* Sidebar */}
-      <Sidebar />
+    <AdminLayout>
 
       {/* Main Content */}
-      <main className="flex-1 ml-64 p-8">
+      <main>
         {/* Topbar */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
           <div className="flex items-center gap-4">
             <input
               type="text"
@@ -138,6 +136,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       </main>
-    </div>
+    </AdminLayout>
   );
 }
