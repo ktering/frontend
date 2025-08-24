@@ -144,11 +144,11 @@ const DishPage = () => {
           )}
 
           {/* Metadata Labels */}
-          {(isChickenDish && dish.meatType) ||
+          {dish.meatType ||
           dish.containsNuts ||
           dish.ethnicType ? (
             <div className="flex items-center gap-4 mt-4 flex-wrap text-sm text-gray-700">
-              {isChickenDish && dish.meatType && (
+              {dish.meatType && (
                 <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-full border border-orange-200 text-orange-800">
                   <Drumstick className="w-4 h-4" />
                   {dish.meatType}

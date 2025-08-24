@@ -33,6 +33,7 @@ import ChefEarnings from './pages/chef/Earnings';
 // Driver imports
 import DriverLogin from './pages/driver/DriverLogin';
 import DriverDashboard from './pages/driver/Orders';//orders for mvp later we can have a proper driver dashboard
+import DeliveryCamera from './pages/driver/DeliveryCamera';
 function App() {
   return (
     <div>
@@ -116,6 +117,9 @@ function App() {
             />
             <Route path="/driver/login" element={<DriverLogin />} />
             <Route path="/driver" element={<DriverDashboard />} />
+            <Route path="/driver/delivery-camera" element={<DeliveryCamera />} />
+
+            {/* Fallback route */}
           </Routes>
         </div>
       </Router>

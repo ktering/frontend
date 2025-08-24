@@ -1,6 +1,6 @@
 // src/components/driver/DriverSidebar.jsx
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaClipboardList, FaSignOutAlt } from "react-icons/fa";
+import { FaClipboardList, FaSignOutAlt ,FaCamera } from "react-icons/fa";
 import { logoutUser } from "../../api/adminAuth";
 
 export default function Sidebar({ isOpen, setIsOpen }) {
@@ -17,6 +17,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
 
   const navItems = [
     { path: "/driver", label: "Delivered Orders", icon: <FaClipboardList className="inline-block mr-3 text-lg" /> },
+    { path: "/driver/delivery-camera", label: "Delivery Camera", icon: <FaCamera className="inline-block mr-3 text-lg" /> }, // <-- new
   ];
 
   return (

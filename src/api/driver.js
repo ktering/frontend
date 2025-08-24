@@ -17,3 +17,12 @@ export async function fetchDriverOrders(status = "delivered") {
   const data = await res.json();
   return data?.orders || [];
 }
+
+export const uploadDeliveryPhoto = async (formData) => {
+  const response = await fetch(`${API_BASE}/api/driver/upload-photo`, {
+    method: "POST",
+    body: formData, // FormData with Blob
+  });
+
+  return response.json();
+};
