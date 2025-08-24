@@ -1,7 +1,6 @@
 // pages/admin/AdminDashboard.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../../components/admin/AdminLayout";
 
 // API calls
 import { fetchAllDishes } from "../../api/dish";
@@ -37,7 +36,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main>
         {/* Topbar */}
-        <div className="flex justify-between items-center mb-8">
+        {/* <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
             <input
               type="text"
@@ -50,7 +49,7 @@ export default function AdminDashboard() {
               className="w-10 h-10 rounded-full object-cover"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
