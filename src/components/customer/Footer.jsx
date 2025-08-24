@@ -80,7 +80,7 @@ const Footer = () => {
               <li className="flex items-center gap-2 justify-center sm:justify-start"><Mail size={16} />info@kterings.com</li>
             </ul>
             <div className="flex gap-3 justify-center sm:justify-start mt-3">
-              <a href="https://www.facebook.com/people/Kterings/61552576481418/" className="text-gray-700 hover:text-primary"><Facebook size={18} /></a>
+              <a href="https://www.facebook.com/profile.php?id=61552576481418" className="text-gray-700 hover:text-primary"><Facebook size={18} /></a>
               <a href="https://www.instagram.com/kterings/" className="text-gray-700 hover:text-primary"><Instagram size={18} /></a>
             </div>
           </div>
