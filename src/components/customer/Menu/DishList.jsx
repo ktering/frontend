@@ -24,9 +24,8 @@ const DishList = ({ dishes, loading }) => {
   return (
     <div className="w-4/5 mx-auto">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {dishes
-  .map((dish) => (
-    <FoodItemCard key={dish._id} item={dish} />
+      {dishes.map((dish) => (
+      <FoodItemCard key={dish._id} item={dish} />
   ))}
       </div>
     </div>
