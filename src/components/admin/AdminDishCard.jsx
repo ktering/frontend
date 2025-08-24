@@ -13,7 +13,8 @@ const AdminDishCard = ({ item, onEdit, onDelete, onToggleAvailability }) => {
   return (
     <div
       onClick={() => navigate(`/supervised/dishes/${item.slug}`)}
-      className="bg-white rounded-xl border border-gray-200 hover:border-primary/40 hover:scale-[1.01] transition-transform duration-100 ease-in-out w-full sm:max-w-[280px] flex flex-col cursor-pointer"
+      className="bg-white rounded-xl border border-gray-200 hover:border-primary/40 hover:scale-[1.01] transition-transform duration-100 ease-in-out 
+                 w-full max-w-[280px] flex flex-col cursor-pointer h-full"
     >
       {/* Image */}
       <div className="relative w-full aspect-[4/3]">
@@ -36,13 +37,13 @@ const AdminDishCard = ({ item, onEdit, onDelete, onToggleAvailability }) => {
 
       {/* Content */}
       <div className="p-3 sm:p-4 flex flex-col flex-grow">
-        <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2">
+        <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[40px]">
           {item.name}
         </h3>
 
         <div className="flex items-center gap-2 text-xs text-gray-700 mb-1">
           <ChefHat className="w-4 h-4 text-gray-700" />
-          <span>{item.chefId?.name || "Unknown Kterer"}</span>
+          <span className="truncate">{item.chefId?.name || "Unknown Kterer"}</span>
         </div>
 
         <div className="flex items-center gap-2 text-xs text-gray-700 mb-1">
@@ -54,7 +55,7 @@ const AdminDishCard = ({ item, onEdit, onDelete, onToggleAvailability }) => {
           ${item.originalChefPrice ? item.originalChefPrice.toFixed(2) : "0.00"}
         </p>
 
-        {/* Buttons */}
+        {/* Buttons (stick to bottom for equal height cards) */}
         <div className="flex flex-wrap justify-center gap-2 mt-auto">
           <button
             onClick={(e) => {
