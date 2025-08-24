@@ -51,9 +51,7 @@ const Footer = () => {
             <h4 className="text-base font-semibold mb-2 text-black">Navigate</h4>
             <ul className="space-y-1.5">
               <li><Link to="/">Home</Link></li>
-              <li><Link to="/about">About Us</Link></li>
               <li><Link to="/menu">Menu</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
               <li><Link to="/chefs">Kterers</Link></li>
             </ul>
           </div>
@@ -77,13 +75,13 @@ const Footer = () => {
           <div className="text-center sm:text-left">
             <h4 className="text-base font-semibold mb-2 text-black">Contact</h4>
             <ul className="space-y-1.5">
-              <li className="flex items-center gap-2 justify-center sm:justify-start"><Phone size={16} /> +1 (234) 567-8901</li>
-              <li className="flex items-center gap-2 justify-center sm:justify-start"><MapPin size={16} /> 123 Maple St, Toronto</li>
-              <li className="flex items-center gap-2 justify-center sm:justify-start"><Mail size={16} /> hello@kterings.com</li>
+              <li className="flex items-center gap-2 justify-center sm:justify-start"><Phone size={16} /> +1 (226) 3405041</li>
+              <li className="flex items-center gap-2 justify-center sm:justify-start"><MapPin size={16} /> Windsor, Canada</li>
+              <li className="flex items-center gap-2 justify-center sm:justify-start"><Mail size={16} />info@kterings.com</li>
             </ul>
             <div className="flex gap-3 justify-center sm:justify-start mt-3">
-              <a href="#" className="text-gray-700 hover:text-primary"><Facebook size={18} /></a>
-              <a href="#" className="text-gray-700 hover:text-primary"><Instagram size={18} /></a>
+              <a href="https://www.facebook.com/profile.php?id=61552576481418" className="text-gray-700 hover:text-primary"><Facebook size={18} /></a>
+              <a href="https://www.instagram.com/kterings/" className="text-gray-700 hover:text-primary"><Instagram size={18} /></a>
             </div>
           </div>
         </div>

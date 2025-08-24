@@ -13,6 +13,7 @@ const Menu = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const categoryFromQuery = queryParams.get("category") || "all";
+    const searchQuery = queryParams.get("search") || "";
 
   const [dishes, setDishes] = useState([]);
   const [allDishes, setAllDishes] = useState([]);
@@ -33,9 +34,9 @@ const Menu = () => {
 
   useEffect(() => {
     if (allDishes.length > 0) {
-      handleCategorySelect(categoryFromQuery);
+      handleCategorySelect(categoryFromQuery,searchQuery);
     }
-  }, [categoryFromQuery, allDishes]);
+  }, [categoryFromQuery,searchQuery, allDishes]);
 
   const loadAllDishes = async () => {
     setLoading(true);
@@ -45,7 +46,7 @@ const Menu = () => {
     setLoading(false);
   };
 
-  const handleCategorySelect = async (categoryId) => {
+  const handleCategorySelect = async (categoryId,searchText="") => {
     let filteredCategoryDishes = [];
 
     if (!categoryId || categoryId === "all") {
@@ -57,7 +58,11 @@ const Menu = () => {
       setSelectedCategory(categoryId);
       setLoading(false);
     }
-
+    if (searchText.trim() !== "") {
+    filteredCategoryDishes = filteredCategoryDishes.filter((dish) =>
+      dish.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }
     applyFilter(selectedFilter, filteredCategoryDishes);
     setCurrentPage(1);
   };
