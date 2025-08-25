@@ -166,8 +166,9 @@ export default function ChefForm({ initialData = null, isEdit = false }) {
               checked={showPassword}
               onChange={() => setShowPassword(!showPassword)}
             />
-            Show password
+            Show password<small className="text-sm text-gray-500">Only if you have changed the password</small>
             </label>
+            
             </div>
             {/* Bio */}
             <div>
