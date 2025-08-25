@@ -57,18 +57,17 @@ const Footer = () => {
           </div>
 
           {/* Column 2: Menu */}
-          {/* Column 2: Menu */}
-          <div className="text-center sm:text-left">
-            <h4 className="text-base font-semibold mb-2 text-black">Menu</h4>
-            <ul className="space-y-1.5">
-              <li><Link to="/menu?category=trending">Trending</Link></li>
-              <li><Link to="/menu?category=asian">Asian</Link></li>
-              <li><Link to="/menu?category=middle-eastern">Middle Eastern</Link></li>
-              <li><Link to="/menu?category=vegetarian">Vegetarian</Link></li>
-              <li><Link to="/menu?category=vegan">Vegan</Link></li>
-              <li><Link to="/menu?category=desserts">Desserts</Link></li>
-            </ul>
-          </div>
+<div className="hidden sm:block text-center sm:text-left">
+  <h4 className="text-base font-semibold mb-2 text-black">Menu</h4>
+  <ul className="space-y-1.5">
+    <li><Link to="/menu?category=trending">Trending</Link></li>
+    <li><Link to="/menu?category=asian">Asian</Link></li>
+    <li><Link to="/menu?category=middle-eastern">Middle Eastern</Link></li>
+    <li><Link to="/menu?category=vegetarian">Vegetarian</Link></li>
+    <li><Link to="/menu?category=vegan">Vegan</Link></li>
+    <li><Link to="/menu?category=desserts">Desserts</Link></li>
+  </ul>
+</div>
 
 
           {/* Column 3: Contact + Social */}
