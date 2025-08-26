@@ -225,7 +225,7 @@ export default function AddDishForm() {
                         {optionalFields.averagePrepTime && (
                             <div className="mt-4">
                                 <label className="font-semibold block mb-1">Average Prep Time</label>
-                                <input name="averagePrepTime" placeholder="e.g. 30 minutes" value={form.averagePrepTime} onChange={handleChange} className="w-full border rounded px-3 py-2" />
+                                <input name="averagePrepTime" placeholder="Add only the minutes" value={form.averagePrepTime} onChange={handleChange} className="w-full border rounded px-3 py-2" />
                             </div>
                         )}
 
@@ -237,7 +237,7 @@ export default function AddDishForm() {
                         {optionalFields.averageDeliveryTime && (
                             <div className="mt-4">
                                 <label className="font-semibold block mb-1">Average Delivery Time</label>
-                                <input name="averageDeliveryTime" placeholder="e.g. 20 minutes" value={form.averageDeliveryTime} onChange={handleChange} className="w-full border rounded px-3 py-2" />
+                                <input name="averageDeliveryTime" placeholder="Add only the minutes" value={form.averageDeliveryTime} onChange={handleChange} className="w-full border rounded px-3 py-2" />
                             </div>
                         )}
 

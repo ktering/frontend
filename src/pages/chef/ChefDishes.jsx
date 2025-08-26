@@ -58,15 +58,7 @@ export default function ChefDishes() {
         {/* No Add button — read-only */}
       </div>
 
-      {/* Search (optional) */}
-      <div className="mb-6">
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search dishes…"
-          className="w-full md:w-96 border rounded px-3 py-2"
-        />
-      </div>
+      
 
       {loading ? (
         <p className="text-gray-500">Loading dishes…</p>
