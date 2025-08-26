@@ -102,9 +102,10 @@ const Menu = () => {
   return (
     <>
       <Header />
-      <div className="px-4 py-6 max-w-7xl mx-auto font-nunito">
+      <div className="mx-auto font-nunito">
         {/* Heading + Filter Dropdown */}
-        <div className="w-[80%] mx-auto flex flex-row flex-wrap justify-between items-center gap-3 mb-6">
+        <div className="py-4 mx-auto px-4 max-w-7xl font-nunito">
+        <div className="w-[80%]  mx-auto flex flex-row flex-wrap justify-between items-center gap-3 mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-primary whitespace-nowrap">
             Menu
           </h1>
@@ -139,7 +140,7 @@ const Menu = () => {
 
         {/* Dish List */}
         <DishList dishes={currentDishes} loading={loading} />
-
+      </div>
         <Footer />
 
         {/* Pagination */}
