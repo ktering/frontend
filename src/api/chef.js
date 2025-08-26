@@ -16,8 +16,11 @@ export async function createChef(formData) {
     method: "POST",
     body: formData,
   });
-  if (!res.ok) throw new Error("Failed to create Kterer");
-  return res.json();
+  const data = await res.json();   // read body once
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to create Kterer");
+  }
+  return data;
 }
 
 export async function updateChef(id, formData) {
@@ -25,8 +28,11 @@ export async function updateChef(id, formData) {
     method: "PUT",
     body: formData,
   });
-  if (!res.ok) throw new Error("Failed to update Kterer");
-  return res.json();
+  const data = await res.json();   // read body once
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to update Kterer");
+  }
+  return data;
 }
 
 export async function deleteChef(id) {
