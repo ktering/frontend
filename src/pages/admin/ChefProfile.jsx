@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // for /chefs/:chefId route
+import { useParams,useNavigate } from "react-router-dom"; // for /chefs/:chefId route
 import { getChefById } from "../../api/chef"; // adjust the import path as needed
 import { getDishesByChef } from "../../api/dish";
-import ChefDishCard from "../../components/chef/ChefDishCard"; 
+import ChefDishCard from "../../components/chef/ChefDishCard";
+import { ArrowLeft } from "lucide-react";
+import AdminLayout from "../../components/admin/AdminLayout";
 export default function ChefProfile() {
   const { chefId } = useParams();
   const [chef, setChef] = useState(null);
   const [dishes, setDishes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate= useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -23,7 +26,15 @@ export default function ChefProfile() {
   if (!chef) return <div className="py-24 text-center text-red-500">Kterer not found.</div>;
 
   return (
-    <div className="">
+    <AdminLayout>
+      {/* Back to Dashboard Button */}
+      <button
+        onClick={() => navigate("/supervised/chefs")}
+        className="flex items-center gap-2 mt-6 ml-6 mb-6 text-sm px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Chefs
+      </button>
 <section className="max-w-5xl mx-auto my-8 bg-white rounded-xl shadow-sm overflow-hidden">
   {/* Banner */}
   <div className="relative w-full h-48 md:h-60">
@@ -67,6 +78,6 @@ export default function ChefProfile() {
     )}
   </section>
 </section>
-    </div>
+    </AdminLayout>
   );
 }
