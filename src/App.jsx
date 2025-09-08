@@ -34,9 +34,31 @@ import ChefEarnings from './pages/chef/Earnings';
 import DriverLogin from './pages/driver/DriverLogin';
 import DriverDashboard from './pages/driver/Orders';//orders for mvp later we can have a proper driver dashboard
 import DeliveryCamera from './pages/driver/DeliveryCamera';
+
+function MaintenanceBanner() {
+  return (
+    <div style={{
+      backgroundColor: "#fef3c7",
+      color: "#92400e",
+      textAlign: "center",
+      padding: "10px",
+      fontWeight: "bold",
+      borderBottom: "2px solid #fcd34d",
+      position: "sticky",
+      top: 0,
+      zIndex: 1000
+    }}>
+      🚧 Scheduled Maintenance: Some features may not work properly. Will be back soon.
+    </div>
+  );
+}
+
 function App() {
   return (
     <div>
+
+       {/* Banner always visible */}
+      <MaintenanceBanner />
       <Router>
         <div>
           <Routes>
