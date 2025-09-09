@@ -39,7 +39,7 @@ export default function TestimonialsSection() {
             />
           </div>
           {/* TESTIMONIALS */}
-          <div className="w-full md:w-1/2 flex flex-col justify-center">
+          <div className="w-full md:w-1/2 flex flex-col justify-center m-auto">
             <div className="flex flex-col gap-8">
               {testimonials.map((t) => (
                 <div
@@ -51,12 +51,12 @@ export default function TestimonialsSection() {
                   </span>
                   <p className="text-gray-700 mb-2">{t.quote}</p>
                   <span className="font-semibold block mb-2">{t.name}</span>
-                  <a
+                  {/* <a
                     href={t.orderLink}
                     className="inline-block bg-primary text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition hover:bg-primary/90"
                   >
                     {t.orderLabel}
-                  </a>
+                  </a> */}
                 </div>
               ))}
             </div>

@@ -83,7 +83,9 @@ export default function AdminDashboard() {
             >
               + Add Dish
             </button>
-            <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
+            <button
+             onClick={() => navigate("/supervised/orders")}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">
               View Orders
             </button>
           </div>
