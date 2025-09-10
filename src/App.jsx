@@ -12,6 +12,7 @@ import Cancel from './pages/customer/Cancel';
 import TermsAndServices from './pages/customer/TermsAndServices';
 import VendorTerms from './pages/customer/VendorTerms';
 import PrivacyPolicy from './pages/customer/PrivacyPolicy';
+import AboutUs from './pages/customer/AboutUs';
 //admin imports
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import AdminChefs from './pages/admin/AllChefs';
@@ -84,6 +85,7 @@ function App() {
             <Route path="/terms-and-conditions" element={<TermsAndServices />} />
             <Route path="/vendor-terms-and-conditions" element={<VendorTerms />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/aboutUs" element={<AboutUs />} />
 
             {/* chef */}
             <Route path="/chef/login" element={<Login />} />
