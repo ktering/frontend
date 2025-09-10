@@ -1,6 +1,10 @@
+import Header from "../../components/customer/Header";
+import Footer from "../../components/customer/Footer";
+
 export default function TermsAndConditionsPage() {
   return (
     <>
+        <Header />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="font-normal">
           <div className="font-bold text-xl mb-12 text-center">
@@ -949,6 +953,7 @@ export default function TermsAndConditionsPage() {
           , and we will make an effort to reply within a reasonable time-frame.
         </p>
       </div>
+      <Footer />
     </>
   );
 }

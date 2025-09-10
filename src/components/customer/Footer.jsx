@@ -60,7 +60,9 @@ const Footer = () => {
           <div className="text-center sm:text-left">
             <h4 className="text-base font-semibold mb-2 text-black">Legal</h4>
             <ul className="space-y-1.5">
-              <li><Link to="/terms">Terms and Conditions</Link></li>
+              <li><Link to="/terms-and-conditions">Terms and Conditions</Link></li>
+              <li><Link to="/vendor-terms-and-conditions">Vendor Terms and Conditions</Link></li>
+              <li><Link to="/privacy-policy">Privacy Policy</Link></li>
             </ul>
           </div>
 
