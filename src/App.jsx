@@ -9,6 +9,7 @@ import Cart from './pages/customer/Cart';
 import Checkout from './pages/customer/Checkout';
 import Success from './pages/customer/Success';
 import Cancel from './pages/customer/Cancel';
+import AboutUs from './pages/customer/AboutUs';
 //admin imports
 import ProtectedRoute from './components/admin/ProtectedRoute';
 import AdminChefs from './pages/admin/AllChefs';
@@ -78,6 +79,7 @@ function App() {
               />
             <Route path="/success" element={<Success />} />
             <Route path="/cancel" element={<Cancel />} />
+            <Route path="/aboutUs" element={<AboutUs />} />
 
             {/* chef */}
             <Route path="/chef/login" element={<Login />} />
