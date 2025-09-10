@@ -1,7 +1,7 @@
 export default function TermsAndConditionsPage() {
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 py-12">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="font-normal">
           <div className="font-bold text-xl mb-12 text-center">
             TERMS AND CONDITIONS

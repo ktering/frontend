@@ -44,7 +44,7 @@ const Footer = () => {
 
       {/* Navigation */}
       <div className="border-t border-gray-200 px-4 py-6">
-        <div className="w-full max-w-[80%] mx-auto grid grid-cols-1 sm:grid-cols-3 gap-y-6 sm:gap-6 text-sm text-gray-700">
+        <div className="w-full max-w-[80%] mx-auto grid grid-cols-1 sm:grid-cols-4 gap-y-6 sm:gap-6 text-sm text-gray-700">
 
           {/* Column 1: Navigate */}
           <div className="text-center sm:text-left">
@@ -56,7 +56,15 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 2: Menu */}
+          {/* Column 2: Legal */}
+          <div className="text-center sm:text-left">
+            <h4 className="text-base font-semibold mb-2 text-black">Legal</h4>
+            <ul className="space-y-1.5">
+              <li><Link to="/terms">Terms and Conditions</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 3: Menu */}
 <div className="hidden sm:block text-center sm:text-left">
   <h4 className="text-base font-semibold mb-2 text-black">Menu</h4>
   <ul className="space-y-1.5">
@@ -70,7 +78,7 @@ const Footer = () => {
 </div>
 
 
-          {/* Column 3: Contact + Social */}
+          {/* Column 4: Contact + Social */}
           <div className="text-center sm:text-left">
             <h4 className="text-base font-semibold mb-2 text-black">Contact</h4>
             <ul className="space-y-1.5">
