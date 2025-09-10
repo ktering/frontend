@@ -1,3 +1,5 @@
+//src/components/customer/Header.jsx
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart, Search, Menu as MenuIcon, X } from "lucide-react";
