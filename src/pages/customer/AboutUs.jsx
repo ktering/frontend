@@ -68,7 +68,7 @@ export default function AboutUs() {
           <p className="mt-3 sm:mt-4 text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed">
             There’s no need to make food at home when you can get something
             homemade through Kterings from a Kterer of your choice. Click{" "}
-            <Link to="/" className="underline text-primary hover:text-black">
+            <Link to="/menu" className="underline text-primary hover:text-black">
               "Order Now"
             </Link>{" "}
             to start!
