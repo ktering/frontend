@@ -18,7 +18,7 @@ const PartnerSection = () => {
     <section className="bg-white py-12 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto text-center">
         <h2 className="text-2xl sm:text-3xl font-bold text-primary mb-4">
-          Our Trusted Partners
+          Our Trusted Partners and Customers
         </h2>
         <p className="text-gray-600 mb-10 text-sm sm:text-base">
           Proudly collaborating with delivery giants, Islamic organizations, and local communities.
