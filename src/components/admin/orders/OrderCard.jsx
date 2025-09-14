@@ -36,6 +36,9 @@ export default function OrderCard({ slice, tab, onAssignDriver, onMarkDelivered 
           <div className="text-sm text-gray-500">Customer</div>
           <div className="font-medium">{orderMeta.customer?.name}</div>
           <div className="text-sm text-gray-600">{orderMeta.customer?.address}</div>
+          {orderMeta.customer?.phone && (
+      <div className="text-sm text-gray-600">Phone: {orderMeta.customer?.phone}</div>
+    )}
         </div>
 
         <div className="sm:col-span-2">
