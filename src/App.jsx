@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { initGA } from "./utils/analytics";
+import GAListener from "./GAListener"; 
 //customer imports
 import Home from './pages/customer/Home';
 import ChefProfile from './pages/customer/ChefProfile';
@@ -42,11 +45,16 @@ import DeliveryCamera from './pages/driver/DeliveryCamera';
 
 
 function App() {
+
+  useEffect(() => {
+  initGA(); // initialize GA once
+}, []);
   return (
     <div>
 
        
       <Router>
+        <GAListener /> 
         <div>
           <Routes>
             {/* customer */}
