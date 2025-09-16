@@ -50,9 +50,9 @@ const Footer = () => {
           <div className="text-center sm:text-left">
             <h4 className="text-base font-semibold mb-2 text-black">Navigate</h4>
             <ul className="space-y-1.5">
+              <li><Link to="https://www.islamicreliefcanada.org/emergencies">Donate</Link></li>
               <li><Link to="/">Home</Link></li>
               <li><Link to="/menu">Menu</Link></li>
-              <li><Link to="/chefs">Kterers</Link></li>
                <li><Link to="/aboutUs">About Us</Link></li>
             </ul>
           </div>
