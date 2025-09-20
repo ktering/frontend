@@ -21,3 +21,13 @@ body {
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
+
+@layer base {
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    @apply hidden;
+  }
+  input[type="password"]::-webkit-textfield-decoration-container {
+    @apply hidden;
+  }
+}
